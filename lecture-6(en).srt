@@ -1,0 +1,4068 @@
+﻿1
+00:00:06,680 --> 00:00:09,560
+Today we're going to not talk about sorting.
+
+2
+00:00:09,560 --> 00:00:12,560
+This is an exciting new development.
+
+3
+00:00:12,560 --> 00:00:16,560
+We're going to talk about another problem,
+
+4
+00:00:16,560 --> 00:00:21,560
+a related problem, but a different problem.
+
+5
+00:00:33,560 --> 00:00:34,720
+We're going to talk about another problem
+
+6
+00:00:34,840 --> 00:00:37,010
+which we would like to solve in linear time.
+
+7
+00:00:37,170 --> 00:00:38,670
+Last class we talked about
+
+8
+00:00:38,670 --> 00:00:40,740
+we could do sorting in linear time.
+
+9
+00:00:40,850 --> 00:00:43,100
+To do that we needed some additional assumptions.
+
+10
+00:00:43,330 --> 00:00:44,430
+Today we're going to look at a problem
+
+11
+00:00:44,600 --> 00:00:46,730
+that really only needs linear time, even though at
+
+12
+00:00:46,850 --> 00:00:49,260
+first glance it might look like it requires sorting.
+
+13
+00:00:49,800 --> 00:00:51,790
+So this is going to be an easier problem.
+
+14
+00:00:53,960 --> 00:00:56,720
+The problem is I give you a bunch of numbers.
+
+15
+00:00:59,320 --> 00:01:01,490
+Let's call them elements.
+
+16
+00:01:04,100 --> 00:01:06,270
+And they are in some array, let's say.
+
+17
+00:01:07,390 --> 00:01:10,680
+And they're in no particular order, so unsorted.
+
+18
+00:01:11,480 --> 00:01:18,150
+I want to find the kth smallest element.
+
+19
+00:01:24,410 --> 00:01:28,020
+This is called the element of rank k.
+
+20
+00:01:35,560 --> 00:01:38,930
+In other words, I have this list of numbers which is unsorted.
+
+21
+00:01:39,200 --> 00:01:40,810
+And, if I were to sort it,
+
+22
+00:01:40,940 --> 00:01:43,280
+I would like to know what the kth element is.
+
+23
+00:01:43,520 --> 00:01:44,700
+But I'm not allowed to sort it.
+
+24
+00:01:44,820 --> 00:01:49,900
+One solution to this problem, this is the naive algorithm,
+
+25
+00:01:51,260 --> 00:01:55,440
+is you just sort and then return the kth element.
+
+26
+00:01:55,560 --> 00:01:58,240
+This is another possible definition of the problem.
+
+27
+00:01:58,590 --> 00:02:00,290
+And we would like to do better than that.
+
+28
+00:02:01,110 --> 00:02:04,000
+So you could sort, what's called the array A,
+
+29
+00:02:04,930 --> 00:02:08,560
+and then return A of K.
+
+30
+00:02:09,260 --> 00:02:10,690
+That is one thing we could do.
+
+31
+00:02:11,000 --> 00:02:13,280
+And if we use heap sort or mergesort,
+
+32
+00:02:13,480 --> 00:02:15,070
+this will take n lg n time.
+
+33
+00:02:16,350 --> 00:02:18,220
+We would like to do better than n lg n.
+
+34
+00:02:19,070 --> 00:02:20,740
+Ideally linear time.
+
+35
+00:02:24,930 --> 00:02:29,970
+The problem is pretty natural, straightforward.
+
+36
+00:02:30,510 --> 00:02:32,780
+It has various applications.
+
+37
+00:02:33,480 --> 00:02:35,800
+Depending on how you choose k, k could be any number
+
+38
+00:02:36,010 --> 00:02:38,420
+between 1 and n. For example,
+
+39
+00:02:38,530 --> 00:02:43,130
+if we choose k=1 that element has a name.
+
+40
+00:02:43,240 --> 00:02:44,740
+Any suggestions of what the name is?
+
+41
+00:02:46,140 --> 00:02:47,530
+The minimum. That's easy.
+
+42
+00:02:50,320 --> 00:02:52,600
+Any suggestions on how we could find the minimum element
+
+43
+00:02:52,710 --> 00:02:57,950
+in an array in linear time? Right.
+
+44
+00:02:58,090 --> 00:02:59,330
+Just scan through the array.
+
+45
+00:02:59,640 --> 00:03:02,010
+Keep track of what the smallest number is that you've seen.
+
+46
+00:03:02,320 --> 00:03:04,510
+The same thing with the maximum, k=n.
+
+47
+00:03:06,100 --> 00:03:08,700
+These are rather trivial.
+
+48
+00:03:09,940 --> 00:03:11,700
+But a more interesting version of the order
+
+49
+00:03:11,810 --> 00:03:16,040
+statistic problem is to find the median.
+
+50
+00:03:16,930 --> 00:03:22,950
+This is either k equals n plus 1 over 2 floor or ceiling.
+
+51
+00:03:24,200 --> 00:03:27,370
+I will call both of those elements medians.
+
+52
+00:03:33,300 --> 00:03:35,650
+Finding the median of an unsorted array in linear time
+
+53
+00:03:35,770 --> 00:03:37,660
+is quite tricky.
+
+54
+00:03:37,860 --> 00:03:40,460
+And that sort of is the main goal of this lecture,
+
+55
+00:03:40,620 --> 00:03:41,940
+to be able to find the medians.
+
+56
+00:03:42,050 --> 00:03:43,490
+For free we're going to be able
+
+57
+00:03:43,600 --> 00:03:47,050
+to find the arbitrary kth smallest element,
+
+58
+00:03:47,170 --> 00:03:50,020
+but typically we're most interested in finding the median.
+
+59
+00:03:50,280 --> 00:03:53,180
+And on Friday in recitation you'll see why that is so useful.
+
+60
+00:03:53,380 --> 00:03:55,820
+There are all sorts of situations where you can use median
+
+61
+00:03:56,010 --> 00:03:59,190
+for really effective divide-and-conquer without having to sort.
+
+62
+00:04:00,040 --> 00:04:04,350
+You can solve a lot of problems in linear time as a result.
+
+63
+00:04:05,690 --> 00:04:09,900
+And we're going to cover today two algorithms for finding order statistics.
+
+64
+00:04:10,010 --> 00:04:11,390
+Both of them are linear time.
+
+65
+00:04:11,740 --> 00:04:13,230
+The first one is randomized,
+
+66
+00:04:13,430 --> 00:04:15,180
+so it's only linear expected time.
+
+67
+00:04:15,560 --> 00:04:18,080
+And the second one is worst-case linear time,
+
+68
+00:04:18,900 --> 00:04:21,500
+and it will build on the randomized version.
+
+69
+00:04:22,660 --> 00:04:29,420
+Let's start with a randomize divide-and-conquer algorithm.
+
+70
+00:04:44,560 --> 00:04:47,560
+This algorithm is called rand-select.
+
+71
+00:05:00,560 --> 00:05:04,530
+And the parameters are a little bit more than what we're used to.
+
+72
+00:05:06,180 --> 00:05:08,460
+The order statistics problem you're given an array A.
+
+73
+00:05:08,810 --> 00:05:10,670
+And here I've changed notation
+
+74
+00:05:10,830 --> 00:05:12,570
+and I'm looking for the ith smallest element,
+
+75
+00:05:12,730 --> 00:05:15,830
+so *i* is the index I'm looking for.
+
+76
+00:05:18,820 --> 00:05:20,930
+And I'm also going to change the problem a little bit.
+
+77
+00:05:21,050 --> 00:05:24,270
+And instead of trying to find it in the whole array,
+
+78
+00:05:24,420 --> 00:05:27,360
+I'm going to look in a particular interval of the array,
+
+79
+00:05:28,080 --> 00:05:29,570
+A from p up to q.
+
+80
+00:05:30,440 --> 00:05:32,270
+We're going to need that for a recursion.
+
+81
+00:05:32,690 --> 00:05:34,110
+This better be a recursive algorithm
+
+82
+00:05:34,190 --> 00:05:36,110
+because we're using divide-and-conquer.
+
+83
+00:05:37,510 --> 00:05:38,940
+Here is the algorithm.
+
+84
+00:05:49,520 --> 00:05:52,080
+base case. Pretty simple.
+
+85
+00:05:54,640 --> 00:05:57,810
+Then we're going to use part of the quicksort algorithm,
+
+86
+00:05:59,290 --> 00:06:00,490
+randomized quicksort.
+
+87
+00:06:07,900 --> 00:06:11,860
+We didn't actually define this subroutine two lectures ago,
+
+88
+00:06:12,020 --> 00:06:14,370
+but you should know what it does,
+
+89
+00:06:14,910 --> 00:06:16,790
+especially if you've read the textbook.
+
+90
+00:06:17,530 --> 00:06:23,310
+This says in the array A pick a random element,
+
+91
+00:06:23,460 --> 00:06:25,400
+so pick a random index between p and q,
+
+92
+00:06:25,680 --> 00:06:28,410
+swap it with the first element, then call partition.
+
+93
+00:06:28,570 --> 00:06:31,670
+And partition uses that first element to split the rest of the
+
+94
+00:06:31,830 --> 00:06:34,520
+array into less than or equal to that random partition and
+
+95
+00:06:34,640 --> 00:06:36,350
+greater than or equal to that partition.
+
+96
+00:06:36,520 --> 00:06:40,320
+This is just picking a random partition element between p and q,
+
+97
+00:06:40,630 --> 00:06:45,130
+cutting the array in half, although the two sizes may not be equal.
+
+98
+00:06:51,760 --> 00:06:55,570
+And it returns the index of that partition element,
+
+99
+00:06:56,950 --> 00:06:58,810
+some number between p and q.
+
+100
+00:07:00,090 --> 00:07:05,860
+And we're going to define k to be this particular value, r minus p plus 1.
+
+101
+00:07:07,140 --> 00:07:15,540
+And the reason for that is that k is then the rank of the partition element.
+
+102
+00:07:17,170 --> 00:07:21,280
+This is in A[p...q].
+
+103
+00:07:25,160 --> 00:07:26,990
+Let me draw a picture here.
+
+104
+00:07:30,320 --> 00:07:33,750
+We have our array A. It starts at p and ends at q.
+
+105
+00:07:33,870 --> 00:07:36,160
+There is other stuff, but for this recursive all we
+
+106
+00:07:36,290 --> 00:07:39,870
+care about is p up to q.
+
+107
+00:07:40,020 --> 00:07:42,120
+We pick a random partition element, say this one,
+
+108
+00:07:42,510 --> 00:07:47,320
+and we partition things so that everything in here, let's call this r,
+
+109
+00:07:48,950 --> 00:07:52,060
+is less than or equal to A[r]
+
+110
+00:07:52,950 --> 00:07:56,290
+and everything up here is greater than or equal to A[r].
+
+111
+00:07:57,220 --> 00:07:59,620
+And A[r] is our partition element.
+
+112
+00:08:02,330 --> 00:08:05,740
+After this call, that's what the array looks like.
+
+113
+00:08:05,940 --> 00:08:10,060
+And we get r. We get the index of where partition element is stored.
+
+114
+00:08:10,290 --> 00:08:14,520
+The number of elements that are less than or equal to A[r]
+
+115
+00:08:14,950 --> 00:08:20,570
+and including r is r minus p plus 1.
+
+116
+00:08:20,770 --> 00:08:22,870
+There will be r minus p elements here,
+
+117
+00:08:23,260 --> 00:08:26,250
+and we're adding 1 to get this element.
+
+118
+00:08:26,910 --> 00:08:27,850
+And, if you start counting at 1,
+
+119
+00:08:27,850 --> 00:08:29,430
+if this is rank 1, rank 2,
+
+120
+00:08:29,580 --> 00:08:32,530
+this element will have rank k.
+
+121
+00:08:34,090 --> 00:08:37,110
+That's just from the construction in the partition.
+
+122
+00:08:40,870 --> 00:08:44,540
+And now we get to recurse. And there are three cases --
+
+123
+00:08:51,790 --> 00:08:54,190
+-- depending on how i relates to k.
+
+124
+00:08:54,390 --> 00:08:56,600
+Remember i is the rank that we're looking for,
+
+125
+00:08:56,910 --> 00:09:00,010
+k is the rank that we happen to get out of this random partition.
+
+126
+00:09:00,130 --> 00:09:01,570
+We don't have much control over k,
+
+127
+00:09:01,840 --> 00:09:03,290
+but if we're lucky i=k.
+
+128
+00:09:03,290 --> 00:09:04,870
+That's the element we want.
+
+129
+00:09:11,420 --> 00:09:13,130
+Then we just return the partition element.
+
+130
+00:09:14,140 --> 00:09:16,820
+More likely is that the element we're looking for is either to
+
+131
+00:09:16,930 --> 00:09:20,430
+the left or to the right. And if it's to the left we're
+
+132
+00:09:20,540 --> 00:09:22,910
+going to recurse in the left-hand portion of the array.
+
+133
+00:09:23,110 --> 00:09:25,960
+And if it's to the right we're going to recurse in the right-hand portion.
+
+134
+00:09:26,120 --> 00:09:28,020
+So, pretty straightforward at this point.
+
+135
+00:09:44,270 --> 00:09:45,900
+I just have to get all the indices right.
+
+136
+00:10:07,030 --> 00:10:10,790
+Either we're going to recurse on the part between p and r minus 1,
+
+137
+00:10:11,080 --> 00:10:13,820
+that's this case. The rank we're looking for is
+
+138
+00:10:13,930 --> 00:10:15,950
+to the left of the rank of element A[r].
+
+139
+00:10:16,610 --> 00:10:18,370
+Or, we're going to recurse on the right part
+
+140
+00:10:18,490 --> 00:10:20,570
+between r plus 1 and q.
+
+141
+00:10:22,550 --> 00:10:24,190
+Where we recurse on the left part
+
+142
+00:10:24,340 --> 00:10:25,780
+the rank we're looking for remains the same,
+
+143
+00:10:25,890 --> 00:10:27,930
+but when we recurse on the right part the rank we're
+
+144
+00:10:28,040 --> 00:10:29,350
+looking for gets offset.
+
+145
+00:10:29,360 --> 00:10:32,710
+Because we sort of got rid of the k elements over here.
+
+146
+00:10:32,910 --> 00:10:37,110
+I should have written this length is k.
+
+147
+00:10:42,170 --> 00:10:45,420
+We've sort of swept away k ranks of elements.
+
+148
+00:10:46,050 --> 00:10:47,990
+And now within this array we're
+
+149
+00:10:48,140 --> 00:10:50,700
+looking for the i minus kth smallest element.
+
+150
+00:10:51,830 --> 00:10:55,550
+That's the recursion. We only recurse once.
+
+151
+00:10:56,910 --> 00:10:58,640
+And random partition is not a recursion.
+
+152
+00:10:58,750 --> 00:11:00,130
+That just takes linear time.
+
+153
+00:11:01,030 --> 00:11:03,000
+And the total amount of work we're doing here
+
+154
+00:11:03,280 --> 00:11:06,260
+should be linear time plus one recursion.
+
+155
+00:11:09,300 --> 00:11:10,560
+And we'd next like to see
+
+156
+00:11:11,300 --> 00:11:14,690
+what the total running time is in expectation,
+
+157
+00:11:15,230 --> 00:11:16,860
+but let's first do a little example --
+
+158
+00:11:24,660 --> 00:11:27,010
+-- to make this algorithm perfectly clear.
+
+159
+00:11:27,550 --> 00:11:33,770
+Let's suppose we're looking for the seventh smallest element in this array.
+
+160
+00:11:48,510 --> 00:11:51,230
+And let's suppose, just for example,
+
+161
+00:11:51,500 --> 00:11:54,020
+that the pivot we're using is just the first element.
+
+162
+00:11:55,550 --> 00:11:57,700
+So, nothing fancy.
+
+163
+00:11:57,700 --> 00:11:59,630
+I would have to flip a few coins in order to
+
+164
+00:11:59,710 --> 00:12:01,880
+generate a random one, so let's just pick this one.
+
+165
+00:12:02,310 --> 00:12:04,480
+If I partition at the element 6,
+
+166
+00:12:04,800 --> 00:12:08,290
+this is actually an example we did two weeks ago,
+
+167
+00:12:08,990 --> 00:12:10,300
+and I won't go through it again,
+
+168
+00:12:10,770 --> 00:12:13,640
+but we get the same array, as we did two weeks ago,
+
+169
+00:12:16,720 --> 00:12:24,160
+namely 2 5 3 6 8 13 10 and 11.
+
+170
+00:12:25,790 --> 00:12:28,380
+If you run through the partitioning algorithm,
+
+171
+00:12:28,500 --> 00:12:31,060
+that happens to be the order that it throws the elements into.
+
+172
+00:12:31,380 --> 00:12:35,450
+And this is our position r. This is p here.
+
+173
+00:12:35,610 --> 00:12:38,870
+It's just 1. And q is just the end.
+
+174
+00:12:41,860 --> 00:12:46,060
+And I am looking for the seventh smallest element.
+
+175
+00:12:46,250 --> 00:12:48,270
+And it happens when I run this partition
+
+176
+00:12:48,460 --> 00:12:50,520
+that 6 falls into the fourth place.
+
+177
+00:12:50,790 --> 00:12:53,150
+And we know that means, because all the elements here
+
+178
+00:12:53,230 --> 00:12:55,830
+are less than 6 and all the elements here are greater than 6,
+
+179
+00:12:56,140 --> 00:13:00,510
+if this array were sorted, 6 would be right here in position four.
+
+180
+00:13:01,100 --> 00:13:02,340
+So, r here is 4.
+
+181
+00:13:05,130 --> 00:13:09,160
+Yeah? The 12 turned into an 11?
+
+182
+00:13:09,320 --> 00:13:10,990
+This was an 11, believe it or not.
+
+183
+00:13:13,010 --> 00:13:15,610
+Let me be simple. Sorry.
+
+184
+00:13:16,420 --> 00:13:18,250
+Sometimes my ones look like twos.
+
+185
+00:13:18,480 --> 00:13:24,420
+Not a good feature. That's an easy way to cover.
+
+186
+00:13:28,490 --> 00:13:29,890
+Don't try that on exams.
+
+187
+00:13:31,790 --> 00:13:33,810
+Oh, that one was just a two. No.
+
+188
+00:13:36,170 --> 00:13:37,470
+Even though we're not sorting the array,
+
+189
+00:13:37,590 --> 00:13:40,670
+we're only spending linear work here to partition by 6.
+
+190
+00:13:40,780 --> 00:13:43,650
+We know that if we had sorted the array 6 would fall here.
+
+191
+00:13:43,880 --> 00:13:45,240
+We don't know about these other elements.
+
+192
+00:13:45,360 --> 00:13:48,150
+They're not in sorted order, but from the properties of
+
+193
+00:13:48,310 --> 00:13:50,540
+partition we know 6 went the right spot.
+
+194
+00:13:50,770 --> 00:13:55,310
+We now know rank of 6 is 4. We happened to be looking for 7
+
+195
+00:13:55,580 --> 00:13:57,460
+and we happened to get this number 4.
+
+196
+00:13:57,780 --> 00:14:00,060
+We want something over here.
+
+197
+00:14:00,600 --> 00:14:06,800
+It turns out we're looking for 10, I guess. No, 11.
+
+198
+00:14:09,610 --> 00:14:11,020
+There should be eight elements in this array,
+
+199
+00:14:11,140 --> 00:14:12,420
+so it's the next to max.
+
+200
+00:14:12,580 --> 00:14:14,750
+Max here is 13, I'm cheating here.
+
+201
+00:14:14,900 --> 00:14:16,910
+The answer we're looking for is 11.
+
+202
+00:14:18,040 --> 00:14:20,410
+We know that what we're looking for is in the right-hand part
+
+203
+00:14:20,830 --> 00:14:23,860
+because the rank we're looking for is 7, which is bigger than 4.
+
+204
+00:14:24,190 --> 00:14:25,960
+Now, what rank are we looking for in here?
+
+205
+00:14:26,160 --> 00:14:28,800
+Well, we've gotten rid of four elements over here.
+
+206
+00:14:29,270 --> 00:14:34,030
+It happened here that k is also 4 because p is 1 in this example.
+
+207
+00:14:35,000 --> 00:14:36,320
+The rank of 6 was 4.
+
+208
+00:14:36,610 --> 00:14:38,970
+We throw away those four elements. Now we're looking for
+
+209
+00:14:39,350 --> 00:14:47,110
+rank 7 minus 4 which is 3.
+
+210
+00:14:48,280 --> 00:14:51,240
+And, indeed, the rank 3 element here is still 11.
+
+211
+00:14:51,400 --> 00:14:53,700
+So, you recursively find that. That's your answer.
+
+212
+00:14:55,990 --> 00:14:58,870
+Now that algorithm should be pretty clear.
+
+213
+00:15:00,570 --> 00:15:02,270
+The tricky part is to analyze it.
+
+214
+00:15:02,740 --> 00:15:06,940
+And the analysis here is quite a bit like randomized quicksort,
+
+215
+00:15:07,130 --> 00:15:09,070
+although not quite as hairy,
+
+216
+00:15:09,460 --> 00:15:10,980
+so it will go faster.
+
+217
+00:15:11,250 --> 00:15:12,650
+But it will be also sort of a nice review
+
+218
+00:15:12,800 --> 00:15:15,140
+of the randomized quicksort analysis which was a bit
+
+219
+00:15:15,920 --> 00:15:18,370
+tricky and always good to see a couple of times.
+
+220
+00:15:19,690 --> 00:15:22,630
+We're going to follow the same kind of outline as before to
+
+221
+00:15:22,790 --> 00:15:29,230
+look at the expected running time of this algorithm.
+
+222
+00:15:30,090 --> 00:15:32,490
+And to start out we're going to, as before,
+
+223
+00:15:32,630 --> 00:15:36,970
+look at some intuition just to feel good about ourselves.
+
+224
+00:15:38,520 --> 00:15:40,540
+Also feel bad as you'll see.
+
+225
+00:15:41,950 --> 00:15:45,320
+Let's think about two sort of extreme cases,
+
+226
+00:15:46,480 --> 00:15:48,420
+a good case and the worst case.
+
+227
+00:15:49,580 --> 00:15:52,760
+And I should mention that in all of the analyses today
+
+228
+00:15:53,740 --> 00:15:55,680
+we assume the elements are distinct.
+
+229
+00:16:03,060 --> 00:16:05,750
+It gets really messy if the elements are not distinct.
+
+230
+00:16:06,340 --> 00:16:08,670
+And you may even have to change the algorithms a little bit
+
+231
+00:16:08,780 --> 00:16:10,690
+because if all the elements are equal,
+
+232
+00:16:10,690 --> 00:16:12,430
+if you pick a random element,
+
+233
+00:16:12,550 --> 00:16:14,060
+the partition does not do so well.
+
+234
+00:16:14,720 --> 00:16:16,050
+But let's assume they're all distinct,
+
+235
+00:16:16,220 --> 00:16:18,360
+which is the really interesting case.
+
+236
+00:16:23,260 --> 00:16:24,580
+A pretty luck case --
+
+237
+00:16:26,140 --> 00:16:28,860
+I mean the best cases we partition right in the middle.
+
+238
+00:16:29,130 --> 00:16:32,360
+The number of elements to the left of our partition is equal
+
+239
+00:16:32,640 --> 00:16:35,160
+to the number of elements to the right of our partition.
+
+240
+00:16:35,510 --> 00:16:41,060
+But almost as good would be some kind of 1/10 to 9/10 split.
+
+241
+00:16:41,260 --> 00:16:45,060
+Any constant fraction, we should feel that.
+
+242
+00:16:45,310 --> 00:16:47,490
+Any constant fraction is as good as 1/2.
+
+243
+00:16:48,800 --> 00:16:52,460
+Then the recurrence we get is,
+
+244
+00:16:55,800 --> 00:17:00,650
+let's say at most, this bad. So, it depends.
+
+245
+00:17:00,960 --> 00:17:04,290
+If we have let's say 1/10 on the left and 9/10 on the right
+
+246
+00:17:04,410 --> 00:17:06,390
+every time we do a partition.
+
+247
+00:17:07,050 --> 00:17:08,840
+It depends where our answer is.
+
+248
+00:17:08,910 --> 00:17:12,680
+It could be if I is really small it's in the 1/10 part.
+
+249
+00:17:12,950 --> 00:17:15,280
+If I is really big it's going to be in the 9/10 part,
+
+250
+00:17:15,440 --> 00:17:17,280
+or most of the time it's going to be in the 9/10 part.
+
+251
+00:17:17,470 --> 00:17:21,510
+We're doing worst-case analysis within the lucky case,
+
+252
+00:17:22,010 --> 00:17:23,600
+so we're happy to have upper bounds.
+
+253
+00:17:24,260 --> 00:17:27,440
+I will say T(n) is at most t of T(9/10n)+Theta(n).
+
+254
+00:17:28,460 --> 00:17:30,740
+Clearly it's worse if we're in the bigger part.
+
+255
+00:17:32,260 --> 00:17:34,200
+What is the solution to this recurrence?
+
+256
+00:17:36,680 --> 00:17:38,620
+Oh, solving recurrence was so long ago.
+
+257
+00:17:38,770 --> 00:17:41,030
+What method should we use for solving this recurrence?
+
+258
+00:17:42,270 --> 00:17:44,630
+The master method. What case are we in?
+
+259
+00:17:48,320 --> 00:17:49,490
+Three. Good.
+
+260
+00:17:50,840 --> 00:17:53,090
+You still remember. This is Case 3.
+
+261
+00:17:56,830 --> 00:18:00,880
+We're looking at n^(logba). b here is 10/9,
+
+262
+00:18:01,070 --> 00:18:03,550
+although it doesn't really matter because a is 1.
+
+263
+00:18:03,900 --> 00:18:08,350
+log base anything of 1 is 0. So, this is n^0 which is 1.
+
+264
+00:18:09,740 --> 00:18:12,380
+And n is polynomially larger than 1.
+
+265
+00:18:14,300 --> 00:18:21,340
+This is going to be O(n), which is good.
+
+266
+00:18:22,000 --> 00:18:23,740
+That is what we want, linear time.
+
+267
+00:18:23,900 --> 00:18:25,800
+If we're in the lucky case, great.
+
+268
+00:18:26,280 --> 00:18:28,030
+Unfortunately this is only intuition.
+
+269
+00:18:28,220 --> 00:18:30,160
+And we're not always going to get the lucky case.
+
+270
+00:18:31,410 --> 00:18:33,370
+We could do the same kind of analysis as we did
+
+271
+00:18:33,480 --> 00:18:34,390
+with randomized quicksort.
+
+272
+00:18:34,500 --> 00:18:36,440
+If you alternate between lucky and unlucky,
+
+273
+00:18:37,020 --> 00:18:40,400
+things will still be good, but let's just talk about the unlucky case
+
+274
+00:18:42,110 --> 00:18:43,700
+to show how bad things can get.
+
+275
+00:18:44,050 --> 00:18:46,410
+And this really would be a worst-case analysis.
+
+276
+00:18:51,260 --> 00:18:58,850
+The unlucky case we get a split of 0:n-1.
+
+277
+00:19:00,130 --> 00:19:02,730
+Because we're removing the partition element either way.
+
+278
+00:19:02,880 --> 00:19:05,910
+And there could be nothing less than the partition element.
+
+279
+00:19:06,790 --> 00:19:07,790
+We have 0 on the left-hand side
+
+280
+00:19:07,980 --> 00:19:10,250
+and we have n-1 on the right-hand side.
+
+281
+00:19:11,420 --> 00:19:18,310
+Now we get a recurrence like T(n)=T(n-1) plus linear cost.
+
+282
+00:19:19,520 --> 00:19:24,150
+And what's the solution to that recurrence? N^2.
+
+283
+00:19:24,380 --> 00:19:26,150
+Yes. This one you should just know.
+
+284
+00:19:28,170 --> 00:19:30,790
+It's n^2 because it's an arithmetic series.
+
+285
+00:19:35,830 --> 00:19:36,880
+And that's pretty bad.
+
+286
+00:19:37,070 --> 00:19:38,980
+This is much, much worse than sorting
+
+287
+00:19:39,140 --> 00:19:40,850
+and then picking the ith element.
+
+288
+00:19:42,720 --> 00:19:45,050
+In the worst-case this algorithm really sucks,
+
+289
+00:19:45,630 --> 00:19:48,000
+but most of the time it's going to do really well.
+
+290
+00:19:48,270 --> 00:19:51,020
+And, unless you're really, really unlucky and every coin
+
+291
+00:19:51,180 --> 00:19:55,500
+you flip gives the wrong answer, you won't get this case
+
+292
+00:19:55,960 --> 00:19:57,860
+and you will get something more like the lucky case.
+
+293
+00:19:58,020 --> 00:19:59,220
+At least that's what we'd like to prove.
+
+294
+00:20:01,200 --> 00:20:03,900
+And we will prove that the expected running time here is linear.
+
+295
+00:20:04,290 --> 00:20:06,170
+So, it's very rare to get anything quadratic.
+
+296
+00:20:06,520 --> 00:20:09,550
+But later on we will see how to make the worst-case linear as well.
+
+297
+00:20:10,520 --> 00:20:13,510
+This would really, really solve the problem.
+
+298
+00:20:28,560 --> 00:20:32,560
+Let's get into the analysis.
+
+299
+00:20:41,830 --> 00:20:44,310
+Now, you've seen an analysis much like this before.
+
+300
+00:20:45,070 --> 00:20:46,460
+What do you suggest we do
+
+301
+00:20:48,050 --> 00:20:49,840
+in order to analyze this expected time?
+
+302
+00:20:54,180 --> 00:20:55,160
+It's a divide-and-conquer algorithm,
+
+303
+00:20:55,320 --> 00:20:58,250
+so we kind of like to write down the recurrence on something
+
+304
+00:20:59,060 --> 00:21:00,380
+resembling the running time.
+
+305
+00:21:07,400 --> 00:21:10,860
+I don't need the answer, but what's the first step that we might do
+
+306
+00:21:11,020 --> 00:21:13,270
+to analyze the expected running time of this algorithm?
+
+307
+00:21:15,110 --> 00:21:15,890
+Sorry?
+
+308
+00:21:16,550 --> 00:21:18,300
+Look at different cases, yeah. Exactly.
+
+309
+00:21:18,610 --> 00:21:21,770
+We have all these possible ways
+
+310
+00:21:21,890 --> 00:21:24,330
+that random partition could split.
+
+311
+00:21:24,530 --> 00:21:27,800
+It could split 0 to the n-1. It could split in half.
+
+312
+00:21:29,340 --> 00:21:32,580
+There are n choices where it could split.
+
+313
+00:21:32,850 --> 00:21:34,950
+How can we break into those cases?
+
+314
+00:21:40,070 --> 00:21:41,930
+Indicator random variables. Cool.
+
+315
+00:21:42,160 --> 00:21:43,440
+Exactly. That's what we want to do.
+
+316
+00:21:44,220 --> 00:21:45,900
+Indicator random variable suggests that what we're
+
+317
+00:21:45,970 --> 00:21:48,850
+dealing with is not exactly just a function T(n)
+
+318
+00:21:48,960 --> 00:21:50,750
+but it's a random variable.
+
+319
+00:21:51,370 --> 00:21:53,270
+This is one subtlety.
+
+320
+00:21:53,580 --> 00:21:56,230
+T(n) depends on the random choices,
+
+321
+00:21:56,390 --> 00:21:57,940
+so it's really a random variable.
+
+322
+00:22:03,500 --> 00:22:05,470
+And then we're going to use indicator random variables
+
+323
+00:22:05,550 --> 00:22:07,920
+to get a recurrence on T(n).
+
+324
+00:22:24,370 --> 00:22:30,620
+So, T(n) is the running time of rand-select on an input of size n.
+
+325
+00:22:38,510 --> 00:22:43,900
+And I am also going to write down explicitly an assumption
+
+326
+00:22:44,910 --> 00:22:47,080
+about the random numbers.
+
+327
+00:22:53,750 --> 00:22:56,930
+That they should be chosen independently from each other.
+
+328
+00:22:58,830 --> 00:23:00,930
+Every time I call random partition,
+
+329
+00:23:01,090 --> 00:23:04,070
+it's generating a completely independent random number
+
+330
+00:23:04,230 --> 00:23:06,710
+from all the other times I call random partition.
+
+331
+00:23:06,870 --> 00:23:09,590
+That is important, of course, for this analysis to work.
+
+332
+00:23:10,170 --> 00:23:13,600
+We will see why some point down the line.
+
+333
+00:23:13,870 --> 00:23:17,130
+And now, to sort of write down an equation for T(n)
+
+334
+00:23:17,790 --> 00:23:21,670
+we're going to define indicator random variables, as you suggested.
+
+335
+00:23:34,670 --> 00:23:36,250
+And we will call it X_k.
+
+336
+00:23:36,520 --> 00:23:42,260
+And this is for all k=0...n-1.
+
+337
+00:23:48,880 --> 00:23:51,590
+Indicator random variables either 1 or 0.
+
+338
+00:23:53,300 --> 00:23:56,510
+And it's going to be 1 if the partition
+
+339
+00:23:57,100 --> 00:24:00,280
+comes out k on the left-hand side.
+
+340
+00:24:01,670 --> 00:24:10,020
+So say the partition generates an k to n-k-1 split
+
+341
+00:24:14,160 --> 00:24:15,440
+and it is 0 otherwise.
+
+342
+00:24:18,670 --> 00:24:24,890
+We have n of these indicator random variables between 0...n-1.
+
+343
+00:24:25,010 --> 00:24:27,340
+And in each case, no matter how the random choice comes out,
+
+344
+00:24:27,590 --> 00:24:29,220
+exactly one of them will be 1.
+
+345
+00:24:29,490 --> 00:24:30,700
+All the others will be 0.
+
+346
+00:24:31,120 --> 00:24:36,090
+Now we can divide out the running time of this algorithm
+
+347
+00:24:36,400 --> 00:24:37,760
+based on which case we're in.
+
+348
+00:24:47,560 --> 00:24:50,810
+That will sort of unify this intuition that we did
+
+349
+00:24:51,390 --> 00:24:52,780
+and get all the cases.
+
+350
+00:24:53,440 --> 00:24:55,030
+And then we can look at the expectation.
+
+351
+00:24:58,670 --> 00:25:05,610
+T(n), if we just split out by cases,
+
+352
+00:25:08,320 --> 00:25:12,620
+we have an upper bound like this.
+
+353
+00:25:27,380 --> 00:25:29,700
+If we have 0 to n-1 split,
+
+354
+00:25:29,700 --> 00:25:31,740
+the worst is we have n-1.
+
+355
+00:25:31,970 --> 00:25:34,250
+Then we have to recurse in a problem of size n-1.
+
+356
+00:25:35,180 --> 00:25:38,100
+In fact, it would be pretty hard to recurse in a problem of size 0.
+
+357
+00:25:41,630 --> 00:25:44,230
+If we have a 1 to n-2 split
+
+358
+00:25:44,660 --> 00:25:46,300
+then we take the max of the two sides.
+
+359
+00:25:46,460 --> 00:25:49,160
+That's certainly going to give us an upper bound
+
+360
+00:25:54,290 --> 00:25:55,330
+and so on.
+
+361
+00:26:01,020 --> 00:26:04,390
+And at the bottom you get an n-1 to 0 split.
+
+362
+00:26:12,540 --> 00:26:15,330
+This is now sort of conditioning on various events,
+
+363
+00:26:15,410 --> 00:26:17,250
+but we have indicator random variables
+
+364
+00:26:17,370 --> 00:26:19,040
+to tell us when these events happen.
+
+365
+00:26:19,390 --> 00:26:22,370
+We can just multiply each of these values
+
+366
+00:26:22,640 --> 00:26:24,080
+by the indicator random variable
+
+367
+00:26:24,230 --> 00:26:25,940
+and it will come out 0 if that's not the case
+
+368
+00:26:26,110 --> 00:26:29,860
+and will come out 1 and give us this value if that happens to be the split.
+
+369
+00:26:30,010 --> 00:26:33,040
+So, if we add up all of those we'll get the same thing.
+
+370
+00:26:35,350 --> 00:26:42,290
+This is equal to the sum over all k
+
+371
+00:26:42,830 --> 00:26:45,140
+of the indicator random variable times
+
+372
+00:26:45,490 --> 00:26:49,420
+the cost in that case, which is t of max k,
+
+373
+00:26:49,850 --> 00:26:52,600
+and the other side, which is n-k-1,
+
+374
+00:26:57,090 --> 00:26:58,320
+plus theta n.
+
+375
+00:27:01,980 --> 00:27:05,010
+This is our recurrence, in some sense,
+
+376
+00:27:05,170 --> 00:27:07,760
+for the random variable representing running time.
+
+377
+00:27:07,890 --> 00:27:12,430
+Now, the value will depend on which case we come into.
+
+378
+00:27:12,970 --> 00:27:16,200
+We know the probability of each of these events happening is the same
+
+379
+00:27:16,980 --> 00:27:20,330
+because we're choosing the partition element uniformly at random,
+
+380
+00:27:21,380 --> 00:27:23,490
+but we cannot really simplify much beyond this
+
+381
+00:27:24,540 --> 00:27:26,280
+until we take expectations.
+
+382
+00:27:27,330 --> 00:27:30,160
+We know this random variable could be as big as n^2.
+
+383
+00:27:30,490 --> 00:27:32,000
+Hopefully it's usually linear.
+
+384
+00:27:33,200 --> 00:27:37,510
+We will take expectations of both sides and get what we want.
+
+385
+00:27:52,970 --> 00:27:57,000
+Let's look at the expectation of this random variable,
+
+386
+00:27:57,820 --> 00:28:00,610
+which is just the expectation, I will copy over,
+
+387
+00:28:01,460 --> 00:28:05,070
+summation we have here so I can work on this board.
+
+388
+00:28:27,970 --> 00:28:30,760
+I want to compute the expectation of this summation.
+
+389
+00:28:31,380 --> 00:28:33,830
+What property of expectation should I use?
+
+390
+00:28:35,040 --> 00:28:36,300
+Linearity, good.
+
+391
+00:28:37,270 --> 00:28:39,090
+We can bring the summation outside.
+
+392
+00:29:06,880 --> 00:29:08,970
+Now I have a sum of expectation.
+
+393
+00:29:09,320 --> 00:29:11,220
+Let's look at each expectation individually.
+
+394
+00:29:11,530 --> 00:29:15,520
+It's a product of two random variables, if you will.
+
+395
+00:29:16,300 --> 00:29:17,840
+This is an indicator random variable
+
+396
+00:29:18,170 --> 00:29:21,470
+and this is some more complicated function,
+
+397
+00:29:21,660 --> 00:29:23,290
+some more complicated random variable
+
+398
+00:29:23,600 --> 00:29:25,030
+representing some running time,
+
+399
+00:29:25,570 --> 00:29:28,950
+which depends on what random choices are made in that recursive call.
+
+400
+00:29:30,920 --> 00:29:32,240
+Now what should I do?
+
+401
+00:29:38,250 --> 00:29:40,930
+I have the expectation of the product of two random variables.
+
+402
+00:29:43,760 --> 00:29:45,420
+Independence, exactly.
+
+403
+00:29:45,730 --> 00:29:48,340
+If I know that these two random variables are independent
+
+404
+00:29:48,620 --> 00:29:50,350
+then I know that the expectation of the product
+
+405
+00:29:50,500 --> 00:29:52,100
+is the product of the expectations.
+
+406
+00:29:52,680 --> 00:29:55,160
+Now we have to check are they independent?
+
+407
+00:29:58,040 --> 00:30:00,640
+I hope so because otherwise there isn't much else I can do.
+
+408
+00:30:01,530 --> 00:30:02,850
+Why are they independent?
+
+409
+00:30:05,020 --> 00:30:08,160
+Sorry? Because we stated that they are, right.
+
+410
+00:30:08,310 --> 00:30:11,070
+Because of this assumption.
+
+411
+00:30:11,300 --> 00:30:14,170
+We assume that all the random numbers are chosen independently.
+
+412
+00:30:15,450 --> 00:30:17,310
+We need to sort of interpolate that here.
+
+413
+00:30:17,700 --> 00:30:19,790
+These X_k's, all the X_k's,
+
+414
+00:30:19,950 --> 00:30:21,810
+X_0 up to X_n-1,
+
+415
+00:30:21,930 --> 00:30:24,830
+so all the ones appearing in this summation are dependent upon
+
+416
+00:30:24,950 --> 00:30:29,990
+a single random choice of this particular call to random partition.
+
+417
+00:30:31,580 --> 00:30:34,290
+All of these are correlated,
+
+418
+00:30:34,490 --> 00:30:36,580
+because if one of them is 1, all the others are forced to be 0.
+
+419
+00:30:36,740 --> 00:30:39,140
+So, there is a lot of correlation among the X_k's.
+
+420
+00:30:39,530 --> 00:30:41,860
+But with respect to everything that is in here,
+
+421
+00:30:41,970 --> 00:30:45,920
+and the only random part is this T(max(kn-k-1)).
+
+422
+00:30:46,140 --> 00:30:47,270
+That's a recursive call
+
+423
+00:30:47,620 --> 00:30:50,280
+It's making its own choices, its own random numbers
+
+424
+00:30:50,850 --> 00:30:54,440
+So, any random numbers it chooses here are independent
+
+425
+00:30:54,440 --> 00:30:57,780
+with that assumed from the top level recursive call
+
+426
+00:30:57,980 --> 00:31:01,470
+where we chose this number between 0 and n-1
+
+427
+00:31:05,520 --> 00:31:06,730
+So, that is the reason that this
+
+428
+00:31:06,840 --> 00:31:08,480
+random variable is independent from these.
+
+429
+00:31:08,590 --> 00:31:10,780
+The same thing as quicksort, but I know some people got
+
+430
+00:31:10,900 --> 00:31:15,010
+confused about it a couple lectures ago so I am reiterating.
+
+431
+00:31:18,160 --> 00:31:21,370
+So, we get the product of expectations,
+
+432
+00:31:21,880 --> 00:31:34,130
+E[X_k] times E[T(max(k n-k-1))].
+
+433
+00:31:34,360 --> 00:31:37,160
+I mean the order n comes outside,
+
+434
+00:31:37,160 --> 00:31:39,180
+but let's leave it inside for now.
+
+435
+00:31:40,110 --> 00:31:42,560
+There is no expectation to compute there
+
+436
+00:31:42,790 --> 00:31:45,660
+for order n. Order n is order n.
+
+437
+00:31:47,940 --> 00:31:53,410
+What is the expectation of X_k? 1/n,
+
+438
+00:31:55,110 --> 00:31:58,140
+because they're all chosen with equal probability.
+
+439
+00:31:58,210 --> 00:32:00,850
+There is n of them, so the expectation is 1/n.
+
+440
+00:32:02,210 --> 00:32:03,510
+The value is either 1 or 0.
+
+441
+00:32:03,970 --> 00:32:06,220
+We start to be able to split this up.
+
+442
+00:32:06,340 --> 00:32:10,990
+We have 1/n times this expected value of some recursive T call,
+
+443
+00:32:11,690 --> 00:32:14,640
+and then we have plus 1 over n times order n,
+
+444
+00:32:14,750 --> 00:32:18,260
+also known as a constant, but everything is summed up n times
+
+445
+00:32:18,410 --> 00:32:21,560
+so let's expand this.
+
+446
+00:32:34,610 --> 00:32:38,180
+I have the sum k=0 to n-1.
+
+447
+00:32:38,840 --> 00:32:41,010
+I guess the 1/n can come outside.
+
+448
+00:32:43,740 --> 00:32:53,120
+And we have expectation of [T(max(kn-k-1))].
+
+449
+00:32:55,020 --> 00:32:56,500
+Lots of snifty braces there.
+
+450
+00:32:57,010 --> 00:33:01,970
+And then plus we have, on the other hand, the sum k=0 to n-1.
+
+451
+00:33:02,090 --> 00:33:03,840
+Let me just write that out again.
+
+452
+00:33:07,480 --> 00:33:11,160
+We have a 1/n in front and we have a Theta(n) inside.
+
+453
+00:33:12,440 --> 00:33:14,530
+This summation is n^2.
+
+454
+00:33:15,580 --> 00:33:19,670
+And then we're dividing by n, so this whole thing is, again, order n.
+
+455
+00:33:20,640 --> 00:33:21,920
+Nothing fancy happened there.
+
+456
+00:33:22,070 --> 00:33:24,440
+This is really just saying the expectation of order n is order n.
+
+457
+00:33:24,930 --> 00:33:26,550
+Average value of order n is order n.
+
+458
+00:33:27,990 --> 00:33:29,660
+What is interesting is this part.
+
+459
+00:33:31,220 --> 00:33:33,130
+Now, what could we do with this summation?
+
+460
+00:33:35,340 --> 00:33:38,480
+Here we start to differ from randomized quicksort
+
+461
+00:33:39,680 --> 00:33:40,920
+because we have this max.
+
+462
+00:33:41,720 --> 00:33:46,720
+Randomized quicksort we had the sum of T(k) plus T(n-k-1)
+
+463
+00:33:47,110 --> 00:33:48,950
+because we were making both recursive calls.
+
+464
+00:33:49,160 --> 00:33:50,710
+Here we're only making the biggest one.
+
+465
+00:33:53,660 --> 00:34:00,600
+That max is really a pain for evaluating this recurrence.
+
+466
+00:34:03,120 --> 00:34:07,190
+How could I get rid of the max? That's one way to think of it.
+
+467
+00:34:17,290 --> 00:34:19,850
+Exactly. I could only sum up to halfway and then double.
+
+468
+00:34:20,050 --> 00:34:23,000
+In other words, terms are getting repeated twice here.
+
+469
+00:34:23,570 --> 00:34:28,700
+When k=0 or when k=n-1, I get the same T(n-1).
+
+470
+00:34:28,890 --> 00:34:32,460
+When k=1 or n-2, I get the same thing, 2 and n-3.
+
+471
+00:34:34,360 --> 00:34:37,670
+What I will actually do is sum from halfway up.
+
+472
+00:34:38,170 --> 00:34:39,350
+That's a little bit cleaner.
+
+473
+00:34:39,500 --> 00:34:41,090
+And let me get the indices right.
+
+474
+00:34:43,460 --> 00:34:49,200
+Floor of n/2 up to n-1 will be safe.
+
+475
+00:34:51,640 --> 00:34:54,810
+And then I just have E[T(k)],
+
+476
+00:34:54,810 --> 00:34:56,500
+except I forgot to multiply by 2,
+
+477
+00:34:56,690 --> 00:34:58,860
+so I'm going to change this 1 to a 2.
+
+478
+00:35:00,960 --> 00:35:03,680
+And order n is preserved.
+
+479
+00:35:04,300 --> 00:35:06,400
+This is just because each term is appearing twice.
+
+480
+00:35:06,710 --> 00:35:07,810
+I can factor it out.
+
+481
+00:35:08,140 --> 00:35:12,630
+And if n is odd, I'm actually double-counting somewhat,
+
+482
+00:35:13,020 --> 00:35:14,300
+but it's certain at most that.
+
+483
+00:35:15,890 --> 00:35:19,070
+So, that's a safe upper bound. And upper bounds are all we
+
+484
+00:35:19,380 --> 00:35:21,240
+care about because we're hoping to get linear.
+
+485
+00:35:21,440 --> 00:35:24,230
+And the running time of this algorithm is definitely at least linear,
+
+486
+00:35:24,400 --> 00:35:26,150
+so we just need an upper bounded linear.
+
+487
+00:35:27,560 --> 00:35:33,270
+So, this is a recurrence. E[T(n)] is at most 2/n times the sum
+
+488
+00:35:33,650 --> 00:35:37,390
+of half the numbers between 0 and n of E[T(k)]
+
+489
+00:35:37,390 --> 00:35:39,180
++Theta(n).
+
+490
+00:35:39,330 --> 00:35:40,750
+It's a bit of hairy recurrence.
+
+491
+00:35:41,020 --> 00:35:42,380
+We want to solve it, though.
+
+492
+00:35:42,650 --> 00:35:46,020
+And it's actually a little bit easier than the randomized
+
+493
+00:35:46,130 --> 00:35:48,190
+quicksort recurrence. We're going to solve it.
+
+494
+00:35:48,350 --> 00:35:51,740
+What method should we use? Sorry?
+
+495
+00:35:53,020 --> 00:35:55,310
+Master method? Master would be nice,
+
+496
+00:35:55,500 --> 00:35:58,950
+except that each of the recursive calls is with a different value of k.
+
+497
+00:35:59,710 --> 00:36:00,720
+The master method only works
+
+498
+00:36:00,830 --> 00:36:04,130
+when all the calls are with the same value, same size.
+
+499
+00:36:04,750 --> 00:36:07,160
+Alas, it would be nice if we could use the master method.
+
+500
+00:36:08,090 --> 00:36:10,800
+What else do we have? Substitution.
+
+501
+00:36:10,960 --> 00:36:14,150
+When it's hard, when in doubt, use substitution.
+
+502
+00:36:14,380 --> 00:36:16,480
+I mean the good thing here is we know what we want.
+
+503
+00:36:16,790 --> 00:36:20,120
+From the intuition at least, which is now erased,
+
+504
+00:36:20,470 --> 00:36:22,640
+we really feel that this should be linear time.
+
+505
+00:36:22,920 --> 00:36:25,280
+So, we know what we want to prove.
+
+506
+00:36:26,370 --> 00:36:33,190
+And indeed we can prove it just directly with substitution.
+
+507
+00:36:40,500 --> 00:36:43,600
+I want to claim there is some constant c greater than zero
+
+508
+00:36:44,030 --> 00:36:46,250
+such that E[T(n)], according to this recurrence,
+
+509
+00:36:46,410 --> 00:36:51,260
+is at most c times n. Let's prove that over here.
+
+510
+00:36:59,400 --> 00:37:01,650
+As we guessed, the proof is by substitution.
+
+511
+00:37:11,740 --> 00:37:14,690
+What that means is we're going to assume, by induction,
+
+512
+00:37:14,840 --> 00:37:17,440
+that this inequality is true for all smaller n.
+
+513
+00:37:20,230 --> 00:37:23,650
+I will just say for less than n. And we need to prove it for n.
+
+514
+00:37:27,640 --> 00:37:29,790
+We get E[T(n)].
+
+515
+00:37:30,640 --> 00:37:34,710
+Now we are just going to expand using the recurrence that we have.
+
+516
+00:37:34,870 --> 00:37:37,530
+It's at most this. I will copy that over.
+
+517
+00:37:52,030 --> 00:37:53,870
+And then each of these recursive calls
+
+518
+00:37:54,060 --> 00:37:56,890
+is with some value k that is strictly smaller than n.
+
+519
+00:37:57,780 --> 00:38:01,890
+Sorry, I copied it wrong, floor of n over 2, not zero.
+
+520
+00:38:04,100 --> 00:38:08,000
+And so I can apply the induction hypothesis to each of these.
+
+521
+00:38:08,120 --> 00:38:12,310
+This is at most c times k by the induction hypothesis.
+
+522
+00:38:15,020 --> 00:38:18,160
+And so I get this inequality.
+
+523
+00:38:35,560 --> 00:38:37,800
+This c can come outside the summation
+
+524
+00:38:37,920 --> 00:38:39,200
+because it's just a constant.
+
+525
+00:38:41,200 --> 00:38:43,990
+And I will be slightly tedious in writing this down again,
+
+526
+00:38:45,270 --> 00:38:48,410
+because what I care about is the summation here that is left over.
+
+527
+00:38:55,110 --> 00:38:58,560
+This is a good old-fashioned summation.
+
+528
+00:38:59,340 --> 00:39:02,940
+And if you remember back to your summation tricks or whatever,
+
+529
+00:39:03,440 --> 00:39:05,380
+you should be able to evaluate this.
+
+530
+00:39:06,540 --> 00:39:08,870
+If we started at zero and went up to n minus 1,
+
+531
+00:39:09,100 --> 00:39:10,690
+that's just an arithmetic series,
+
+532
+00:39:10,860 --> 00:39:13,790
+but here we have the tail end of an arithmetic series.
+
+533
+00:39:14,180 --> 00:39:15,470
+And you should know, at least up to theta,
+
+534
+00:39:15,590 --> 00:39:20,490
+what this is, right?
+
+535
+00:39:22,430 --> 00:39:24,330
+n^2, yeah. It's definitely T(n^2).
+
+536
+00:39:24,450 --> 00:39:27,530
+But we need here a slightly better upper bond,
+
+537
+00:39:27,690 --> 00:39:29,280
+as we will see the constants really matter.
+
+538
+00:39:30,090 --> 00:39:32,130
+What we're going to use is that this summation
+
+539
+00:39:32,400 --> 00:39:39,260
+is at most 3/8 times n^2. And that will be critical,
+
+540
+00:39:39,690 --> 00:39:42,830
+the fact that 3/8 is smaller than 1/2, I believe.
+
+541
+00:39:43,000 --> 00:39:44,440
+So it's going to get rid of this 2.
+
+542
+00:39:45,720 --> 00:39:48,040
+I am not going to prove this. This is an exercise.
+
+543
+00:39:48,940 --> 00:39:50,440
+When you know that it is true, it's easy
+
+544
+00:39:50,710 --> 00:39:53,000
+because you can just prove it by induction.
+
+545
+00:39:53,500 --> 00:39:55,770
+Figuring out that number is a little bit more work,
+
+546
+00:39:55,930 --> 00:39:57,670
+but not too much more.
+
+547
+00:39:57,910 --> 00:39:59,460
+So you should prove that by induction.
+
+548
+00:40:01,400 --> 00:40:04,670
+Now let me simplify.
+
+549
+00:40:06,340 --> 00:40:11,810
+This is a bit messy, but what I want is c times n.
+
+550
+00:40:12,390 --> 00:40:16,850
+Let's write it as our desired value minus the residual.
+
+551
+00:40:17,790 --> 00:40:21,140
+And here we have some crazy fractions.
+
+552
+00:40:21,260 --> 00:40:25,150
+This is 2 times 3 which is 6 over 8
+
+553
+00:40:25,730 --> 00:40:29,160
+which is 3/4, right?
+
+554
+00:40:29,410 --> 00:40:34,550
+Here we have 1, so we have to subtract up 1/4 to get 3/4.
+
+555
+00:40:34,900 --> 00:40:38,970
+And this should be, I guess, 1/4 times c times n.
+
+556
+00:40:40,950 --> 00:40:42,590
+And then we have this theta n
+
+557
+00:40:42,790 --> 00:40:47,720
+with double negation becomes a plus theta n.
+
+558
+00:40:49,850 --> 00:40:51,750
+That should be clear. I am just rewriting that.
+
+559
+00:40:52,830 --> 00:40:54,420
+So we have what we want over here.
+
+560
+00:40:54,660 --> 00:40:59,300
+And then we hope that this is nonnegative because what we want
+
+561
+00:40:59,370 --> 00:41:01,470
+is that this less than or equal to c times n.
+
+562
+00:41:01,700 --> 00:41:04,630
+That will be true, provided this thing is nonnegative.
+
+563
+00:41:05,390 --> 00:41:06,440
+And it looks pretty good
+
+564
+00:41:06,550 --> 00:41:08,960
+because we're free to choose c however large we want.
+
+565
+00:41:09,160 --> 00:41:12,020
+Whatever constant is imbedded in this beta notation is one
+
+566
+00:41:12,140 --> 00:41:15,960
+fixed constant, whatever makes this recurrence true.
+
+567
+00:41:16,850 --> 00:41:19,490
+We just set c to be bigger than 4 times
+
+568
+00:41:19,610 --> 00:41:22,940
+that constant and then this will be nonnegative.
+
+569
+00:41:23,290 --> 00:41:33,070
+So this is true for c sufficiently large to dwarf that theta constant.
+
+570
+00:41:33,300 --> 00:41:34,550
+It's also the base case.
+
+571
+00:41:34,900 --> 00:41:37,050
+I just have to make the cursory mention that
+
+572
+00:41:37,710 --> 00:41:41,620
+we choose c large enough so that this claim is true,
+
+573
+00:41:41,780 --> 00:41:44,880
+even in the base case where n is at most some constant.
+
+574
+00:41:45,740 --> 00:41:47,540
+Here it's like 1 or so
+
+575
+00:41:47,970 --> 00:41:49,640
+because then we're not making a recursive call.
+
+576
+00:41:51,930 --> 00:41:52,780
+What we get --
+
+577
+00:41:53,250 --> 00:41:55,610
+This algorithm, randomize select,
+
+578
+00:41:58,710 --> 00:42:03,150
+has expected running time order n, Theta(n).
+
+579
+00:42:10,990 --> 00:42:12,480
+The annoying this is that in the worst-case,
+
+580
+00:42:12,600 --> 00:42:15,680
+if you're really, really unlucky it's n^2.
+
+581
+00:42:21,280 --> 00:42:23,760
+Any questions before we move on from this point?
+
+582
+00:42:24,150 --> 00:42:28,000
+This finished off the proof of this fact
+
+583
+00:42:28,110 --> 00:42:30,560
+that we have Theta(n) expected time.
+
+584
+00:42:30,560 --> 00:42:32,560
+We already saw the n^2 worst-case.
+
+585
+00:42:32,560 --> 00:42:36,660
+All perfectly clear? Good.
+
+586
+00:42:38,100 --> 00:42:39,030
+You should go over these proofs.
+
+587
+00:42:39,180 --> 00:42:41,160
+They're intrinsically related between
+
+588
+00:42:41,320 --> 00:42:43,140
+randomized quicksort and randomized select.
+
+589
+00:42:44,380 --> 00:42:45,560
+Know them in your heart.
+
+590
+00:42:48,200 --> 00:42:50,780
+This is a great algorithm that works really well in practice
+
+591
+00:42:50,970 --> 00:42:53,080
+because most of the time you're going to split, say, in the middle,
+
+592
+00:42:53,390 --> 00:42:57,070
+somewhere between a 1/4 and 3/4 and everything is good.
+
+593
+00:42:57,770 --> 00:43:01,450
+It's extremely unlikely that you get the n^2 worst-case.
+
+594
+00:43:02,150 --> 00:43:05,680
+It would have to happen with like 1 over n^n probability or
+
+595
+00:43:05,790 --> 00:43:07,500
+something really, really small.
+
+596
+00:43:07,970 --> 00:43:11,750
+But I am a theoretician at least.
+
+597
+00:43:12,020 --> 00:43:15,250
+And it would be really nice if you could get Theta(n) in the worst-case.
+
+598
+00:43:15,640 --> 00:43:18,200
+That would be the cleanest result that
+
+599
+00:43:18,310 --> 00:43:19,840
+you could hope for because that's optimal.
+
+600
+00:43:19,960 --> 00:43:20,970
+You cannot do better than Theta(n).
+
+601
+00:43:21,100 --> 00:43:22,420
+You've got to look at the elements.
+
+602
+00:43:23,230 --> 00:43:26,370
+So, you might ask, can we get rid of this worst-case behavior
+
+603
+00:43:26,720 --> 00:43:28,080
+and somehow avoid randomization and
+
+604
+00:43:28,310 --> 00:43:31,260
+guarantee Theta(n) worst-case running time?
+
+605
+00:43:31,410 --> 00:43:38,090
+And you can but it's a rather nontrivial algorithm.
+
+606
+00:43:38,240 --> 00:43:40,490
+And this is going to be one of the most sophisticated that
+
+607
+00:43:40,610 --> 00:43:41,970
+we've seen so far.
+
+608
+00:43:46,240 --> 00:43:48,600
+It won't continue to be the most sophisticated algorithm
+
+609
+00:43:49,100 --> 00:43:52,050
+we will see, but here it is.
+
+610
+00:43:53,910 --> 00:44:01,980
+Worst-case linear time order statistics.
+
+611
+00:44:07,130 --> 00:44:12,130
+And this is an algorithm by several, all very famous people,
+
+612
+00:44:14,850 --> 00:44:18,330
+Blum, Floyd,
+
+613
+00:44:19,790 --> 00:44:25,140
+Pratt, Rivest and Tarjan.
+
+614
+00:44:30,800 --> 00:44:33,440
+I think I've only met the B and the R and the T.
+
+615
+00:44:33,840 --> 00:44:35,070
+Oh, no, I've met Pratt as well.
+
+616
+00:44:35,270 --> 00:44:36,970
+I'm getting close to all the authors.
+
+617
+00:44:37,980 --> 00:44:39,300
+This is a somewhat old result,
+
+618
+00:44:39,410 --> 00:44:41,620
+but at the time it was a major breakthrough
+
+619
+00:44:41,810 --> 00:44:43,560
+and still is an amazing algorithm.
+
+620
+00:44:45,810 --> 00:44:48,210
+Ron Rivest is a professor here.
+
+621
+00:44:48,420 --> 00:44:49,930
+You should know him from the R in RSA.
+
+622
+00:44:51,910 --> 00:44:55,440
+When I took my PhD comprehensives some time ago,
+
+623
+00:44:55,750 --> 00:44:57,760
+on the cover sheet was a joke question.
+
+624
+00:44:58,070 --> 00:44:59,700
+It asked of the authors of
+
+625
+00:44:59,700 --> 00:45:04,230
+the worst-case linear time order statistics algorithm,
+
+626
+00:45:04,230 --> 00:45:06,790
+which of them is the most rich?
+
+627
+00:45:08,730 --> 00:45:11,790
+Sadly it was not a graded part of the comprehensive exam,
+
+628
+00:45:12,070 --> 00:45:12,980
+but it was an amusing question.
+
+629
+00:45:13,100 --> 00:45:17,410
+I won't answer it here because we're on tape,
+
+630
+00:45:17,410 --> 00:45:18,030
+but think about it.
+
+631
+00:45:18,260 --> 00:45:21,360
+It may not be obvious. Several of them are rich.
+
+632
+00:45:21,560 --> 00:45:23,380
+It's just the question of who is the most rich.
+
+633
+00:45:28,130 --> 00:45:30,840
+Anyway, before they were rich they came up with this algorithm.
+
+634
+00:45:31,150 --> 00:45:32,310
+They've come up with many algorithms since,
+
+635
+00:45:32,430 --> 00:45:34,990
+even after getting rich, believe it or not.
+
+636
+00:45:37,860 --> 00:45:42,360
+What we want is a good pivot, guaranteed good pivot.
+
+637
+00:45:42,550 --> 00:45:44,610
+Random pivot is going to be really good.
+
+638
+00:45:44,780 --> 00:45:47,030
+And so the simplest algorithm is just pick a random pivot.
+
+639
+00:45:47,300 --> 00:45:48,850
+It's going to be good with high probability.
+
+640
+00:45:49,630 --> 00:45:53,540
+We want to force a good pivot deterministically.
+
+641
+00:45:54,110 --> 00:45:58,560
+And the new idea here is we're going to generate it recursively.
+
+642
+00:46:00,560 --> 00:46:04,440
+What else could we do but recurse?
+
+643
+00:46:05,650 --> 00:46:07,240
+Well, you should know from your recurrences that
+
+644
+00:46:07,360 --> 00:46:10,430
+if we did two recursive calls on problems of half the size
+
+645
+00:46:11,010 --> 00:46:13,400
+and we have a linear extra work
+
+646
+00:46:13,400 --> 00:46:14,730
+that's the mergesort recurrence,
+
+647
+00:46:14,840 --> 00:46:16,910
+T(n)=2[T(n/2)+Theta(n)].
+
+648
+00:46:17,300 --> 00:46:18,930
+You should recite in your sleep.
+
+649
+00:46:20,980 --> 00:46:22,060
+That's n lg n.
+
+650
+00:46:22,720 --> 00:46:25,620
+So we cannot recurse on two problems of half the size.
+
+651
+00:46:25,760 --> 00:46:26,650
+We've got to do better.
+
+652
+00:46:26,850 --> 00:46:30,720
+Somehow these recursions have to add up to strictly less than n.
+
+653
+00:46:32,310 --> 00:46:35,180
+That's the magic of this algorithm.
+
+654
+00:46:36,500 --> 00:46:39,760
+So this will just be called select instead of rand-select.
+
+655
+00:46:40,960 --> 00:46:43,150
+And it really depends on an array,
+
+656
+00:46:43,240 --> 00:46:46,150
+but I will focus on the i-th element that we want to select
+
+657
+00:46:46,460 --> 00:46:49,060
+and the size of the array that we want to select in.
+
+658
+00:46:50,370 --> 00:46:52,260
+And I am going to write this algorithm
+
+659
+00:46:52,460 --> 00:46:57,070
+slightly less formally than randomize-select because
+
+660
+00:46:57,380 --> 00:46:58,930
+it's a bit higher level of an algorithm.
+
+661
+00:47:20,370 --> 00:47:28,970
+And let me draw over here the picture of the algorithm.
+
+662
+00:47:30,040 --> 00:47:31,740
+The first step is sort of the weirdest
+
+663
+00:47:31,930 --> 00:47:35,190
+and it's one of the key ideas.
+
+664
+00:47:35,370 --> 00:47:36,370
+You take your elements,
+
+665
+00:47:36,570 --> 00:47:37,620
+and they are in no particular order,
+
+666
+00:47:37,730 --> 00:47:39,990
+so instead of drawing them on a line,
+
+667
+00:47:40,840 --> 00:47:45,760
+I am going to draw them in a 5 by n over 5 grid. Why not?
+
+668
+00:47:47,700 --> 00:47:50,060
+This, unfortunately, take a little while to draw,
+
+669
+00:47:50,970 --> 00:47:54,850
+but it will take you equally long so I will take my time.
+
+670
+00:47:58,510 --> 00:47:59,820
+It doesn't really matter what the width is,
+
+671
+00:47:59,980 --> 00:48:03,100
+but it should be width n over 5
+
+672
+00:48:03,260 --> 00:48:05,200
+so make sure you draw your figure accordingly.
+
+673
+00:48:06,340 --> 00:48:09,010
+Width n over 5, but the height should be exactly 5.
+
+674
+00:48:10,250 --> 00:48:11,800
+I think I got it right. I can count that high.
+
+675
+00:48:12,230 --> 00:48:13,220
+Here is 5.
+
+676
+00:48:14,700 --> 00:48:15,840
+And this should be, well,
+
+677
+00:48:16,040 --> 00:48:18,250
+you know, our number may not be divisible by 5,
+
+678
+00:48:18,370 --> 00:48:21,470
+so maybe it ends off in sort of an odd way.
+
+679
+00:48:22,080 --> 00:48:25,880
+But what I would like is that these chunks should be floor of n over 5.
+
+680
+00:48:26,230 --> 00:48:28,400
+And then we will have, at most, four elements left over.
+
+681
+00:48:28,640 --> 00:48:30,220
+So I am going to ignore those. They don't really matter.
+
+682
+00:48:30,380 --> 00:48:34,610
+It's just an additive constant. Here is my array.
+
+683
+00:48:34,840 --> 00:48:37,510
+I just happened to write it in this funny way.
+
+684
+00:48:37,940 --> 00:48:39,920
+And I will call these vertical things groups.
+
+685
+00:48:40,360 --> 00:48:42,610
+I would circle them, and I did that in my notes,
+
+686
+00:48:42,730 --> 00:48:45,940
+but things get really messy if you start circling.
+
+687
+00:48:46,060 --> 00:48:49,450
+This diagram is going to get really full, just to warn you.
+
+688
+00:48:49,740 --> 00:48:51,490
+By the end it will be almost unintelligible,
+
+689
+00:48:51,600 --> 00:48:54,670
+but there it is.
+
+690
+00:48:56,610 --> 00:49:00,450
+If you are really feeling bored, you can draw this a few times.
+
+691
+00:49:00,610 --> 00:49:03,050
+And you should draw how it grows.
+
+692
+00:49:06,150 --> 00:49:08,440
+So there are the groups, vertical groups of five.
+
+693
+00:49:09,450 --> 00:49:10,460
+Next step.
+
+694
+00:49:17,120 --> 00:49:18,510
+The second step is to recurse.
+
+695
+00:49:19,690 --> 00:49:24,540
+This is where things are a bit unusual, well, even more unusual.
+
+696
+00:49:28,090 --> 00:49:32,240
+Oops, sorry. I really should have had a line between one and two
+
+697
+00:49:32,720 --> 00:49:34,780
+so I am going to have to move this down
+
+698
+00:49:34,780 --> 00:49:36,550
+and insert it here.
+
+699
+00:49:38,530 --> 00:49:42,170
+I ,also in step one, want to find the median of each group.
+
+700
+00:49:52,330 --> 00:49:54,850
+What I would like to do is just imagine this figure,
+
+701
+00:49:55,040 --> 00:49:58,380
+each of the five elements in each group gets reorganized
+
+702
+00:49:58,770 --> 00:50:00,470
+so that the middle one is the median.
+
+703
+00:50:00,570 --> 00:50:03,550
+So I am going to call these the medians of each group.
+
+704
+00:50:04,130 --> 00:50:06,660
+I have five elements so the median is right in the middle.
+
+705
+00:50:06,770 --> 00:50:08,250
+There are two elements less than the median,
+
+706
+00:50:08,400 --> 00:50:09,840
+two elements greater than the median.
+
+707
+00:50:10,070 --> 00:50:11,890
+Again, we're assuming all elements are distinct.
+
+708
+00:50:13,060 --> 00:50:14,690
+So there they are. I compute them.
+
+709
+00:50:15,190 --> 00:50:16,870
+How long does that take me?
+
+710
+00:50:21,210 --> 00:50:23,190
+N over five groups, each with five elements,
+
+711
+00:50:23,340 --> 00:50:24,740
+compute the median of each one?
+
+712
+00:50:31,560 --> 00:50:35,940
+Sorry? Yeah, 2 times n over 5.
+
+713
+00:50:36,050 --> 00:50:37,990
+It's theta n, that's all I need to know.
+
+714
+00:50:38,650 --> 00:50:41,030
+I mean, you're counting comparisons, which is good.
+
+715
+00:50:41,720 --> 00:50:43,850
+It's definitely Theta(n).
+
+716
+00:50:45,640 --> 00:50:46,840
+The point is within each group,
+
+717
+00:50:47,460 --> 00:50:49,070
+I only have to do a constant number of comparisons
+
+718
+00:50:49,230 --> 00:50:50,400
+because it's a constant number of elements.
+
+719
+00:50:50,560 --> 00:50:51,060
+It doesn't matter.
+
+720
+00:50:51,260 --> 00:50:53,590
+You could use randomize select for all I care.
+
+721
+00:50:53,780 --> 00:50:54,710
+No matter what you do,
+
+722
+00:50:54,830 --> 00:50:57,120
+it can only take a constant number of comparisons.
+
+723
+00:50:57,410 --> 00:50:59,580
+As long as you don't make a comparison more than once.
+
+724
+00:51:00,780 --> 00:51:02,620
+So this is easy.
+
+725
+00:51:04,500 --> 00:51:07,800
+You could sort the five numbers and then look at the third one,
+
+726
+00:51:07,990 --> 00:51:12,220
+it doesn't matter because there are only five of them.
+
+727
+00:51:13,810 --> 00:51:14,680
+That's one nifty idea.
+
+728
+00:51:14,830 --> 00:51:16,460
+Already we have some elements
+
+729
+00:51:16,460 --> 00:51:19,700
+that are sort of vaguely in the middle but just of the group.
+
+730
+00:51:20,820 --> 00:51:22,280
+And we've only done linear work.
+
+731
+00:51:23,130 --> 00:51:24,760
+So doing well so far.
+
+732
+00:51:27,760 --> 00:51:30,300
+Now we get to the second step, which I started to write before,
+
+733
+00:51:32,400 --> 00:51:33,650
+where we recurse.
+
+734
+00:51:56,910 --> 00:52:00,980
+So the next idea is, well, we have these floor over n over 5 medians.
+
+735
+00:52:01,630 --> 00:52:04,150
+I am going to compute the median of those medians.
+
+736
+00:52:05,080 --> 00:52:07,220
+I am imagining that I rearranged these.
+
+737
+00:52:07,330 --> 00:52:08,730
+And, unfortunately, it's an even number,
+
+738
+00:52:08,850 --> 00:52:13,270
+there are six of them, but I will rearrange so that this guy,
+
+739
+00:52:13,420 --> 00:52:15,450
+I have drawn in a second box,
+
+740
+00:52:15,690 --> 00:52:17,370
+is the median of these elements
+
+741
+00:52:17,570 --> 00:52:19,970
+so that these two elements are strictly less than this guy,
+
+742
+00:52:20,170 --> 00:52:22,320
+these three elements are strictly greater than this guy.
+
+743
+00:52:22,590 --> 00:52:25,440
+Now, that doesn't directly tell me anything,
+
+744
+00:52:25,440 --> 00:52:29,110
+it would seem, it doesn't directly tell me about any of the elements out here.
+
+745
+00:52:29,400 --> 00:52:30,370
+We will come back to that.
+
+746
+00:52:30,560 --> 00:52:32,770
+In fact, it does tell us about some of the elements.
+
+747
+00:52:33,120 --> 00:52:35,210
+But right now this element is just the median of these guys.
+
+748
+00:52:35,490 --> 00:52:38,590
+Each of these guys is a median of five elements.
+
+749
+00:52:38,940 --> 00:52:39,950
+That's all we know.
+
+750
+00:52:40,910 --> 00:52:43,120
+If we do that recursively,
+
+751
+00:52:43,120 --> 00:52:45,700
+this is going to take T of n over 5 time.
+
+752
+00:52:47,910 --> 00:52:48,780
+So far so good.
+
+753
+00:52:48,910 --> 00:52:53,270
+We can afford a recursion on a problem of size n over 5 and linear work.
+
+754
+00:52:53,430 --> 00:52:55,560
+We know that works out to linear time.
+
+755
+00:52:57,830 --> 00:53:00,230
+But there is more. We're obviously not done yet.
+
+756
+00:53:08,490 --> 00:53:11,050
+The next step is x is our partition element.
+
+757
+00:53:11,200 --> 00:53:12,610
+We partition there.
+
+758
+00:53:12,610 --> 00:53:15,430
+The rest of the algorithm is just like randomized partition,
+
+759
+00:53:16,240 --> 00:53:19,730
+so we're going to define k to be the rank of x.
+
+760
+00:53:20,820 --> 00:53:24,270
+And this can be done, I mean it's n minus r plus 1 or whatever,
+
+761
+00:53:24,380 --> 00:53:27,020
+but I'm not going to write out how to do that
+
+762
+00:53:27,140 --> 00:53:28,500
+because we're at a higher level here.
+
+763
+00:53:28,960 --> 00:53:31,070
+But it can be done.
+
+764
+00:53:31,070 --> 00:53:33,970
+And then we have the three-way branching.
+
+765
+00:53:34,280 --> 00:53:37,350
+So if I happens to equal k we're happy.
+
+766
+00:53:37,460 --> 00:53:39,600
+The pivot element is the element we're looking for,
+
+767
+00:53:41,420 --> 00:53:47,040
+but more likely i is either less than k or it is bigger than k.
+
+768
+00:53:48,820 --> 00:53:50,960
+And then we make the appropriate recursive call,
+
+769
+00:53:51,810 --> 00:54:00,000
+so here we recursively select the i-th smallest element
+
+770
+00:54:04,740 --> 00:54:09,530
+-- -- in the lower part of the array.
+
+771
+00:54:09,650 --> 00:54:12,420
+Left of the partition element.
+
+772
+00:54:12,430 --> 00:54:17,230
+Otherwise, we recursively select the I minus k-th
+
+773
+00:54:18,080 --> 00:54:22,270
+smallest element in the upper part of the array.
+
+774
+00:54:26,990 --> 00:54:27,630
+I am writing this at a high level
+
+775
+00:54:27,630 --> 00:54:28,900
+because we've already seen it.
+
+776
+00:54:28,980 --> 00:54:34,600
+All of this is the same as the last couple steps of randomized select.
+
+777
+00:54:43,390 --> 00:54:44,520
+That is the algorithm.
+
+778
+00:54:45,530 --> 00:54:47,120
+The real question is why does it work?
+
+779
+00:54:47,310 --> 00:54:48,440
+Why is this linear time?
+
+780
+00:54:51,070 --> 00:54:52,930
+The first question is what's the recurrence?
+
+781
+00:54:53,130 --> 00:54:54,470
+We cannot quite write it down yet
+
+782
+00:54:54,980 --> 00:54:56,330
+because we don't know how big
+
+783
+00:54:56,720 --> 00:54:58,390
+these recursive subproblems could be.
+
+784
+00:54:58,660 --> 00:55:00,650
+We're going to either recurse in the lower part or the upper part,
+
+785
+00:55:00,770 --> 00:55:01,540
+that's just like before.
+
+786
+00:55:01,850 --> 00:55:05,070
+If we're unlucky and we have a split *off* like zero to n minus one,
+
+787
+00:55:05,310 --> 00:55:07,130
+this is going to be a quadratic time algorithm.
+
+788
+00:55:07,280 --> 00:55:09,140
+The claim is that this partition element
+
+789
+00:55:09,380 --> 00:55:11,930
+is guaranteed to be pretty good and good enough.
+
+790
+00:55:13,620 --> 00:55:17,270
+The running time of this thing will be T of something times n,
+
+791
+00:55:18,660 --> 00:55:20,600
+and we don't know what the something is yet.
+
+792
+00:55:22,540 --> 00:55:24,010
+How big could it be?
+
+793
+00:55:25,530 --> 00:55:28,290
+Well, I could ask you.
+
+794
+00:55:28,490 --> 00:55:31,050
+But we're sort of indirect here so I will tell you.
+
+795
+00:55:31,580 --> 00:55:34,870
+We have already a recursive call of T of n over 5.
+
+796
+00:55:35,180 --> 00:55:37,350
+It better be that whatever constant,
+
+797
+00:55:37,510 --> 00:55:39,870
+so it's going to be something times n,
+
+798
+00:55:40,130 --> 00:55:43,690
+it better be that that constant is strictly less than 4/5.
+
+799
+00:55:44,270 --> 00:55:45,710
+If it's equal to 4/5
+
+800
+00:55:46,230 --> 00:55:47,880
+then you're not splitting up the problem enough
+
+801
+00:55:48,080 --> 00:55:49,550
+you'll get an n lg n running time.
+
+802
+00:55:50,090 --> 00:55:52,770
+If it's strictly less than 4/5
+
+803
+00:55:53,390 --> 00:55:56,900
+then you're reducing the problem by at least a constant factor.
+
+804
+00:55:57,000 --> 00:55:59,310
+In the sense if you add up all the recursive subproblems,
+
+805
+00:55:59,430 --> 00:56:01,870
+n over 5 and something times n,
+
+806
+00:56:02,150 --> 00:56:05,440
+you get something that is a constant strictly less than one times n.
+
+807
+00:56:05,650 --> 00:56:07,830
+That forces the work to be geometric.
+
+808
+00:56:08,020 --> 00:56:09,730
+If it's geometric you're going to get linear time.
+
+809
+00:56:09,840 --> 00:56:12,290
+So this is intuition but it's the right intuition.
+
+810
+00:56:14,380 --> 00:56:17,130
+Whenever you're aiming for linear time keep that in mind.
+
+811
+00:56:18,110 --> 00:56:19,430
+If you're doing a divide-and-conquer,
+
+812
+00:56:19,580 --> 00:56:22,110
+you've got to get the total subproblem size
+
+813
+00:56:22,220 --> 00:56:25,480
+to be some constant less than one times n.
+
+814
+00:56:27,460 --> 00:56:28,400
+That will work.
+
+815
+00:56:28,760 --> 00:56:33,700
+OK, so we've got to work out this constant here.
+
+816
+00:56:36,250 --> 00:56:37,690
+And we're going to use this figure,
+
+817
+00:56:41,610 --> 00:56:44,400
+which so far looks surprisingly uncluttered.
+
+818
+00:56:44,790 --> 00:56:46,550
+Now we will make it cluttered.
+
+819
+00:56:48,610 --> 00:56:52,770
+What I would like to do is draw an arrow between two vertices,
+
+820
+00:56:52,770 --> 00:56:54,850
+two points, elements,
+
+821
+00:56:54,970 --> 00:56:55,950
+whatever you want to call them.
+
+822
+00:56:56,680 --> 00:56:57,840
+Let's call them a and b.
+
+823
+00:56:58,140 --> 00:57:01,590
+And I want to orient the arrow so it points to a larger value,
+
+824
+00:57:01,740 --> 00:57:03,250
+so this means that a is less than b.
+
+825
+00:57:03,990 --> 00:57:07,090
+This is notation just for the diagram.
+
+826
+00:57:09,470 --> 00:57:13,730
+And so this element, I am going to write down what I know.
+
+827
+00:57:14,080 --> 00:57:16,290
+This element is the median of these five elements.
+
+828
+00:57:16,530 --> 00:57:17,920
+I will suppose that it is drawn
+
+829
+00:57:18,080 --> 00:57:20,060
+so that these elements are larger than the median,
+
+830
+00:57:20,170 --> 00:57:21,820
+these elements are smaller than the median.
+
+831
+00:57:22,010 --> 00:57:25,560
+Therefore, I have arrows like this.
+
+832
+00:57:27,660 --> 00:57:30,170
+Here is where I wish I had some colored chalk.
+
+833
+00:57:31,110 --> 00:57:34,670
+This is just stating this guy is in the middle of those five elements.
+
+834
+00:57:34,860 --> 00:57:38,310
+I know that in every single column.
+
+835
+00:57:54,280 --> 00:57:56,590
+Here is where the diagram starts to get messy.
+
+836
+00:57:57,280 --> 00:57:58,290
+I am not done yet.
+
+837
+00:58:01,060 --> 00:58:04,780
+Now, we also know that this element is the median of the medians.
+
+838
+00:58:05,130 --> 00:58:07,340
+Of all the squared elements, this guy is the middle.
+
+839
+00:58:08,280 --> 00:58:10,920
+And I will draw it so that these are the ones smaller than the median,
+
+840
+00:58:11,120 --> 00:58:12,780
+these are the ones larger than the median.
+
+841
+00:58:13,540 --> 00:58:14,960
+I mean the algorithm cannot do this.
+
+842
+00:58:15,070 --> 00:58:17,550
+It doesn't necessarily know how all this works.
+
+843
+00:58:17,670 --> 00:58:20,500
+I guess it could, but this is just for analysis purposes.
+
+844
+00:58:21,400 --> 00:58:24,620
+We know this guy is bigger than that one and bigger than that one.
+
+845
+00:58:25,900 --> 00:58:27,490
+We don't directly know about the other elements.
+
+846
+00:58:27,610 --> 00:58:29,360
+We just know that that one is bigger than both of those
+
+847
+00:58:29,710 --> 00:58:32,320
+and this guy is smaller than these.
+
+848
+00:58:34,220 --> 00:58:36,590
+Now, that is as messy as the figure will get.
+
+849
+00:58:38,830 --> 00:58:42,510
+Now, the nice thing about less than is that it's a transitive relation.
+
+850
+00:58:42,660 --> 00:58:46,970
+If I have a directed path in this graph,
+
+851
+00:58:47,200 --> 00:58:50,390
+I know that this element is strictly less than that element
+
+852
+00:58:51,870 --> 00:58:54,390
+because this is less than that one and this is less than that one.
+
+853
+00:58:55,900 --> 00:58:58,730
+Even though directly I only know within a column
+
+854
+00:58:58,880 --> 00:59:01,710
+and within this middle row, I actually know
+
+855
+00:59:01,950 --> 00:59:04,290
+that this element -- This is x, by the way.
+
+856
+00:59:07,190 --> 00:59:10,980
+This element is larger than all of these elements
+
+857
+00:59:11,910 --> 00:59:13,650
+because it's larger than this one and this one
+
+858
+00:59:13,850 --> 00:59:18,300
+and each of these is larger than all of those by these arrows.
+
+859
+00:59:19,160 --> 00:59:24,240
+I also know that all of these elements in this rectangle here,
+
+860
+00:59:24,350 --> 00:59:25,750
+and you don't have to do this
+
+861
+00:59:25,870 --> 00:59:27,860
+but I will make the background even more cluttered.
+
+862
+00:59:28,130 --> 00:59:30,070
+All of these elements in this rectangle
+
+863
+00:59:31,610 --> 00:59:33,000
+are greater than or equal to this one
+
+864
+00:59:33,390 --> 00:59:35,370
+and all of the elements in this rectangle
+
+865
+00:59:35,720 --> 00:59:37,310
+are less than or equal to x.
+
+866
+00:59:39,280 --> 00:59:40,890
+Now, how many are there?
+
+867
+00:59:41,310 --> 00:59:43,150
+Well, this is roughly halfway
+
+868
+00:59:43,360 --> 00:59:48,240
+along the set of groups and this is 3/5 of these columns.
+
+869
+00:59:49,060 --> 00:59:52,620
+So what we get is that there are at least --
+
+870
+00:59:55,260 --> 00:59:57,880
+We have n over 5 groups
+
+871
+00:59:59,090 --> 01:00:04,970
+and we have half of the groups
+
+872
+01:00:06,450 --> 01:00:08,330
+that we're looking at here roughly,
+
+873
+01:00:08,640 --> 01:00:11,710
+so let's call that floor of n over 2,
+
+874
+01:00:13,290 --> 01:00:16,470
+and then within each group we have three elements.
+
+875
+01:00:17,150 --> 01:00:21,990
+So we have at least 3 times floor of floor of n over 5 over 2 n floor
+
+876
+01:00:23,160 --> 01:00:28,390
+elements that are less than or equal to x.
+
+877
+01:00:28,520 --> 01:00:31,470
+And we have the same that are greater than or equal to x.
+
+878
+01:00:32,710 --> 01:00:35,150
+Let me simplify this a little bit more.
+
+879
+01:00:38,830 --> 01:00:41,970
+I can also give you some more justification,
+
+880
+01:00:42,130 --> 01:00:45,190
+and we drew the picture, but just for why this is true.
+
+881
+01:00:47,090 --> 01:00:52,510
+We have at least n over 5 over 2 group medians
+
+882
+01:00:57,750 --> 01:00:59,570
+that are less than or equal to x.
+
+883
+01:01:00,030 --> 01:01:01,660
+This is the argument we use.
+
+884
+01:01:01,820 --> 01:01:04,910
+We have half of the group medians are less than
+
+885
+01:01:05,020 --> 01:01:07,100
+or equal to x because x is the median of the group median,
+
+886
+01:01:07,200 --> 01:01:08,970
+so that is no big surprise.
+
+887
+01:01:09,240 --> 01:01:12,300
+This is almost an equality but we're making floors
+
+888
+01:01:12,410 --> 01:01:13,810
+so it's greater than or equal to.
+
+889
+01:01:14,430 --> 01:01:16,860
+And then, for each group median, we know that there are
+
+890
+01:01:17,170 --> 01:01:19,960
+three elements there that are less than or equal to that group median.
+
+891
+01:01:20,080 --> 01:01:22,510
+So, by transitivity, they're also less than or equal to x.
+
+892
+01:01:22,770 --> 01:01:24,520
+We get this number times three.
+
+893
+01:01:26,710 --> 01:01:30,350
+This is actually just floor of n over 10.
+
+894
+01:01:31,440 --> 01:01:33,320
+I was being unnecessarily complicated there,
+
+895
+01:01:33,430 --> 01:01:35,410
+but that is where it came from.
+
+896
+01:01:36,870 --> 01:01:42,640
+What we know is that this thing is now at least 3 times n over 10,
+
+897
+01:01:42,790 --> 01:01:48,730
+which is roughly 3/10 of elements are in one side.
+
+898
+01:01:48,940 --> 01:01:51,730
+In fact, at least 3/10 of the elements are in each side.
+
+899
+01:01:52,000 --> 01:01:56,460
+Therefore, each side has at most 7/10 elements roughly.
+
+900
+01:01:57,780 --> 01:01:59,330
+So the number here will be 7/10.
+
+901
+01:01:59,640 --> 01:02:02,720
+And, if I'm lucky, 7/10 plus 1/5 is strictly less than one.
+
+902
+01:02:03,150 --> 01:02:07,140
+I believe it is, but I have trouble working with tenths.
+
+903
+01:02:07,230 --> 01:02:09,020
+I can only handle powers of two.
+
+904
+01:02:11,070 --> 01:02:13,940
+What we're going to use is a minor simplification,
+
+905
+01:02:14,060 --> 01:02:19,550
+which just barely still works, is a little bit easier to think about.
+
+906
+01:02:19,770 --> 01:02:23,100
+It's mainly to get rid of this floor because the floor is annoying.
+
+907
+01:02:23,530 --> 01:02:27,330
+And we don't really have a sloppiness lemma that applies here.
+
+908
+01:02:28,600 --> 01:02:31,120
+It turns out if n is sufficiently large,
+
+909
+01:02:31,550 --> 01:02:36,630
+3 times floor of n over 10 is greater than or equal to n/4.
+
+910
+01:02:37,010 --> 01:02:38,450
+Quarters I can handle.
+
+911
+01:02:40,400 --> 01:02:43,040
+The claim is that each group has size at least 1/4,
+
+912
+01:02:43,190 --> 01:02:45,090
+therefore each group has size at most 3/4
+
+913
+01:02:45,360 --> 01:02:48,650
+because there's a quarter on the side. This will be 3/4.
+
+914
+01:02:49,200 --> 01:02:52,310
+And I can definitely tell that 1/5 is less than 1/4.
+
+915
+01:02:53,040 --> 01:02:55,680
+This is going to add up to something strictly less than one
+
+916
+01:02:55,950 --> 01:02:57,150
+and then it will work.
+
+917
+01:02:57,930 --> 01:03:00,170
+How is my time? Good.
+
+918
+01:03:03,360 --> 01:03:05,440
+At this point, the rest of the analysis is easy.
+
+919
+01:03:06,960 --> 01:03:09,480
+How the heck you would come up with this algorithm,
+
+920
+01:03:10,060 --> 01:03:13,120
+you realize that this is clearly a really good choice
+
+921
+01:03:13,250 --> 01:03:16,470
+for finding a partition element, just barely good enough
+
+922
+01:03:16,870 --> 01:03:19,380
+that both recursions add up to linear time.
+
+923
+01:03:19,530 --> 01:03:22,940
+Well, that's why it took so many famous people.
+
+924
+01:03:28,350 --> 01:03:31,010
+Especially in quizzes, but I think in general this class,
+
+925
+01:03:31,130 --> 01:03:33,300
+you won't have to come up with an algorithm this clever
+
+926
+01:03:33,630 --> 01:03:37,280
+because you can just use this algorithm to find the median.
+
+927
+01:03:37,440 --> 01:03:40,120
+And the median is a really good partition element.
+
+928
+01:03:41,800 --> 01:03:44,750
+Now that you know this algorithm, now that we're beyond 1973,
+
+929
+01:03:45,620 --> 01:03:47,990
+you don't need to know how to do this.
+
+930
+01:03:48,260 --> 01:03:49,570
+I mean you should know how this algorithm works,
+
+931
+01:03:49,680 --> 01:03:52,010
+but you don't need to do this in another algorithm
+
+932
+01:03:52,130 --> 01:03:54,010
+because you can just say run this algorithm,
+
+933
+01:03:54,130 --> 01:03:55,560
+you will get the median in linear time,
+
+934
+01:03:55,930 --> 01:03:58,020
+and then you can partition to the left and the right.
+
+935
+01:03:58,140 --> 01:04:00,310
+And then the left and the right will have exactly equal size.
+
+936
+01:04:00,590 --> 01:04:01,260
+Great.
+
+937
+01:04:01,450 --> 01:04:03,520
+This is a really powerful subroutine.
+
+938
+01:04:03,830 --> 01:04:06,800
+You could use this all over the place, and you will on Friday.
+
+939
+01:04:09,760 --> 01:04:12,180
+Have I analyzed the running time pretty much?
+
+940
+01:04:12,330 --> 01:04:15,990
+The first step is linear. The second step is T of n over 5.
+
+941
+01:04:16,340 --> 01:04:19,150
+The third step, I didn't write it, is linear.
+
+942
+01:04:21,360 --> 01:04:23,440
+And then the last step is just a recursive call.
+
+943
+01:04:23,750 --> 01:04:26,650
+And now we know that this is 3/4.
+
+944
+01:04:32,230 --> 01:04:38,300
+I get this recurrence. T of n is, I'll say at most,
+
+945
+01:04:38,840 --> 01:04:43,280
+T of n over 5 plus T of 3/4n.
+
+946
+01:04:44,940 --> 01:04:47,400
+You could have also used 7/10.
+
+947
+01:04:47,900 --> 01:04:54,200
+It would give the same answer, but you would also need a floor
+
+948
+01:04:54,820 --> 01:04:59,000
+so we won't do that. I claim that this is linear.
+
+949
+01:04:59,350 --> 01:05:05,010
+How should I prove it? Substitution.
+
+950
+01:05:10,200 --> 01:05:12,550
+Claim that T of n is at most again c times n,
+
+951
+01:05:12,660 --> 01:05:14,450
+that will be enough.
+
+952
+01:05:14,450 --> 01:05:16,230
+Proof is by substitution.
+
+953
+01:05:17,800 --> 01:05:20,120
+Again, we assume this is true for smaller n.
+
+954
+01:05:22,990 --> 01:05:24,180
+And want to prove it for n.
+
+955
+01:05:24,650 --> 01:05:27,410
+We have T of n is at most this thing.
+
+956
+01:05:27,990 --> 01:05:28,960
+T of n over 5.
+
+957
+01:05:29,160 --> 01:05:31,210
+And by induction, because n of 5 is smaller than n,
+
+958
+01:05:31,560 --> 01:05:33,150
+we know that this is at most c.
+
+959
+01:05:33,790 --> 01:05:37,470
+Let me write it as c over 5 times n.
+
+960
+01:05:41,230 --> 01:05:42,040
+Sure, why not.
+
+961
+01:05:42,930 --> 01:05:48,050
+Then we have here 3/4cn.
+
+962
+01:05:49,060 --> 01:05:51,710
+And then we have a linear term.
+
+963
+01:05:54,890 --> 01:05:56,670
+Now, unfortunately,
+
+964
+01:05:56,780 --> 01:05:58,800
+I have to deal with things that are not powers of two.
+
+965
+01:05:59,020 --> 01:06:00,560
+I will cheat and look at my notes.
+
+966
+01:06:01,170 --> 01:06:10,430
+This is also known as 19/20 times c times n plus theta n.
+
+967
+01:06:11,130 --> 01:06:13,610
+And the point is just that this is strictly less than one.
+
+968
+01:06:13,960 --> 01:06:16,950
+Because it's strictly less than one, I can write this as one
+
+969
+01:06:17,060 --> 01:06:21,570
+times c of n minus some constant, here it happens to be 1/20,
+
+970
+01:06:21,690 --> 01:06:23,410
+as long as I have something left over here,
+
+971
+01:06:23,740 --> 01:06:25,410
+1/20 times c times n.
+
+972
+01:06:25,610 --> 01:06:29,390
+Then I have this annoying theta n term which I want to get rid of
+
+973
+01:06:29,660 --> 01:06:31,440
+because I want this to be nonnegative.
+
+974
+01:06:31,990 --> 01:06:35,280
+But it is nonnegative, as long as I set c to be really, really large,
+
+975
+01:06:35,360 --> 01:06:37,920
+at least 20 times whatever constant is here.
+
+976
+01:06:39,270 --> 01:06:44,740
+So this is at most c times n for c sufficiently large.
+
+977
+01:06:47,030 --> 01:06:50,780
+And, oh, by the way, if n is less than or equal to 50,
+
+978
+01:06:51,440 --> 01:06:55,130
+which we used up here, then T of n is a constant,
+
+979
+01:06:55,320 --> 01:06:56,460
+it doesn't really matter what you do,
+
+980
+01:06:56,730 --> 01:07:00,670
+and T of n is at most c times n for c sufficiently large.
+
+981
+01:07:01,250 --> 01:07:02,950
+That proves this claim.
+
+982
+01:07:03,580 --> 01:07:06,810
+Of course, the constant here is pretty damn big.
+
+983
+01:07:07,350 --> 01:07:09,640
+It depends exactly what the constants and the running times are,
+
+984
+01:07:09,750 --> 01:07:11,000
+which depends on your machine,
+
+985
+01:07:11,500 --> 01:07:13,980
+but practically this algorithm is not so hot
+
+986
+01:07:14,600 --> 01:07:17,040
+because the constants are pretty big.
+
+987
+01:07:17,160 --> 01:07:18,800
+Even though this element is guaranteed to
+
+988
+01:07:18,920 --> 01:07:20,500
+be somewhere vaguely in the middle,
+
+989
+01:07:20,740 --> 01:07:22,490
+and even though these recursions add up to strictly
+
+990
+01:07:22,600 --> 01:07:24,230
+less than n and it's geometric,
+
+991
+01:07:24,500 --> 01:07:26,750
+it's geometric because the problem is reducing
+
+992
+01:07:26,910 --> 01:07:29,890
+by at least a factor of 19/20 each time.
+
+993
+01:07:30,130 --> 01:07:32,510
+So it actually takes a while for the problem to get really small.
+
+994
+01:07:32,820 --> 01:07:35,170
+Practically you probably don't want to use this algorithm
+
+995
+01:07:35,400 --> 01:07:37,130
+unless you cannot somehow flip coins.
+
+996
+01:07:37,870 --> 01:07:40,190
+The randomized algorithm works really, really fast.
+
+997
+01:07:40,500 --> 01:07:42,310
+Theoretically this is your dream,
+
+998
+01:07:42,430 --> 01:07:44,790
+the best you could hope for because it's linear time
+
+999
+01:07:44,980 --> 01:07:48,570
+and you need linear time as guaranteed linear time.
+
+1000
+01:07:49,440 --> 01:07:52,300
+I will mention, before we end,
+
+1001
+01:07:54,200 --> 01:07:55,480
+an exercise.
+
+1002
+01:08:01,410 --> 01:08:03,380
+Why did we use groups of five?
+
+1003
+01:08:03,840 --> 01:08:05,560
+Why not groups of three?
+
+1004
+01:08:09,640 --> 01:08:10,920
+As you might guess, the answer is because
+
+1005
+01:08:11,040 --> 01:08:12,710
+it doesn't work with groups of three.
+
+1006
+01:08:12,820 --> 01:08:15,440
+But it's quite constructive to find out why.
+
+1007
+01:08:15,820 --> 01:08:16,830
+If you work through this math
+
+1008
+01:08:17,070 --> 01:08:18,900
+with groups of three instead of groups of five,
+
+1009
+01:08:19,180 --> 01:08:20,180
+you will find that you don't quite
+
+1010
+01:08:20,260 --> 01:08:22,160
+get the problem reduction that you need.
+
+1011
+01:08:22,390 --> 01:08:25,150
+Five is the smallest number for which this works.
+
+1012
+01:08:25,730 --> 01:08:30,210
+It would work with seven, but theoretically not any better
+
+1013
+01:08:30,480 --> 01:08:31,800
+than a constant factor.
+
+1014
+01:08:32,230 --> 01:08:33,550
+Any questions?
+
+1015
+01:08:35,210 --> 01:08:37,540
+All right. Then recitation Friday.
+
+1016
+01:08:37,650 --> 01:08:39,790
+Homework lab Sunday. Problem set due Monday.
+
+1017
+01:08:39,940 --> 01:08:41,460
+Quiz one in two weeks.
+

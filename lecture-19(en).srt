@@ -1,0 +1,5076 @@
+﻿1
+00:00:04,850 --> 00:00:07,850
+-- shortest paths.
+
+2
+00:00:14,460 --> 00:00:16,670
+This is the finale.
+
+3
+00:00:17,080 --> 00:00:19,550
+Hopefully it was worth waiting for.
+
+4
+00:00:19,660 --> 00:00:22,220
+Remind you there's a quiz coming up soon,
+
+5
+00:00:22,290 --> 00:00:23,540
+you should be studying for it.
+
+6
+00:00:23,660 --> 00:00:26,570
+There's no problem set due at the same time
+
+7
+00:00:26,650 --> 00:00:28,920
+as the quiz because you should be studying now.
+
+8
+00:00:29,000 --> 00:00:30,800
+It's a take-home exam.
+
+9
+00:00:30,900 --> 00:00:32,940
+It's required that you come to class on Monday.
+
+10
+00:00:33,010 --> 00:00:35,670
+Of course, you'll all come, but everyone watching at home
+
+11
+00:00:35,740 --> 00:00:39,700
+should also come next Monday to get the quiz.
+
+12
+00:00:39,770 --> 00:00:44,090
+It's the required lecture.
+
+13
+00:00:47,600 --> 00:00:53,300
+So, we need a bit of a recap in the trilogy so far.
+
+14
+00:00:53,380 --> 00:00:58,650
+So, the last two lectures, first two episodes,
+
+15
+00:00:58,730 --> 00:01:02,880
+were about single source shortest paths.
+
+16
+00:01:04,710 --> 00:01:08,620
+So, we wanted to find the shortest path
+
+17
+00:01:08,700 --> 00:01:11,930
+from a source vertex to every other vertex.
+
+18
+00:01:13,480 --> 00:01:18,600
+And, we saw a few algorithms for this.
+
+19
+00:01:18,780 --> 00:01:24,080
+Here's some recap. We saw in the unweighted case,
+
+20
+00:01:24,160 --> 00:01:27,110
+that was sort of the easiest where all the edge weights were one.
+
+21
+00:01:27,240 --> 00:01:29,540
+Then we could use breadth first search.
+
+22
+00:01:29,610 --> 00:01:33,330
+And this costs what we call linear time in the graph world,
+
+23
+00:01:33,410 --> 00:01:36,430
+the number of vertices plus the number of edges.
+
+24
+00:01:37,930 --> 00:01:41,140
+The next simplest case, perhaps,
+
+25
+00:01:41,320 --> 00:01:44,450
+is nonnegative edge weights.
+
+26
+00:01:49,160 --> 00:01:54,180
+And in that case, what algorithm do we use?
+
+27
+00:01:54,390 --> 00:01:58,320
+Dijkstra, all right, everyone's awake.
+
+28
+00:01:58,550 --> 00:02:01,650
+Several answers at once, great.
+
+29
+00:02:03,100 --> 00:02:07,630
+So this takes almost linear time
+
+30
+00:02:07,730 --> 00:02:12,440
+if you use a good heap structure,
+
+31
+00:02:12,550 --> 00:02:15,730
+so, V log V plus E.
+
+32
+00:02:15,870 --> 00:02:19,310
+And, in the general case, general weights,
+
+33
+00:02:19,390 --> 00:02:24,650
+we would use Bellman-Ford which you saw.
+
+34
+00:02:26,320 --> 00:02:35,250
+And that costs VE, good, OK, which is quite a bit worse.
+
+35
+00:02:35,320 --> 00:02:37,230
+This is ignoring log factors.
+
+36
+00:02:37,310 --> 00:02:39,390
+Dijkstra is basically linear time,
+
+37
+00:02:39,460 --> 00:02:41,550
+Bellman-Ford at least quadratic
+
+38
+00:02:41,640 --> 00:02:43,830
+if you have a connected graph.
+
+39
+00:02:43,900 --> 00:02:46,740
+So, in the sparse case, when E is order V,
+
+40
+00:02:46,820 --> 00:02:50,400
+this is about linear. This is about quadratic.
+
+41
+00:02:50,480 --> 00:02:53,050
+In the dense case, when E is about V^2,
+
+42
+00:02:53,130 --> 00:02:56,960
+this is quadratic, and this is cubic.
+
+43
+00:02:57,040 --> 00:02:58,590
+So, Dijkstra and Bellman-Ford
+
+44
+00:02:58,660 --> 00:03:03,030
+are separated by about an order of V factor,
+
+45
+00:03:03,140 --> 00:03:04,970
+which is pretty bad.
+
+46
+00:03:05,190 --> 00:03:08,190
+OK, but that's the best we know how to do
+
+47
+00:03:08,290 --> 00:03:11,950
+for single source shortest paths, negative edge weights,
+
+48
+00:03:12,020 --> 00:03:14,990
+Bellman-Ford is the best.
+
+49
+00:03:15,080 --> 00:03:20,560
+We also saw in recitation the case of a DAG.
+
+50
+00:03:20,630 --> 00:03:23,690
+And there, what do you do?
+
+51
+00:03:25,810 --> 00:03:30,070
+[Student]Inaudible.
+
+52
+00:03:30,140 --> 00:03:32,610
+[Prof]:Topological sort, yeah.
+
+53
+00:03:34,850 --> 00:03:36,430
+So, you can do a topological sort
+
+54
+00:03:36,500 --> 00:03:38,400
+to get an ordering on the vertices.
+
+55
+00:03:38,470 --> 00:03:42,760
+That you run Bellman-Ford, one round.
+
+56
+00:03:43,380 --> 00:03:46,780
+This is one way to think of what's going on.
+
+57
+00:03:48,990 --> 00:03:52,470
+You run Bellman-Ford in the order
+
+58
+00:03:52,560 --> 00:03:55,720
+given by the topological sort, which is once,
+
+59
+00:03:55,840 --> 00:03:59,400
+and you get a linear time algorithm.
+
+60
+00:04:00,870 --> 00:04:03,610
+So, DAG is another case where we know how to do.
+
+61
+00:04:03,710 --> 00:04:08,030
+Even with weights, unweighted, we can also do linear time
+
+62
+00:04:08,120 --> 00:04:09,700
+Most of the time, though, will be,
+
+63
+00:04:09,770 --> 00:04:12,070
+so you should keep these in mind that in the quiz,
+
+64
+00:04:12,150 --> 00:04:13,440
+when you get a shortest path problem,
+
+65
+00:04:13,510 --> 00:04:14,960
+or what you end up determining
+
+66
+00:04:15,060 --> 00:04:16,950
+is the shortest path problem, think about
+
+67
+00:04:17,030 --> 00:04:20,790
+what's the best algorithm you can use in that case.
+
+68
+00:04:20,870 --> 00:04:23,470
+OK, so that's single source shortest paths.
+
+69
+00:04:23,540 --> 00:04:27,260
+And so, in our evolution of the Death Star,
+
+70
+00:04:27,330 --> 00:04:29,760
+initially it was just nonnegative edge weights.
+
+71
+00:04:29,830 --> 00:04:31,090
+Then we got negative edge weights.
+
+72
+00:04:31,180 --> 00:04:33,520
+Today, the Death Star challenges us
+
+73
+00:04:33,630 --> 00:04:37,390
+with all pair shortest paths,
+
+74
+00:04:37,890 --> 00:04:39,610
+where we want to know the shortest path weight
+
+75
+00:04:39,680 --> 00:04:42,610
+between every pair of vertices.
+
+76
+00:04:56,540 --> 00:05:00,110
+OK, so let's get some quick results.
+
+77
+00:05:00,210 --> 00:05:02,150
+What could we do with this case?
+
+78
+00:05:02,220 --> 00:05:10,260
+So, for example, suppose I have an unweighted graph.
+
+79
+00:05:10,600 --> 00:05:12,540
+Any suggestions of how I should
+
+80
+00:05:12,620 --> 00:05:16,110
+compute all pair shortest paths?
+
+81
+00:05:19,010 --> 00:05:20,630
+Between every pair of vertices,
+
+82
+00:05:20,700 --> 00:05:23,160
+I want to know the shortest path weight.
+
+83
+00:05:23,530 --> 00:05:24,500
+[Student]:BFS.
+
+84
+00:05:24,570 --> 00:05:35,500
+[Prof]:BFS, a couple more words? Yeah?
+
+85
+00:05:35,670 --> 00:05:37,680
+[Student]:Inaudible.
+
+86
+00:05:37,750 --> 00:05:45,290
+[Prof]:Right, BFS V times. OK, I'll say V times BFS,
+
+87
+00:05:45,390 --> 00:05:53,930
+OK? So, the running time would be V^2 plus V times E,
+
+88
+00:05:54,040 --> 00:05:58,560
+yeah, which is assuming your graph is connected,
+
+89
+00:05:58,670 --> 00:06:00,760
+V times E.
+
+90
+00:06:01,310 --> 00:06:06,360
+OK, good. That's probably about the best algorithm
+
+91
+00:06:06,430 --> 00:06:08,630
+we know for unweighted graphs.
+
+92
+00:06:08,740 --> 00:06:11,590
+So, a lot of these are going to sort of be the obvious answer.
+
+93
+00:06:11,660 --> 00:06:14,870
+You take your single source algorithm, you run it V times.
+
+94
+00:06:14,950 --> 00:06:16,620
+That's the best you can do,
+
+95
+00:06:16,730 --> 00:06:17,960
+OK, or the best we know how to do.
+
+96
+00:06:18,030 --> 00:06:18,840
+This is not so bad.
+
+97
+00:06:18,920 --> 00:06:23,170
+This is like one iteration of Bellman-Ford for comparison
+
+98
+00:06:23,260 --> 00:06:24,540
+We definitely need at least,
+
+99
+00:06:24,610 --> 00:06:27,510
+like, V^2 time, because the size of the output is V^2,
+
+100
+00:06:27,570 --> 00:06:29,940
+V^2 shortest path weight we have to compute.
+
+101
+00:06:30,040 --> 00:06:32,280
+So, this is not perfect, but pretty good.
+
+102
+00:06:32,390 --> 00:06:36,100
+And we are not going to improve on that.
+
+103
+00:06:36,850 --> 00:06:43,270
+So, nonnegative edge weights: the natural thing to do is
+
+104
+00:06:43,340 --> 00:06:48,540
+to run Dijkstra V times, OK, no big surprise.
+
+105
+00:06:51,190 --> 00:06:56,440
+And the running time of that is, well, V times E again,
+
+106
+00:06:56,510 --> 00:07:05,710
+plus V^2, log V, which is also not too bad.
+
+107
+00:07:05,810 --> 00:07:09,140
+I mean, it's basically the same as running BFS.
+
+108
+00:07:09,220 --> 00:07:10,430
+And then, there's the log factor.
+
+109
+00:07:10,510 --> 00:07:13,560
+If you ignore the log factor, this is the dominant term.
+
+110
+00:07:13,660 --> 00:07:16,190
+And, I mean, this had an V^2 as well.
+
+111
+00:07:16,280 --> 00:07:18,930
+So, these are both pretty good.
+
+112
+00:07:19,000 --> 00:07:20,810
+I mean, this is kind of neat. Essentially,
+
+113
+00:07:20,890 --> 00:07:25,220
+the time it takes to run one Bellman-Ford plus a log factor
+
+114
+00:07:25,320 --> 00:07:27,210
+you can compute all pair shortest paths
+
+115
+00:07:27,290 --> 00:07:29,390
+if you have nonnegative edge weights.
+
+116
+00:07:29,460 --> 00:07:32,710
+So, I mean, comparing all pairs to signal source,
+
+117
+00:07:32,780 --> 00:07:34,480
+this seems a lot better,
+
+118
+00:07:34,540 --> 00:07:38,400
+except we can only handle nonnegative edge weights.
+
+119
+00:07:39,120 --> 00:07:43,660
+OK, so now let's think about the general case.
+
+120
+00:07:45,820 --> 00:07:48,000
+Well, this is the focus of today,
+
+121
+00:07:48,110 --> 00:07:50,070
+and here's where we can actually make an improvement.
+
+122
+00:07:50,180 --> 00:07:55,310
+So the obvious thing is V times Bellman-Ford,
+
+123
+00:08:00,220 --> 00:08:05,250
+which would cost V^2 times E.
+
+124
+00:08:06,150 --> 00:08:08,080
+And that's pretty pitiful,
+
+125
+00:08:08,150 --> 00:08:10,120
+and we're going to try to improve that
+
+126
+00:08:10,190 --> 00:08:13,290
+to something closer to that nonnegative edge weight bound.
+
+127
+00:08:13,370 --> 00:08:15,660
+So it turns out, here, we can actually make an improvement
+
+128
+00:08:15,780 --> 00:08:17,090
+whereas in these special cases,
+
+129
+00:08:17,170 --> 00:08:20,080
+we really can't do much better.
+
+130
+00:08:20,160 --> 00:08:21,820
+OK, I don't have a good intuition why,
+
+131
+00:08:21,960 --> 00:08:23,180
+but it's the case.
+
+132
+00:08:23,250 --> 00:08:24,800
+So, we'll cover something like
+
+133
+00:08:24,870 --> 00:08:30,490
+three algorithms today for this problem.
+
+134
+00:08:32,330 --> 00:08:34,720
+The last one will be the best,
+
+135
+00:08:34,830 --> 00:08:37,050
+but along the way we'll see some nice connections
+
+136
+00:08:37,150 --> 00:08:39,580
+between shortest paths and dynamic programming,
+
+137
+00:08:39,650 --> 00:08:40,690
+which we haven't really seen yet.
+
+138
+00:08:40,800 --> 00:08:44,290
+We've seen shortest path and applying greedy algorithms to it
+
+139
+00:08:44,360 --> 00:08:46,970
+but today will actually do dynamic programming.
+
+140
+00:08:47,080 --> 00:08:49,500
+The intuition is that with all pair shortest paths,
+
+141
+00:08:49,610 --> 00:08:53,040
+there's more potential subproblem reuse.
+
+142
+00:08:53,110 --> 00:08:54,280
+We've got to compute the shortest path
+
+143
+00:08:54,380 --> 00:08:56,240
+from x to y for all x and y.
+
+144
+00:08:56,310 --> 00:08:58,040
+Maybe we can reuse thoseshortest paths
+
+145
+00:08:58,110 --> 00:09:01,270
+in computing other shortest paths.
+
+146
+00:09:01,350 --> 00:09:05,640
+OK, there's a bit more reusability, let's say.
+
+147
+00:09:05,750 --> 00:09:12,570
+OK, let me quickly define all pair shortest paths formally,
+
+148
+00:09:12,650 --> 00:09:16,190
+because we're going to change our notation slightly.
+
+149
+00:09:16,310 --> 00:09:18,820
+It's because we care about all pairs.
+
+150
+00:09:19,000 --> 00:09:23,600
+So, as usual, the input is directed graph,
+
+151
+00:09:23,800 --> 00:09:25,500
+so, vertices and edges.
+
+152
+00:09:25,610 --> 00:09:28,610
+We're going to say that the vertices
+
+153
+00:09:28,680 --> 00:09:34,650
+are labeled one to n for convenience
+
+154
+00:09:34,760 --> 00:09:38,010
+because we're going to think of things more, with all pairs,
+
+155
+00:09:38,080 --> 00:09:40,710
+we're going to think of things more as an n by n matrix
+
+156
+00:09:40,780 --> 00:09:44,170
+instead of edges in some sense
+
+157
+00:09:44,250 --> 00:09:47,500
+because it doesn't help to think
+
+158
+00:09:47,580 --> 00:09:51,290
+any more in terms of adjacency lists.
+
+159
+00:09:54,710 --> 00:09:57,080
+And, you have edge weights as usual.
+
+160
+00:09:57,150 --> 00:09:59,020
+This is what makes it interesting.
+
+161
+00:09:59,090 --> 00:10:01,760
+Some of them are going to be negative.
+
+162
+00:10:02,100 --> 00:10:05,350
+So, w maps to every real number,
+
+163
+00:10:05,450 --> 00:10:11,390
+and the target output is a shortest path matrix.
+
+164
+00:10:11,450 --> 00:10:14,800
+So, this is now an n by n matrix.
+
+165
+00:10:14,870 --> 00:10:18,580
+So, n is just the number of vertices
+
+166
+00:10:18,650 --> 00:10:22,410
+of shortest path weights.
+
+167
+00:10:29,960 --> 00:10:36,090
+So, delta of I, j is the shortest path weight from i to j
+
+168
+00:10:36,200 --> 00:10:39,590
+for all pairs of vertices.
+
+169
+00:10:43,000 --> 00:10:44,290
+So this, you could represent
+
+170
+00:10:44,360 --> 00:10:47,200
+as an n by n matrix in particular.
+
+171
+00:10:48,650 --> 00:10:55,860
+OK, so now let's start doing algorithms.
+
+172
+00:10:55,930 --> 00:10:58,000
+So, we have this very simple algorithm,
+
+173
+00:10:58,070 --> 00:10:59,520
+V times Bellman-Ford,
+
+174
+00:10:59,600 --> 00:11:03,180
+V^2 times E, and just for comparison's sake,
+
+175
+00:11:03,250 --> 00:11:05,620
+I'm going to say, let me rewrite that,
+
+176
+00:11:05,700 --> 00:11:15,450
+V times Bellman-Ford gives us this running time of V^2 E,
+
+177
+00:11:15,520 --> 00:11:18,480
+and I'm going to think about the case where,
+
+178
+00:11:18,550 --> 00:11:22,680
+let's just say the graph is dense,
+
+179
+00:11:22,790 --> 00:11:25,240
+meaning that the number of edges is quadratic,
+
+180
+00:11:25,320 --> 00:11:27,360
+in the number of vertices.
+
+181
+00:11:27,490 --> 00:11:32,680
+So in that case, this will take V^4 time,
+
+182
+00:11:32,750 --> 00:11:35,370
+which is pretty slow. We'd like to do better.
+
+183
+00:11:35,440 --> 00:11:43,730
+So, first goal would just be to beat V^4, V hypercubed,
+
+184
+00:11:43,800 --> 00:11:47,120
+I guess. OK, and we are going to
+
+185
+00:11:47,190 --> 00:11:50,410
+use dynamic programming to do that.
+
+186
+00:11:54,420 --> 00:11:56,320
+Or at least that's what the motivation will come from.
+
+187
+00:11:56,390 --> 00:11:59,980
+It will take us a while before we can even beat V^4,
+
+188
+00:12:00,050 --> 00:12:03,280
+which is maybe a bit pathetic,
+
+189
+00:12:03,340 --> 00:12:07,390
+but it takes some clever insights, let's say.
+
+190
+00:12:08,710 --> 00:12:11,740
+OK, so I'm going to introduce
+
+191
+00:12:11,810 --> 00:12:14,920
+a bit more notation for this graph.
+
+192
+00:12:15,970 --> 00:12:18,030
+So, I'm going to think about
+
+193
+00:12:18,140 --> 00:12:22,330
+the weighted adjacency matrix.
+
+194
+00:12:29,750 --> 00:12:34,470
+So, I don't think we've really seen this in lecture before,
+
+195
+00:12:34,580 --> 00:12:36,490
+although I think it's in the appendix.
+
+196
+00:12:36,560 --> 00:12:38,450
+What that means,
+
+197
+00:12:38,530 --> 00:12:39,980
+so normally adjacency matrix is like
+
+198
+00:12:40,050 --> 00:12:42,540
+one if there's an edge, and zero if there isn't.
+
+199
+00:12:42,580 --> 00:12:43,630
+And this is in a digraph,
+
+200
+00:12:43,730 --> 00:12:45,170
+so you have to be a little bit careful.
+
+201
+00:12:45,240 --> 00:12:49,600
+Here, these values, the entries in the matrix,
+
+202
+00:12:49,670 --> 00:12:52,580
+are going to be the weights of the edges.
+
+203
+00:12:52,650 --> 00:12:56,440
+OK, this is if ij is an edge.
+
+204
+00:12:59,070 --> 00:13:01,970
+So, if ij is an edge in the graph,
+
+205
+00:13:02,040 --> 00:13:05,080
+and it's going to be infinity if there is no edge.
+
+206
+00:13:05,170 --> 00:13:07,620
+OK, in terms of shortest paths,
+
+207
+00:13:07,690 --> 00:13:10,380
+this is a more useful way to represent the graph.
+
+208
+00:13:10,420 --> 00:13:11,920
+All right, and so this includes everything
+
+209
+00:13:11,960 --> 00:13:13,630
+that we need from here.
+
+210
+00:13:13,710 --> 00:13:15,450
+And now we just have to think about it as a matrix.
+
+211
+00:13:15,490 --> 00:13:20,860
+Matrices will be a useful tool in a little while.
+
+212
+00:13:21,410 --> 00:13:27,520
+OK, so now I'm going to define some sub problems.
+
+213
+00:13:27,550 --> 00:13:29,940
+And, there's different ways that you could define
+
+214
+00:13:30,020 --> 00:13:32,550
+what's going on in the shortest paths problem.
+
+215
+00:13:32,620 --> 00:13:36,470
+The natural thing is I want to go from vertex i to vertex j
+
+216
+00:13:36,540 --> 00:13:37,910
+What's the shortest path?
+
+217
+00:13:37,950 --> 00:13:39,270
+OK, we need to refine the sub problems
+
+218
+00:13:39,330 --> 00:13:42,550
+a little bit more than that. Not surprising.
+
+219
+00:13:42,620 --> 00:13:45,340
+And if you think about my analogy to Bellman-Ford,
+
+220
+00:13:45,410 --> 00:13:47,650
+what Bellman-Ford does is it tries to
+
+221
+00:13:47,720 --> 00:13:50,570
+build longer and longer shortest paths.
+
+222
+00:13:50,680 --> 00:13:54,080
+But here, length is in terms of the number of edges.
+
+223
+00:13:54,160 --> 00:13:55,990
+So, first, it builds shortest paths of length one.
+
+224
+00:13:56,060 --> 00:13:57,830
+We've proven the first round it does that.
+
+225
+00:13:57,900 --> 00:13:59,070
+The second round,
+
+226
+00:13:59,140 --> 00:14:02,250
+it provides all shortest paths of length two,
+
+227
+00:14:02,330 --> 00:14:06,470
+of... count two, and so on.
+
+228
+00:14:06,580 --> 00:14:09,110
+We'd like to do that sort of analogously,
+
+229
+00:14:09,180 --> 00:14:11,400
+and try to reuse things a little bit more.
+
+230
+00:14:11,470 --> 00:14:17,790
+So, I'm going to say d sub ij superscript m
+
+231
+00:14:18,220 --> 00:14:25,090
+is the weight of the shortest path from i to j
+
+232
+00:14:25,160 --> 00:14:28,310
+with some restriction involving m.
+
+233
+00:14:28,380 --> 00:14:41,980
+So shortest path from i to j using at most m edges.
+
+234
+00:14:42,320 --> 00:14:45,660
+OK, for example, if m is zero,
+
+235
+00:14:45,740 --> 00:14:47,420
+then we don't have to really think very hard
+
+236
+00:14:47,490 --> 00:14:50,430
+to find all shortest paths of length zero.
+
+237
+00:14:50,500 --> 00:14:53,540
+OK, they use zero edges, I should say.
+
+238
+00:14:53,610 --> 00:14:55,430
+So, Bellman-Ford sort of tells us
+
+239
+00:14:55,500 --> 00:14:57,280
+how to go from m to m plus one.
+
+240
+00:14:57,350 --> 00:15:00,800
+So, let's just figure that out.
+
+241
+00:15:00,870 --> 00:15:03,870
+So one thing we know from the Bellman-Ford analysis
+
+242
+00:15:03,940 --> 00:15:07,620
+is if we look at d ij superscript m-1,
+
+243
+00:15:07,690 --> 00:15:08,780
+we know that in some sense
+
+244
+00:15:08,880 --> 00:15:10,730
+the longest shortest path of relevance,
+
+245
+00:15:10,830 --> 00:15:12,270
+unless you have negative weight cycle,
+
+246
+00:15:12,340 --> 00:15:13,600
+the longest shortest path of relevance
+
+247
+00:15:13,670 --> 00:15:15,560
+is when m equals n minus one
+
+248
+00:15:15,630 --> 00:15:18,010
+because that's the longest simple path you can have.
+
+249
+00:15:18,080 --> 00:15:22,580
+So, this should be a shortest path weight from i to j,
+
+250
+00:15:22,650 --> 00:15:24,080
+and it would be no matter
+
+251
+00:15:24,150 --> 00:15:28,430
+what larger value you put in the superscript.
+
+252
+00:15:28,540 --> 00:15:31,420
+This should be delta of i comma j
+
+253
+00:15:31,490 --> 00:15:35,760
+if there's no negative weight cycles.
+
+254
+00:15:41,800 --> 00:15:44,160
+OK, so this feels good for dynamic programming.
+
+255
+00:15:44,240 --> 00:15:45,080
+This will give us the answer
+
+256
+00:15:45,150 --> 00:15:47,050
+if we can compute this for all m.
+
+257
+00:15:47,120 --> 00:15:49,610
+Then we'll have the shortest path weights in particular.
+
+258
+00:15:49,680 --> 00:15:51,700
+We need a way to detect negative weight cycles,
+
+259
+00:15:51,800 --> 00:15:55,230
+but let's not worry about that too much for now.
+
+260
+00:15:55,260 --> 00:15:57,350
+There are negative weights, but let's just assume for now
+
+261
+00:15:57,460 --> 00:16:00,580
+there's no negative weight cycles.
+
+262
+00:16:00,970 --> 00:16:08,600
+OK, and we get a recursion recurrence.
+
+263
+00:16:08,700 --> 00:16:12,530
+And the base case is when m equals zero.
+
+264
+00:16:12,640 --> 00:16:15,270
+This is pretty easy.
+
+265
+00:16:15,700 --> 00:16:18,320
+They have the same vertices the weight of zero
+
+266
+00:16:18,420 --> 00:16:21,130
+and otherwise it's infinity.
+
+267
+00:16:22,310 --> 00:16:31,100
+OK, and then the actual recursion is for m.
+
+268
+00:16:55,750 --> 00:16:58,440
+OK, if I got this right, this is a pretty
+
+269
+00:16:58,510 --> 00:17:02,430
+intuitive recursion for d_ij of m is
+
+270
+00:17:02,500 --> 00:17:05,400
+a min of smaller things in terms of m minus one.
+
+271
+00:17:05,500 --> 00:17:07,140
+I'll just draw a picture,
+
+272
+00:17:07,250 --> 00:17:11,710
+and then the proof of that claim should be obvious.
+
+273
+00:17:11,830 --> 00:17:17,590
+So, this is proof by picture. So, we have on the one hand,
+
+274
+00:17:17,660 --> 00:17:22,140
+i over here, and j over here.
+
+275
+00:17:22,210 --> 00:17:24,760
+We want to know the shortest path from i to j.
+
+276
+00:17:24,820 --> 00:17:29,610
+And, we want to use, at most, m edges.
+
+277
+00:17:29,710 --> 00:17:31,960
+So, the idea is, well,
+
+278
+00:17:32,070 --> 00:17:36,800
+you could use m minus one edges to get somewhere.
+
+279
+00:17:36,870 --> 00:17:38,470
+So this is, at most,
+
+280
+00:17:38,540 --> 00:17:42,110
+m minus one edges, some other place,
+
+281
+00:17:42,190 --> 00:17:46,110
+and we'll call it k. So this is a candidate for k.
+
+282
+00:17:46,220 --> 00:17:48,640
+And then you could take the edge directly from k to j.
+
+283
+00:17:48,710 --> 00:17:57,240
+So, this costs a_kj, and this costs d_ik, m minus one.
+
+284
+00:17:57,760 --> 00:18:00,990
+OK, and that's a candidate path of length that uses,
+
+285
+00:18:01,100 --> 00:18:02,980
+at most, m edges from i to j.
+
+286
+00:18:03,050 --> 00:18:05,190
+And this is essentially just considering all of them.
+
+287
+00:18:05,260 --> 00:18:07,840
+OK, so there's sort of many paths we are considering.
+
+288
+00:18:07,950 --> 00:18:09,520
+All of these are candidate values of k.
+
+289
+00:18:09,590 --> 00:18:12,120
+We are taking them in over all k
+
+290
+00:18:12,190 --> 00:18:15,740
+as intermediate nodes, whatever.
+
+291
+00:18:16,100 --> 00:18:18,150
+So there they are. We take the best such path.
+
+292
+00:18:18,220 --> 00:18:19,980
+That should encompass all shortest paths.
+
+293
+00:18:20,050 --> 00:18:22,250
+And this is essentially sort of
+
+294
+00:18:22,320 --> 00:18:23,350
+what Bellman-Ford is doing,
+
+295
+00:18:23,420 --> 00:18:26,580
+although not exactly. We also sort of want to think about,
+
+296
+00:18:26,680 --> 00:18:30,570
+What if I just go directly with, say, m minus one edges?
+
+297
+00:18:30,640 --> 00:18:34,890
+What if there is no edge here that I want to use？
+
+298
+00:18:34,960 --> 00:18:36,230
+in some sense?
+
+299
+00:18:36,300 --> 00:18:38,450
+Well, we always think about there being,
+
+300
+00:18:38,520 --> 00:18:41,370
+and the way the A's are defined,
+
+301
+00:18:41,440 --> 00:18:44,030
+there's always this zero weight edge to yourself.
+
+302
+00:18:44,110 --> 00:18:47,210
+So, you could just take a path that's shorter,
+
+303
+00:18:47,320 --> 00:18:51,810
+go from d i to j, and j is a particular value of k
+
+304
+00:18:51,870 --> 00:18:52,870
+that we might consider, and then
+
+305
+00:18:52,940 --> 00:18:56,980
+take a zero weight edge at the end from a_jj.
+
+306
+00:18:57,050 --> 00:18:59,570
+OK, so this really encompasses everything.
+
+307
+00:18:59,640 --> 00:19:03,360
+So that's a pretty trivial claim.
+
+308
+00:19:03,430 --> 00:19:06,490
+Clear? now once we have such a recursion,
+
+309
+00:19:06,560 --> 00:19:08,140
+we get a dynamic program.
+
+310
+00:19:08,210 --> 00:19:10,640
+I mean, there, this is it in some sense.
+
+311
+00:19:10,710 --> 00:19:13,920
+It's written recursively. You can write a bottom up.
+
+312
+00:19:13,990 --> 00:19:15,640
+And I would like to write it bottom up a little bit
+
+313
+00:19:15,720 --> 00:19:17,700
+because, well it doesn't look like it,
+
+314
+00:19:17,780 --> 00:19:19,420
+this is a relaxation.
+
+315
+00:19:19,490 --> 00:19:21,750
+This is yet another relaxation algorithm.
+
+316
+00:19:21,820 --> 00:19:29,220
+So, I'll give you, so this is sort of the algorithm.
+
+317
+00:19:29,330 --> 00:19:30,910
+This is not a very interesting algorithm.
+
+318
+00:19:31,010 --> 00:19:35,440
+So, you don't have to write it all down
+
+319
+00:19:35,510 --> 00:19:37,010
+if you don't feel like it.
+
+320
+00:19:37,080 --> 00:19:38,670
+It's probably not even in the book.
+
+321
+00:19:38,780 --> 00:19:41,400
+This is just an intermediate step.
+
+322
+00:19:41,590 --> 00:19:43,840
+So, we loop over all m.
+
+323
+00:19:43,910 --> 00:19:46,280
+That's sort of the outermost thing to do.
+
+324
+00:19:46,660 --> 00:19:48,810
+I want to build longer and longer paths,
+
+325
+00:19:48,880 --> 00:19:50,690
+and this vaguely corresponds to Bellman-Ford,
+
+326
+00:19:50,790 --> 00:19:52,650
+although it's actually worse than Bellman-Ford.
+
+327
+00:19:52,720 --> 00:19:55,620
+But hey, what the heck?
+
+328
+00:19:55,690 --> 00:19:59,840
+It's a stepping stone. OK, then for all i and j,
+
+329
+00:19:59,910 --> 00:20:05,000
+and then we want to compute this min.
+
+330
+00:20:05,070 --> 00:20:14,760
+So, we'll just loop over all k, and relax.
+
+331
+00:20:16,190 --> 00:20:19,470
+And, here's where we're actually computing the min.
+
+332
+00:20:30,080 --> 00:20:32,490
+And, it's a relaxation, is the point.
+
+333
+00:20:32,600 --> 00:20:35,320
+This is our good friend, the relaxation step,
+
+334
+00:20:35,390 --> 00:20:41,880
+relaxing edge. Well, it's not,
+
+335
+00:20:41,950 --> 00:20:46,690
+yeah. I guess we're relaxing edge kj, or something,
+
+336
+00:20:47,240 --> 00:20:51,080
+except we don't have the same clear notion.
+
+337
+00:20:51,150 --> 00:20:52,700
+I mean, it's a particular thing that we're relaxing.
+
+338
+00:20:52,770 --> 00:20:54,340
+It's not just a single edge
+
+339
+00:20:54,410 --> 00:20:56,290
+because we don't have a single source anymore.
+
+340
+00:20:56,400 --> 00:20:57,910
+It's now relative to source i,
+
+341
+00:20:58,020 --> 00:20:59,580
+we are relaxing the edge kj,
+
+342
+00:20:59,650 --> 00:21:02,740
+something like that. But this is clearly a relaxation.
+
+343
+00:21:02,840 --> 00:21:05,730
+We are just making the triangle inequality true
+
+344
+00:21:05,800 --> 00:21:07,420
+if it wasn't before.
+
+345
+00:21:07,560 --> 00:21:10,890
+The triangle inequality has got to hold between all pairs.
+
+346
+00:21:10,960 --> 00:21:13,060
+And that's just implementing this min, right?
+
+347
+00:21:13,130 --> 00:21:14,510
+You're taking d_ij.
+
+348
+00:21:14,590 --> 00:21:18,400
+You take the min of what it was before in some sense.
+
+349
+00:21:18,510 --> 00:21:21,460
+That was one of the possibilities we considered
+
+350
+00:21:21,530 --> 00:21:23,230
+when we looked at the zero weight edge.
+
+351
+00:21:23,300 --> 00:21:26,320
+We say, well, or you could go from i to some k
+
+352
+00:21:26,420 --> 00:21:28,510
+in some way that we knew how to before,
+
+353
+00:21:28,580 --> 00:21:30,340
+and then add on the edge,
+
+354
+00:21:30,410 --> 00:21:33,670
+and check whether that's better if it's better,
+
+355
+00:21:33,740 --> 00:21:35,590
+set our current estimate to that.
+
+356
+00:21:35,700 --> 00:21:39,810
+And, you do this for all k. In particular,
+
+357
+00:21:39,880 --> 00:21:42,550
+you might actually compute something smaller than this min
+
+358
+00:21:42,620 --> 00:21:44,920
+because I didn't put superscripts up here.
+
+359
+00:21:44,990 --> 00:21:46,810
+But that's just making paths even better.
+
+360
+00:21:46,880 --> 00:21:48,490
+OK, so you have to argue that
+
+361
+00:21:48,550 --> 00:21:50,560
+relaxation is always a good thing to do.
+
+362
+00:21:50,600 --> 00:21:52,620
+So, by not putting superscripts,
+
+363
+00:21:52,690 --> 00:21:54,210
+maybe I do some more relaxation,
+
+364
+00:21:54,280 --> 00:21:56,360
+but more relaxation never hurts us.
+
+365
+00:21:56,430 --> 00:21:59,830
+You can still argue correctness using this claim.
+
+366
+00:21:59,900 --> 00:22:01,430
+So, it's not quite the direct implementation,
+
+367
+00:22:01,500 --> 00:22:03,970
+but there you go, dynamic programming algorithm.
+
+368
+00:22:04,040 --> 00:22:06,030
+The main reason I'll write it down
+
+369
+00:22:06,100 --> 00:22:08,140
+so you see that it's a relaxation,
+
+370
+00:22:08,210 --> 00:22:15,420
+and you see the running time is n^4,
+
+371
+00:22:17,790 --> 00:22:20,930
+OK, which is certainly no better than Bellman-Ford.
+
+372
+00:22:21,000 --> 00:22:24,150
+Bellman-Ford was n^4 even in the dense case,
+
+373
+00:22:24,220 --> 00:22:25,840
+and it's a little better in the sparse case.
+
+374
+00:22:25,910 --> 00:22:28,010
+So not doing so great.
+
+375
+00:22:28,080 --> 00:22:31,020
+But it's a start.
+
+376
+00:22:31,170 --> 00:22:35,390
+OK, it gets our dynamic programming minds thinking.
+
+377
+00:22:35,500 --> 00:22:38,470
+And, we'll get a better dynamic program in a moment.
+
+378
+00:22:38,510 --> 00:22:40,420
+But first,
+
+379
+00:22:41,560 --> 00:22:46,460
+there's actually something useful we can do with this formulation,
+
+380
+00:22:55,790 --> 00:22:57,610
+and I guess I'll ask,
+
+381
+00:22:57,680 --> 00:23:00,510
+but I'll be really impressed if anyone can see.
+
+382
+00:23:00,580 --> 00:23:03,200
+Does this formula look like anything else
+
+383
+00:23:03,270 --> 00:23:07,300
+that you've seen in any context,
+
+384
+00:23:07,370 --> 00:23:09,500
+mathematical or algorithmic?
+
+385
+00:23:09,570 --> 00:23:15,750
+Have you seen that recurrence anywhere else?
+
+386
+00:23:16,350 --> 00:23:23,190
+OK, not exactly as stated, but similar.
+
+387
+00:23:24,130 --> 00:23:26,310
+I'm sure if you thought about it for a while,
+
+388
+00:23:26,410 --> 00:23:30,790
+you could come up with it. Any answers?
+
+389
+00:23:30,930 --> 00:23:33,050
+I didn't think you would be very intuitive,
+
+390
+00:23:33,150 --> 00:23:37,110
+but the answer is matrix multiplication.
+
+391
+00:23:37,650 --> 00:23:40,580
+And it may now be obvious to you, or it may not.
+
+392
+00:23:40,650 --> 00:23:44,260
+You have to think with the right quirky mind.
+
+393
+00:23:44,330 --> 00:23:46,970
+Then it's obvious that it's matrix multiplication.
+
+394
+00:23:47,050 --> 00:23:48,430
+Remember, matrix multiplication,
+
+395
+00:23:48,540 --> 00:23:51,270
+we have A, B, and C.
+
+396
+00:23:51,370 --> 00:23:54,640
+They're all n by n matrices.
+
+397
+00:23:57,260 --> 00:24:01,100
+And, we want to compute C equals A times B.
+
+398
+00:24:01,210 --> 00:24:09,650
+And what that meant was, well,
+
+399
+00:24:09,720 --> 00:24:11,960
+c_ij was a sum over all k of a_ik times b_kj.
+
+400
+00:24:12,130 --> 00:24:15,400
+All right, that was our definition of matrix multiplication
+
+401
+00:24:15,510 --> 00:24:19,010
+And that formula looks kind of like this one.
+
+402
+00:24:19,110 --> 00:24:22,760
+I mean, notice the subscripts: ik and kj.
+
+403
+00:24:22,830 --> 00:24:24,700
+Now, the operators are a little different.
+
+404
+00:24:24,780 --> 00:24:26,230
+Here, we're multiplying the inside things
+
+405
+00:24:26,340 --> 00:24:27,730
+and adding them all together.
+
+406
+00:24:27,800 --> 00:24:31,090
+There, we're adding the inside things and taking them in.
+
+407
+00:24:31,160 --> 00:24:34,000
+But other than that, it's the same.
+
+408
+00:24:35,610 --> 00:24:38,310
+OK, weird, but here we go.
+
+409
+00:24:38,380 --> 00:24:43,360
+So, the connection to shortest paths
+
+410
+00:24:53,510 --> 00:24:56,100
+is you replace these operators.
+
+411
+00:24:56,210 --> 00:25:01,270
+So, let's take matrix multiplication and replace,
+
+412
+00:25:01,380 --> 00:25:06,070
+what should I do first, plus this thing with min.
+
+413
+00:25:08,730 --> 00:25:11,090
+So, why not,  just change the operators,
+
+414
+00:25:11,150 --> 00:25:15,240
+replace dot with plus?
+
+415
+00:25:16,480 --> 00:25:18,760
+This is just a different algebra to work in,
+
+416
+00:25:18,830 --> 00:25:20,330
+where plus actually means min,
+
+417
+00:25:20,400 --> 00:25:22,050
+and dot actually means plus.
+
+418
+00:25:22,120 --> 00:25:24,100
+So, you have to check that things sort of work out in that context,
+
+419
+00:25:24,170 --> 00:25:28,790
+but if we do that, then we get that c_ij
+
+420
+00:25:28,890 --> 00:25:40,480
+is the min overall k of a_ik plus b_kj
+
+421
+00:25:40,560 --> 00:25:44,550
+And that looks like what we actually want to compute,
+
+422
+00:25:44,620 --> 00:25:46,290
+here, for one value of m,
+
+423
+00:25:46,360 --> 00:25:48,720
+you have to sort of do this m times.
+
+424
+00:25:48,790 --> 00:25:55,110
+But this conceptually is d_ij^m, and this is d_ik^(m-1).
+
+425
+00:25:55,180 --> 00:25:59,030
+So, this is looking like a matrix product,
+
+426
+00:25:59,100 --> 00:26:01,150
+which is kind of cool.
+
+427
+00:26:01,220 --> 00:26:06,100
+So, if we sort of plug in this claim,
+
+428
+00:26:06,170 --> 00:26:09,730
+then, and think about things as matrices,
+
+429
+00:26:10,380 --> 00:26:16,190
+The cliam, the recurrence gives us,
+
+430
+00:26:16,260 --> 00:26:18,450
+and I'll just write this now at matrix form,
+
+431
+00:26:18,530 --> 00:26:27,820
+that d^m, is d^(m-1), funny product, A.
+
+432
+00:26:28,220 --> 00:26:29,730
+All right, so these are the weights.
+
+433
+00:26:29,800 --> 00:26:31,760
+These were the weighted adjacency matrix.
+
+434
+00:26:31,830 --> 00:26:34,780
+This was the previous d value.
+
+435
+00:26:34,850 --> 00:26:35,900
+This is the new d value.
+
+436
+00:26:36,010 --> 00:26:37,250
+So, I'll just rewrite that
+
+437
+00:26:37,320 --> 00:26:39,330
+in matrix form with capital letters.
+
+438
+00:26:39,400 --> 00:26:41,560
+OK, I have the circle up things
+
+439
+00:26:41,630 --> 00:26:44,130
+that are using this funny algebra,
+
+440
+00:26:44,930 --> 00:26:46,960
+so, in particular, circled product.
+
+441
+00:26:47,060 --> 00:26:49,460
+OK, so that's kind of nifty.
+
+442
+00:26:49,530 --> 00:26:52,960
+We know something about computing matrix multiplications.
+
+443
+00:26:53,030 --> 00:26:54,990
+We can do it in n^3 time.
+
+444
+00:26:55,060 --> 00:26:55,890
+If we were a bit fancier,
+
+445
+00:26:55,960 --> 00:26:57,630
+maybe we could do it in sub-cubic time.
+
+446
+00:26:57,710 --> 00:27:02,340
+So, we could try to sort of use this connection.
+
+447
+00:27:02,410 --> 00:27:05,740
+And, well, think about what we are computing here.
+
+448
+00:27:05,810 --> 00:27:06,840
+We are saying, well,
+
+449
+00:27:06,940 --> 00:27:10,540
+d to the m is the previous one times A.
+
+450
+00:27:10,620 --> 00:27:15,760
+So, what is d^m?
+
+451
+00:27:16,570 --> 00:27:19,520
+Is that some other algebraic notion that we know?
+
+452
+00:27:22,660 --> 00:27:26,310
+[student]Inaudible
+
+453
+00:27:26,380 --> 00:27:27,330
+[Prof]:Yeah, it's the exponent.
+
+454
+00:27:27,400 --> 00:27:30,240
+We're taking A, and we want to raise it to the power, m,
+
+455
+00:27:30,310 --> 00:27:31,830
+with this funny notion of product.
+
+456
+00:27:31,900 --> 00:27:32,840
+So, in other words,
+
+457
+00:27:32,950 --> 00:27:37,410
+d to the m is really just A to the m in a funny way.
+
+458
+00:27:37,480 --> 00:27:40,050
+So, I'll circle it,
+
+459
+00:27:40,300 --> 00:27:42,000
+OK? So, that sounds good.
+
+460
+00:27:42,110 --> 00:27:46,350
+We also know how to compute powers of things relatively quickly,
+
+461
+00:27:46,420 --> 00:27:50,150
+if you remember how. OK, I need to define for this notion,
+
+462
+00:27:50,220 --> 00:27:52,030
+this power notion, to make sense,
+
+463
+00:27:52,100 --> 00:27:54,530
+I should say what A to the zero means.
+
+464
+00:27:54,600 --> 00:27:57,250
+And so, I need some kind of identity matrix.
+
+465
+00:27:57,320 --> 00:28:01,830
+And for here, the identity matrix is this one,
+
+466
+00:28:07,310 --> 00:28:08,810
+if I get it right.
+
+467
+00:28:08,920 --> 00:28:10,920
+So, it has zeros along the diagonal,
+
+468
+00:28:10,990 --> 00:28:13,270
+and infinities everywhere else.
+
+469
+00:28:14,570 --> 00:28:17,850
+OK, that sort of just to match this definition.
+
+470
+00:28:17,910 --> 00:28:20,370
+d_ij zero should be zeros on the diagonals
+
+471
+00:28:20,440 --> 00:28:21,780
+and infinity everywhere else.
+
+472
+00:28:21,850 --> 00:28:23,400
+But you can check this is actually an identity.
+
+473
+00:28:23,500 --> 00:28:25,150
+If you multiply it with this
+
+474
+00:28:25,220 --> 00:28:27,200
+funny multiplication against any other matrix,
+
+475
+00:28:27,270 --> 00:28:29,290
+you get the matrix back. Nothing changes.
+
+476
+00:28:29,360 --> 00:28:32,970
+This really is a valid identity matrix.
+
+477
+00:28:33,070 --> 00:28:39,910
+And, I should mention that for A to the m to make sense,
+
+478
+00:28:40,050 --> 00:28:45,490
+you really knew that your product operation is associative
+
+479
+00:28:45,560 --> 00:28:51,680
+So, actually A to the m circled makes sense
+
+480
+00:28:51,790 --> 00:28:58,270
+because circled multiplication is associative,
+
+481
+00:28:58,340 --> 00:29:00,390
+and you can check that; not hard because,
+
+482
+00:29:00,460 --> 00:29:04,550
+I mean, min is associative, and addition is associative,
+
+483
+00:29:04,620 --> 00:29:07,040
+and all sorts of good stuff.
+
+484
+00:29:07,110 --> 00:29:10,420
+And, you have some kind of distributivity property.
+
+485
+00:29:10,490 --> 00:29:13,460
+And, this is, in turn,
+
+486
+00:29:13,560 --> 00:29:16,300
+because the real numbers with,
+
+487
+00:29:16,370 --> 00:29:18,770
+and get the right order here,
+
+488
+00:29:18,880 --> 00:29:22,810
+with min as your addition operation,
+
+489
+00:29:22,910 --> 00:29:26,850
+and plus as your multiplication operation
+
+490
+00:29:26,920 --> 00:29:30,570
+is a closed semi-ring.
+
+491
+00:29:30,680 --> 00:29:32,930
+So, if ever you want to know
+
+492
+00:29:33,030 --> 00:29:37,100
+when powers make sense, this is a good rule.
+
+493
+00:29:37,170 --> 00:29:38,760
+If you have a closed semi-ring,
+
+494
+00:29:38,830 --> 00:29:41,160
+then matrix products on that semi-ring
+
+495
+00:29:41,230 --> 00:29:42,730
+will give you an associative operator,
+
+496
+00:29:42,800 --> 00:29:45,350
+and then, good, you can take products.
+
+497
+00:29:45,460 --> 00:29:48,810
+OK, that's just some formalism.
+
+498
+00:29:49,610 --> 00:29:52,050
+So now, we have some intuition.
+
+499
+00:29:52,130 --> 00:29:54,050
+The question is, what's the right algorithm?
+
+500
+00:29:54,130 --> 00:29:55,640
+There are many possible answers,
+
+501
+00:29:55,710 --> 00:30:00,110
+some of which are right, some of which are not.
+
+502
+00:30:04,520 --> 00:30:07,550
+So, we have this connection to matrix products,
+
+503
+00:30:07,660 --> 00:30:11,680
+and we have a connection to matrix powers.
+
+504
+00:30:11,750 --> 00:30:13,970
+And, we have algorithms for both.
+
+505
+00:30:14,080 --> 00:30:17,140
+The question is, what should we do?
+
+506
+00:30:17,690 --> 00:30:19,120
+So, all we need to do now is
+
+507
+00:30:19,190 --> 00:30:23,020
+to compute A to the funny power, n minus one.
+
+508
+00:30:23,090 --> 00:30:25,310
+n minus one is when we get shortest paths,
+
+509
+00:30:25,380 --> 00:30:30,970
+assuming we have no negative weight cycles.
+
+510
+00:30:31,120 --> 00:30:34,320
+In fact, we could compute a larger power than n minus one.
+
+511
+00:30:34,390 --> 00:30:36,120
+Once you get beyond n minus one,
+
+512
+00:30:36,190 --> 00:30:39,510
+multiplying by A doesn't change you anymore.
+
+513
+00:30:39,660 --> 00:30:42,450
+So, how should we do it?
+
+514
+00:30:49,730 --> 00:30:51,440
+OK, you're not giving any smart answers.
+
+515
+00:30:51,550 --> 00:30:53,660
+I'll give the stupid answer.
+
+516
+00:30:53,770 --> 00:30:56,230
+You could say, well, I take A.
+
+517
+00:30:56,300 --> 00:30:59,480
+I multiply it by A. Then I multiply it by A...
+
+518
+00:30:59,540 --> 00:31:02,060
+and I use normal boring matrix to multiplication.
+
+519
+00:31:02,170 --> 00:31:05,970
+So, I do, like, n minus two,
+
+520
+00:31:06,080 --> 00:31:15,870
+standard matrix multiplies. So, standard multiply costs,
+
+521
+00:31:15,970 --> 00:31:20,970
+like, n^3. And I'm doing n of them.
+
+522
+00:31:21,080 --> 00:31:23,730
+So, this gives me an n^4 algorithm,
+
+523
+00:31:23,800 --> 00:31:26,690
+and compute all the shortest pathways in n^4. Woohoo!
+
+524
+00:31:26,770 --> 00:31:32,400
+OK, no improvement. So, how can I do better?
+
+525
+00:31:35,090 --> 00:31:37,160
+[student]Inaudible
+
+526
+00:31:37,230 --> 00:31:40,460
+[Prof]:Right, natural thing to try which sadly does not work,
+
+527
+00:31:40,530 --> 00:31:43,980
+is to use the sub-cubic matrix multiply algorithm.
+
+528
+00:31:44,050 --> 00:31:46,120
+We will, in some sense, get there in a moment
+
+529
+00:31:46,150 --> 00:31:47,530
+with a somewhat simpler problem.
+
+530
+00:31:47,600 --> 00:31:50,180
+But, it's actually not known how to compute shortest paths
+
+531
+00:31:50,250 --> 00:31:51,830
+using fast matrix multiplication
+
+532
+00:31:51,900 --> 00:31:53,780
+like Strassen's system algorithm.
+
+533
+00:31:53,850 --> 00:31:58,310
+But, good suggestion. OK, you have to think about
+
+534
+00:31:58,380 --> 00:32:01,560
+why it doesn't work, and I'll tell you.
+
+535
+00:32:01,630 --> 00:32:03,920
+But it's not obvious,
+
+536
+00:32:03,990 --> 00:32:07,300
+so it's a perfectly reasonable suggestion.
+
+537
+00:32:07,370 --> 00:32:09,130
+But in this context it doesn't quite work.
+
+538
+00:32:09,200 --> 00:32:11,910
+It will come up in a few moments.
+
+539
+00:32:11,980 --> 00:32:13,180
+The problem is,
+
+540
+00:32:13,250 --> 00:32:16,430
+Strassen requires the notion of subtraction.
+
+541
+00:32:16,510 --> 00:32:18,590
+And here, addition is min.
+
+542
+00:32:18,690 --> 00:32:20,220
+And, there's no inverse to min.
+
+543
+00:32:20,330 --> 00:32:21,530
+Once you take the arguments,
+
+544
+00:32:21,600 --> 00:32:23,730
+you can't sort of undo a min.
+
+545
+00:32:23,800 --> 00:32:25,110
+OK, so there's no notion of subtraction,
+
+546
+00:32:25,210 --> 00:32:30,720
+so it's not known how to pull that off, sadly.
+
+547
+00:32:30,790 --> 00:32:34,810
+So, what other tricks do we have up our sleeve?Yeah?
+
+548
+00:32:34,920 --> 00:32:37,740
+[student]Inaudible
+
+549
+00:32:37,840 --> 00:32:39,200
+[Prof]:Divide and conquer, log n powering
+
+550
+00:32:39,310 --> 00:32:41,880
+yeah, repeated squaring.
+
+551
+00:32:41,950 --> 00:32:47,830
+That works. Good, we had a fancy way.
+
+552
+00:32:47,900 --> 00:32:50,890
+If you had a number n, you sort of looked at
+
+553
+00:32:50,960 --> 00:32:53,730
+the binary number representation of n,
+
+554
+00:32:53,840 --> 00:32:55,770
+and you either squared the number
+
+555
+00:32:55,830 --> 00:32:57,800
+or squared it and added another factor of A.
+
+556
+00:32:57,910 --> 00:33:00,880
+Here, we don't even have to be smart about it.
+
+557
+00:33:00,990 --> 00:33:03,750
+OK, we can just compute,
+
+558
+00:33:04,510 --> 00:33:07,620
+we really only have to think about powers of two.
+
+559
+00:33:07,690 --> 00:33:09,390
+What we want to know,
+
+560
+00:33:09,500 --> 00:33:12,480
+and I'm going to need a bigger font here because there's
+
+561
+00:33:12,520 --> 00:33:17,750
+multiple levels of subscripts, A to the circled power,
+
+562
+00:33:17,820 --> 00:33:24,850
+two to the ceiling of log n.
+
+563
+00:33:25,150 --> 00:33:28,040
+Actually, n minus one would be enough.
+
+564
+00:33:28,110 --> 00:33:30,680
+But there you go. You can write n
+
+565
+00:33:30,850 --> 00:33:34,170
+if you didn't leave yourself enough space like me,
+
+566
+00:33:34,240 --> 00:33:38,890
+n the ceiling, n the circle.
+
+567
+00:33:38,970 --> 00:33:42,850
+This just means the next power of two after n minus one,
+
+568
+00:33:42,920 --> 00:33:44,420
+two to the ceiling log.
+
+569
+00:33:44,490 --> 00:33:47,780
+So, we don't have to go directly to n minus one.
+
+570
+00:33:47,850 --> 00:33:48,910
+We can go further because
+
+571
+00:33:48,980 --> 00:33:50,470
+anything farther than n minus one
+
+572
+00:33:50,570 --> 00:33:52,220
+is still just the shortest pathways.
+
+573
+00:33:52,330 --> 00:33:53,610
+If you look at the definition,
+
+574
+00:33:53,710 --> 00:33:55,080
+and you know that your paths are simple,
+
+575
+00:33:55,150 --> 00:33:58,650
+which is true if you have no negative weight cycles,
+
+576
+00:33:58,720 --> 00:34:00,750
+then fine, just go farther.
+
+577
+00:34:00,820 --> 00:34:02,500
+Why not? And so, to compute this,
+
+578
+00:34:02,570 --> 00:34:06,360
+we just do ceiling of log n minus one products,
+
+579
+00:34:06,430 --> 00:34:08,030
+just take A squared,
+
+580
+00:34:08,100 --> 00:34:10,480
+and then take the result and square it
+
+581
+00:34:10,550 --> 00:34:18,080
+So, this is order log n multiply some squares.
+
+582
+00:34:19,280 --> 00:34:21,330
+And, we don't know how to use Strassen,
+
+583
+00:34:21,400 --> 00:34:22,510
+but we can use the boring,
+
+584
+00:34:22,570 --> 00:34:24,670
+standard multiply of n^3,
+
+585
+00:34:24,740 --> 00:34:28,990
+and that gives us n^3 log n running time,
+
+586
+00:34:32,100 --> 00:34:33,620
+OK, which finally is something
+
+587
+00:34:33,690 --> 00:34:38,870
+that beats Bellman-Ford in the dense case.
+
+588
+00:34:38,970 --> 00:34:42,600
+OK, in the dense case, Bellman-Ford was n^4.
+
+589
+00:34:42,670 --> 00:34:45,150
+Here we get n^3 log n, finally something better.
+
+590
+00:34:45,220 --> 00:34:47,950
+In the sparse case, it's about the same,
+
+591
+00:34:48,020 --> 00:34:51,080
+maybe a little worse. E is order V.
+
+592
+00:34:51,160 --> 00:34:53,630
+Then we're going to get, like, V^3 for Bellman-Ford.
+
+593
+00:34:53,700 --> 00:34:57,130
+Here, we get n^3 log n. OK, after log factors,
+
+594
+00:34:57,200 --> 00:35:01,760
+this is an improvement some of the time.
+
+595
+00:35:01,870 --> 00:35:04,630
+OK, it's about the same the other times.
+
+596
+00:35:04,700 --> 00:35:07,130
+Another nifty thing that you get for free out of this,
+
+597
+00:35:07,230 --> 00:35:09,050
+is you can detect negative weight cycles.
+
+598
+00:35:09,110 --> 00:35:11,620
+So, here's a bit of a puzzle.
+
+599
+00:35:11,690 --> 00:35:15,100
+How would I detect, after I compute this product,
+
+600
+00:35:15,180 --> 00:35:18,220
+A to the power to ceiling log n minus one,
+
+601
+00:35:18,290 --> 00:35:21,320
+how would I know if I found a negative weight cycle?
+
+602
+00:35:21,390 --> 00:35:23,200
+What would that mean in this matrix
+
+603
+00:35:23,270 --> 00:35:28,490
+of all pairwise shortest path of at most a certain length?
+
+604
+00:35:32,440 --> 00:35:33,500
+If I found a cycle,
+
+605
+00:35:33,570 --> 00:35:35,110
+what would have to be in that matrix? Yeah?
+
+606
+00:35:35,180 --> 00:35:37,340
+[student]Inaudible
+
+607
+00:35:37,410 --> 00:35:38,570
+[Prof]:Right, so I could, for example,
+
+608
+00:35:38,630 --> 00:35:40,200
+take this thing, multiply it by A,
+
+609
+00:35:40,270 --> 00:35:41,860
+see if the matrix changed at all.
+
+610
+00:35:41,930 --> 00:35:44,100
+Right, that works fine. That's what we do in Bellman-Ford
+
+611
+00:35:44,170 --> 00:35:45,340
+It's an even simpler thing.
+
+612
+00:35:45,410 --> 00:35:47,360
+It's already there. You don't have to multiply.
+
+613
+00:35:47,430 --> 00:35:49,140
+But that's the same running time.
+
+614
+00:35:49,210 --> 00:35:51,070
+That's a good answer.
+
+615
+00:35:51,570 --> 00:35:54,850
+The diagonal would have a negative value, yeah.
+
+616
+00:35:55,000 --> 00:35:59,890
+So, this is just a cute thing. Both approaches would work,
+
+617
+00:35:59,960 --> 00:36:02,630
+can detect a negative weight cycle
+
+618
+00:36:02,730 --> 00:36:07,750
+just by looking at the diagonal of the matrix.
+
+619
+00:36:16,710 --> 00:36:23,900
+You just look for a negative value in the diagonal. OK.
+
+620
+00:36:27,930 --> 00:36:29,970
+So, that's algorithm one, let's say.
+
+621
+00:36:30,080 --> 00:36:32,280
+I mean, we've seen several that are all bad,
+
+622
+00:36:32,340 --> 00:36:34,040
+but I'll call this number one.
+
+623
+00:36:34,150 --> 00:36:36,660
+OK, we'll see two more.
+
+624
+00:36:39,270 --> 00:36:41,140
+This is the only one that will,
+
+625
+00:36:41,210 --> 00:36:42,940
+well, I shouldn't say that.
+
+626
+00:36:43,010 --> 00:36:45,230
+Fine, there we go.
+
+627
+00:36:46,280 --> 00:36:51,240
+So, this is one dynamic program that wasn't so helpful,
+
+628
+00:36:51,310 --> 00:36:53,520
+except it showed us a connection to matrix multiplication,
+
+629
+00:36:53,590 --> 00:36:54,790
+which is interesting.
+
+630
+00:36:54,890 --> 00:36:58,220
+We'll see why it's useful a little bit more.
+
+631
+00:36:58,290 --> 00:37:03,870
+But, it bled to this nasty four nested loops.
+
+632
+00:37:03,980 --> 00:37:07,270
+And, using this trick, we got down to n^3 log n.
+
+633
+00:37:07,410 --> 00:37:09,650
+Let's try, just for n^3.
+
+634
+00:37:09,760 --> 00:37:13,070
+OK, just get rid of that log. It's annoying.
+
+635
+00:37:13,170 --> 00:37:15,110
+It makes you a little bit worse than Bellman-Ford,
+
+636
+00:37:15,210 --> 00:37:16,160
+in the sparse case.
+
+637
+00:37:16,270 --> 00:37:20,100
+So, let's just erase one of these nested loops.
+
+638
+00:37:20,200 --> 00:37:22,160
+OK, I want to do that.
+
+639
+00:37:22,300 --> 00:37:24,720
+OK, obviously that algorithm doesn't work
+
+640
+00:37:24,830 --> 00:37:26,830
+because at first there is a k, and it's not defined,
+
+641
+00:37:26,900 --> 00:37:30,860
+but, you know, I've got enough variables.
+
+642
+00:37:30,960 --> 00:37:33,290
+Why don't I just define k to be m?
+
+643
+00:37:33,790 --> 00:37:35,290
+OK, it turns out that works.
+
+644
+00:37:35,400 --> 00:37:41,430
+I'll do it from scratch, but why not? Right?
+
+645
+00:37:41,510 --> 00:37:43,450
+I don't know if that's how Floyd and Warshall
+
+646
+00:37:43,560 --> 00:37:44,530
+came up with their algorithm,
+
+647
+00:37:44,600 --> 00:37:47,310
+but here you go. Here's Floyd-Warshall.
+
+648
+00:37:53,510 --> 00:37:54,770
+The idea is to define
+
+649
+00:37:54,870 --> 00:37:57,990
+the subproblems a little bit more cleverly
+
+650
+00:37:58,100 --> 00:38:00,690
+so that to compute one of these values,
+
+651
+00:38:00,760 --> 00:38:02,580
+you don't have to take the min of n things.
+
+652
+00:38:02,690 --> 00:38:05,080
+I just want to take the min of two things.
+
+653
+00:38:05,150 --> 00:38:08,130
+If I could do that, and I still only have n^3 subproblems,
+
+654
+00:38:08,240 --> 00:38:10,130
+then I would have n^3 time.
+
+655
+00:38:10,240 --> 00:38:12,730
+So, all right, the running time of dynamic program
+
+656
+00:38:12,800 --> 00:38:14,430
+is number of subproblems times
+
+657
+00:38:14,530 --> 00:38:17,320
+the time to compute the recurrence for one subproblem.
+
+658
+00:38:17,390 --> 00:38:19,790
+So, here's linear times n^3,
+
+659
+00:38:19,900 --> 00:38:23,100
+and we want n^3 times constant. That would be good.
+
+660
+00:38:23,210 --> 00:38:24,610
+So that's Floyd-Warshall.
+
+661
+00:38:24,720 --> 00:38:29,960
+So, here's the way we're going to redefine c_ij.
+
+662
+00:38:30,030 --> 00:38:32,180
+Or I guess, there it was called d_ij.
+
+663
+00:38:32,280 --> 00:38:34,610
+Good, so we're going to define something new.
+
+664
+00:38:34,680 --> 00:38:38,770
+So, d_ij superscript k is now going to be
+
+665
+00:38:38,840 --> 00:38:50,810
+the weight of the shortest path from i to j as before.
+
+666
+00:38:51,630 --> 00:38:54,690
+Notice I used the superscript k instead of m
+
+667
+00:38:54,800 --> 00:38:57,070
+because I want k and m to be the same thing.
+
+668
+00:38:57,150 --> 00:39:02,810
+Deep. OK, now, here's the new constraint.
+
+669
+00:39:03,400 --> 00:39:06,110
+I want all intermediate vertices along the path,
+
+670
+00:39:06,220 --> 00:39:08,510
+meaning all vertices except for i and j
+
+671
+00:39:08,610 --> 00:39:13,260
+at the beginning and the end to have a small label.
+
+672
+00:39:13,370 --> 00:39:19,120
+So, they should be in the set from one up to k.
+
+673
+00:39:19,190 --> 00:39:20,580
+And this is where we are really using that
+
+674
+00:39:20,650 --> 00:39:22,520
+our vertices are labeled one up to m.
+
+675
+00:39:22,590 --> 00:39:24,160
+So, I'm going to say, well,
+
+676
+00:39:24,230 --> 00:39:25,360
+first think about the shortest paths
+
+677
+00:39:25,430 --> 00:39:27,150
+that don't use any other vertices.
+
+678
+00:39:27,220 --> 00:39:29,000
+That's when k is zero.
+
+679
+00:39:29,070 --> 00:39:30,520
+Then think about all the
+
+680
+00:39:30,590 --> 00:39:32,570
+shortest paths that maybe they use vertex one.
+
+681
+00:39:32,640 --> 00:39:33,470
+And then think about the shortest paths
+
+682
+00:39:33,540 --> 00:39:35,620
+that maybe use vertex one or vertex two.
+
+683
+00:39:35,700 --> 00:39:37,680
+Why not? You could define it in this way.
+
+684
+00:39:37,750 --> 00:39:39,330
+It turns out,
+
+685
+00:39:39,400 --> 00:39:41,560
+then when you increase k,
+
+686
+00:39:41,630 --> 00:39:44,120
+you only have to think about one new vertex.
+
+687
+00:39:44,190 --> 00:39:46,330
+Here, we had to take min over all k.
+
+688
+00:39:46,400 --> 00:39:48,940
+Now we know which k to look at.
+
+689
+00:39:49,010 --> 00:39:50,410
+OK, maybe that made sense.
+
+690
+00:39:50,480 --> 00:39:52,050
+Maybe it's not quite obvious yet.
+
+691
+00:39:52,150 --> 00:39:59,310
+But I'm going to redo this claim, redo a recurrence.
+
+692
+00:40:00,230 --> 00:40:03,950
+So, maybe first I should say some obvious things.
+
+693
+00:40:04,060 --> 00:40:09,100
+So, if I want delta of ij of the shortest pathway,
+
+694
+00:40:09,210 --> 00:40:11,330
+well, just take all the vertices.
+
+695
+00:40:11,410 --> 00:40:14,030
+So, take c_ij superscript n.
+
+696
+00:40:14,100 --> 00:40:15,710
+That's everything. And this even works,
+
+697
+00:40:15,780 --> 00:40:17,620
+this is true even if you have a negative weight cycle.
+
+698
+00:40:17,690 --> 00:40:19,830
+Although, again, we're going to sort of ignore
+
+699
+00:40:19,900 --> 00:40:23,320
+negative weight cycles as long as we can detect them.
+
+700
+00:40:23,940 --> 00:40:29,400
+And, another simple case is if you have, well,
+
+701
+00:40:29,500 --> 00:40:32,530
+c_ij to zero. Let me put that in the claim
+
+702
+00:40:32,840 --> 00:40:35,990
+to be a little bit more consistent here.
+
+703
+00:40:36,090 --> 00:40:40,430
+So, here's the new claim.
+
+704
+00:40:40,530 --> 00:40:47,220
+If we want to compute c_ij superscript zero, what is it?
+
+705
+00:40:48,090 --> 00:40:49,760
+Superscript zero means I really shouldn't
+
+706
+00:40:49,830 --> 00:40:52,630
+use any intermediate vertices.
+
+707
+00:40:59,760 --> 00:41:01,470
+So, this has a very simple answer,
+
+708
+00:41:01,540 --> 00:41:03,310
+a three letter answer.
+
+709
+00:41:04,050 --> 00:41:05,550
+So, it's not zero.
+
+710
+00:41:05,620 --> 00:41:09,260
+It's four letters. What's that?
+
+711
+00:41:09,330 --> 00:41:13,480
+Nil. No, not working yet.
+
+712
+00:41:14,100 --> 00:41:17,150
+It has some subscripts, too.
+
+713
+00:41:22,080 --> 00:41:24,220
+So, the definition would be,
+
+714
+00:41:24,330 --> 00:41:26,910
+what's the shortest path weight from i to j
+
+715
+00:41:26,970 --> 00:41:30,880
+when you're not allowed to use any intermediate vertices?
+
+716
+00:41:31,490 --> 00:41:32,990
+[student]Inaudible
+
+717
+00:41:33,070 --> 00:41:34,240
+[Prof]:Sorry?
+
+718
+00:41:34,310 --> 00:41:38,220
+[student]Inaudible
+
+719
+00:41:38,330 --> 00:41:41,670
+[Prof]:So, yeah, it has a very simple name.
+
+720
+00:41:41,740 --> 00:41:45,060
+That's the tricky part. All right, so if i equals j,
+
+721
+00:41:45,160 --> 00:41:46,490
+you're clever, right,
+
+722
+00:41:46,600 --> 00:41:49,870
+open bracket i equals j means one, well, OK.
+
+723
+00:41:49,940 --> 00:41:51,190
+It sort of works, but it's not quite right.
+
+724
+00:41:51,300 --> 00:41:55,080
+In fact, I want infinity if i does not equal j.
+
+725
+00:41:55,190 --> 00:42:02,910
+And I want to zero if i equals j, a_ij, good.
+
+726
+00:42:02,980 --> 00:42:05,690
+I think it's a_ij. It should be, right?
+
+727
+00:42:05,760 --> 00:42:07,720
+Maybe I'm wrong.
+
+728
+00:42:12,170 --> 00:42:14,690
+Right, a_ij. So it's essentially not what I said.
+
+729
+00:42:14,750 --> 00:42:16,240
+That's the point.
+
+730
+00:42:16,340 --> 00:42:19,150
+If i does not equal j,
+
+731
+00:42:19,220 --> 00:42:20,700
+you still have to think about
+
+732
+00:42:20,770 --> 00:42:24,080
+a single edge connecting i to j, right?
+
+733
+00:42:24,150 --> 00:42:25,350
+OK, so that's a bit of a subtlety.
+
+734
+00:42:25,420 --> 00:42:27,160
+This is only intermediate vertices,
+
+735
+00:42:27,230 --> 00:42:29,630
+so you could still go from i to j via a single edge.
+
+736
+00:42:29,700 --> 00:42:31,220
+That will cost a_ij.
+
+737
+00:42:31,300 --> 00:42:32,330
+If there is an edge: infinity.
+
+738
+00:42:32,430 --> 00:42:34,700
+If there isn't one: that is a_ij.
+
+739
+00:42:34,770 --> 00:42:38,590
+So, OK, that gets us started.
+
+740
+00:42:38,660 --> 00:42:43,870
+And then, we want a recurrence.
+
+741
+00:42:48,590 --> 00:42:50,310
+And, the recurrence is, well,
+
+742
+00:42:50,380 --> 00:42:54,130
+maybe you get away with all the vertices that you had before
+
+743
+00:42:54,200 --> 00:42:56,460
+so if you want to know paths that use one up to k,
+
+744
+00:42:56,530 --> 00:42:59,280
+maybe I just use one up to k minus one.
+
+745
+00:42:59,390 --> 00:43:02,580
+You could try that. Or, you could try using k.
+
+746
+00:43:02,650 --> 00:43:03,890
+So, either you use k or you don't.
+
+747
+00:43:04,000 --> 00:43:05,750
+If you don't, it's got to be this.
+
+748
+00:43:05,820 --> 00:43:09,260
+If you do, then you've got to go to k.
+
+749
+00:43:09,360 --> 00:43:12,200
+So why not go to k at the end?
+
+750
+00:43:12,300 --> 00:43:16,590
+So, you go from i to k using the previous vertices.
+
+751
+00:43:16,660 --> 00:43:18,760
+Obviously, you don't want to repeat k in there.
+
+752
+00:43:18,830 --> 00:43:22,370
+And then, you go from k to j
+
+753
+00:43:22,440 --> 00:43:26,820
+somehow using vertices that are not k.
+
+754
+00:43:27,450 --> 00:43:29,440
+This should be pretty intuitive.
+
+755
+00:43:29,540 --> 00:43:32,300
+Again, I can draw a picture.
+
+756
+00:43:33,930 --> 00:43:36,570
+So, either you never go to k,
+
+757
+00:43:36,680 --> 00:43:39,290
+and that's this wiggly line.
+
+758
+00:43:39,360 --> 00:43:41,410
+You go from i to j using things
+
+759
+00:43:41,480 --> 00:43:44,610
+only one up to k minus one. In other words,
+
+760
+00:43:44,680 --> 00:43:46,700
+here we have to use one up to k.
+
+761
+00:43:46,810 --> 00:43:48,600
+So, this just means don't use k.
+
+762
+00:43:49,170 --> 00:43:50,790
+So, that's this thing.
+
+763
+00:43:51,470 --> 00:43:55,150
+Or, you use k somewhere in the middle there.
+
+764
+00:43:55,860 --> 00:43:58,340
+OK, it's got to be one of the two.
+
+765
+00:43:58,410 --> 00:43:59,300
+And in this case,
+
+766
+00:43:59,380 --> 00:44:02,700
+you go from i to k using only smaller vertices,
+
+767
+00:44:02,770 --> 00:44:04,330
+because you don't want to repeat k.
+
+768
+00:44:04,400 --> 00:44:06,590
+And here, you go from k to j
+
+769
+00:44:06,660 --> 00:44:10,140
+using only smaller labeled vertices.
+
+770
+00:44:10,210 --> 00:44:13,630
+So, every path is one of the two.
+
+771
+00:44:13,740 --> 00:44:16,940
+So, we take the shortest of these two subproblems.
+
+772
+00:44:17,010 --> 00:44:18,000
+That's the answer.
+
+773
+00:44:18,070 --> 00:44:20,070
+So, now we have a min of two things.
+
+774
+00:44:20,170 --> 00:44:21,920
+It takes constant time to compute.
+
+775
+00:44:21,990 --> 00:44:26,510
+So, we get a cubic algorithm.
+
+776
+00:44:31,880 --> 00:44:34,560
+So, let me write it down.
+
+777
+00:44:38,020 --> 00:44:41,360
+So, this is the Floyd-Warshall algorithm.
+
+778
+00:44:41,430 --> 00:44:47,510
+I'll write the name again. You give it a matrix A.
+
+779
+00:44:47,590 --> 00:44:49,280
+That's all it really needs to know.
+
+780
+00:44:49,360 --> 00:44:54,130
+It codes everything. You copy C to A.
+
+781
+00:44:54,200 --> 00:44:59,320
+That's the warm up. Right at time zero, C equals A.
+
+782
+00:44:59,390 --> 00:45:02,570
+And then you just have these three loops
+
+783
+00:45:02,640 --> 00:45:06,590
+for every value of k, for every value of i,
+
+784
+00:45:06,700 --> 00:45:09,890
+and for every value of j. You compute that min.
+
+785
+00:45:09,970 --> 00:45:11,700
+And if you think about it a little bit,
+
+786
+00:45:11,770 --> 00:45:14,350
+that min is a relaxation.
+
+787
+00:45:14,420 --> 00:45:17,480
+Surprise, surprise.
+
+788
+00:45:45,240 --> 00:45:50,170
+So, that is the Floyd-Warshall algorithm.
+
+789
+00:45:52,320 --> 00:45:55,450
+And, the running time is clearly n^3,
+
+790
+00:45:55,520 --> 00:45:58,740
+three nested loops, constant time inside.
+
+791
+00:45:59,710 --> 00:46:01,800
+So, we're finally getting something
+
+792
+00:46:01,870 --> 00:46:05,410
+that is never worse than Bellman-Ford.
+
+793
+00:46:05,450 --> 00:46:06,610
+In the sparse case, it's the same.
+
+794
+00:46:06,690 --> 00:46:07,910
+And anything denser,
+
+795
+00:46:07,970 --> 00:46:09,600
+the number of edges is super linear.
+
+796
+00:46:09,670 --> 00:46:11,880
+This is strictly better than Bellman-Ford.
+
+797
+00:46:11,960 --> 00:46:13,630
+And, it's better than everything we've seen so far
+
+798
+00:46:13,740 --> 00:46:15,000
+for all pair shortest paths.
+
+799
+00:46:15,100 --> 00:46:19,340
+And, this handles negative weights; very simple algorithm
+
+800
+00:46:19,410 --> 00:46:20,830
+even simpler than the one before.
+
+801
+00:46:20,860 --> 00:46:23,160
+It's just relaxation within three loops.
+
+802
+00:46:23,240 --> 00:46:26,510
+What more could you ask for? And we need to check that
+
+803
+00:46:26,580 --> 00:46:29,580
+this is indeed what min we're computing here,
+
+804
+00:46:29,650 --> 00:46:31,590
+except that the superscripts are omitted.
+
+805
+00:46:31,660 --> 00:46:35,270
+That's, again, a bit of hand waving a bit.
+
+806
+00:46:35,340 --> 00:46:36,880
+It's OK to omit subscripts
+
+807
+00:46:36,950 --> 00:46:38,040
+because that can only mean that
+
+808
+00:46:38,110 --> 00:46:40,090
+you're doing more relaxation that you should be.
+
+809
+00:46:40,200 --> 00:46:42,980
+Doing more relaxations can never hurt you.
+
+810
+00:46:43,040 --> 00:46:45,250
+In particular, we do all the ones that we have to.
+
+811
+00:46:45,360 --> 00:46:47,650
+Therefore, we find the shortest path weights.
+
+812
+00:46:47,720 --> 00:46:50,950
+And, again, here, we're assuming that
+
+813
+00:46:51,020 --> 00:46:53,810
+there is no negative weight cycles.
+
+814
+00:46:54,230 --> 00:46:55,960
+It shouldn't be hard to find them,
+
+815
+00:46:56,030 --> 00:46:59,280
+but you have to think about that a little bit.
+
+816
+00:46:59,970 --> 00:47:02,030
+OK, you could run another round of Bellman-Ford,
+
+817
+00:47:02,130 --> 00:47:04,850
+see if it relaxes in a new edges again.
+
+818
+00:47:04,960 --> 00:47:06,880
+For example,
+
+819
+00:47:07,020 --> 00:47:12,210
+I think there's no nifty trick for that version.
+
+820
+00:47:16,260 --> 00:47:17,410
+And, we're going to cover,
+
+821
+00:47:17,480 --> 00:47:21,170
+that's our second algorithm for all pairs shortest paths.
+
+822
+00:47:21,240 --> 00:47:22,920
+Before we go up to the third algorithm,
+
+823
+00:47:23,000 --> 00:47:26,560
+which is going to be the cleverest of them all,
+
+824
+00:47:26,660 --> 00:47:30,760
+the one Ring to rule them all, to switch trilogies,
+
+825
+00:47:31,580 --> 00:47:34,990
+we're going to take a little bit of a diversion, side story
+
+826
+00:47:35,070 --> 00:47:38,620
+whatever, and talk about transitive closure briefly.
+
+827
+00:47:38,690 --> 00:47:41,500
+This is just a good thing to know about.
+
+828
+00:47:41,610 --> 00:47:45,500
+And, it relates to the algorithms we've seen so far.
+
+829
+00:47:45,610 --> 00:47:48,660
+So, here's a transitive closure problem.
+
+830
+00:47:48,770 --> 00:47:52,560
+I give you a directed graph, and for all pair vertices,
+
+831
+00:47:52,630 --> 00:47:55,300
+i and j, I want to compute this number.
+
+832
+00:47:55,370 --> 00:47:59,280
+It's one if there's a path from i to j.
+
+833
+00:48:03,590 --> 00:48:11,520
+From i to j, and then zero otherwise.
+
+834
+00:48:11,550 --> 00:48:14,460
+OK, this is sort of like a boring adjacency matrix
+
+835
+00:48:14,530 --> 00:48:18,090
+with no weights, except it's about paths
+
+836
+00:48:18,160 --> 00:48:22,930
+instead of being about edges.
+
+837
+00:48:23,000 --> 00:48:26,200
+OK, so how can I compute this?
+
+838
+00:48:29,110 --> 00:48:32,970
+That's very simple.
+
+839
+00:48:43,920 --> 00:48:45,500
+How should I compute this?
+
+840
+00:48:45,570 --> 00:48:48,020
+This gives me a graph in some sense.
+
+841
+00:48:48,090 --> 00:48:49,810
+This is adjacency matrix of a new graph
+
+842
+00:48:49,880 --> 00:48:53,680
+called the transitive closure of my input graph.
+
+843
+00:48:58,540 --> 00:49:00,680
+So？
+
+844
+00:49:00,750 --> 00:49:02,650
+[student]:Inaudible
+
+845
+00:49:02,720 --> 00:49:05,700
+[Prof]:breadth first search, yeah, good.
+
+846
+00:49:05,780 --> 00:49:09,310
+So, all I need to do is find shortest paths,
+
+847
+00:49:09,380 --> 00:49:11,780
+and if the weights come out infinity,
+
+848
+00:49:11,890 --> 00:49:13,910
+then there's no path. If it's less than infinity,
+
+849
+00:49:13,980 --> 00:49:17,370
+that there's a path. And so here,
+
+850
+00:49:17,440 --> 00:49:20,730
+so you are saying maybe I don't care about the weights,
+
+851
+00:49:20,800 --> 00:49:23,610
+so I can run breadth first search n times,
+
+852
+00:49:23,720 --> 00:49:29,090
+and that will work indeed. So, if we do B times BFS,
+
+853
+00:49:29,160 --> 00:49:31,360
+so it's maybe weird that I'm covering here in the middle,
+
+854
+00:49:31,430 --> 00:49:34,380
+but it's just an interlude. So, we have,
+
+855
+00:49:34,490 --> 00:49:39,900
+then, something like V times E.
+
+856
+00:49:40,400 --> 00:49:42,370
+OK, you can run any of these algorithms.
+
+857
+00:49:42,470 --> 00:49:45,210
+You could take Floyd-Warshall for example.
+
+858
+00:49:46,740 --> 00:49:48,090
+Why not?
+
+859
+00:49:51,330 --> 00:49:56,850
+OK, then it would just be V^3 I mean,
+
+860
+00:49:56,950 --> 00:49:58,400
+you could run in any of these algorithms
+
+861
+00:49:58,470 --> 00:50:01,490
+with weights of one or zero,
+
+862
+00:50:01,570 --> 00:50:04,310
+and just check whether the values are infinity or not.
+
+863
+00:50:04,380 --> 00:50:08,670
+So, I mean, t_ij equals zero, if and only if
+
+864
+00:50:08,730 --> 00:50:13,920
+the shortest path weight from i to j is infinity.
+
+865
+00:50:14,940 --> 00:50:16,340
+So, just solve this.
+
+866
+00:50:16,410 --> 00:50:18,460
+This is an easier problem than shortest paths.
+
+867
+00:50:18,530 --> 00:50:21,460
+It is, in fact, strictly easier in a certain sense,
+
+868
+00:50:21,530 --> 00:50:23,360
+because what's going on with transitive closure,
+
+869
+00:50:23,460 --> 00:50:25,980
+and I just want to mention this out of interest
+
+870
+00:50:26,050 --> 00:50:29,760
+because transitive closure is a useful thing to know about.
+
+871
+00:50:31,590 --> 00:50:33,540
+Essentially, what we are doing,
+
+872
+00:50:33,610 --> 00:50:34,820
+let me get this right,
+
+873
+00:50:34,890 --> 00:50:36,650
+is using a different set of operators.
+
+874
+00:50:36,730 --> 00:50:39,570
+We're using or and and,
+
+875
+00:50:39,670 --> 00:50:45,640
+a logical or and and instead of min and plus,
+
+876
+00:50:46,020 --> 00:50:47,570
+OK, because we want to know,
+
+877
+00:50:47,680 --> 00:50:50,850
+if you think about a relaxation, in some sense,
+
+878
+00:50:50,930 --> 00:50:53,280
+maybe I should think about it in terms of this min.
+
+879
+00:50:53,350 --> 00:50:57,050
+So, if I want to know, is there a pathway from i to j
+
+880
+00:50:57,160 --> 00:51:00,100
+that uses vertices labeled one through k in the middle?
+
+881
+00:51:00,200 --> 00:51:02,280
+Well, either there is a path
+
+882
+00:51:02,350 --> 00:51:03,810
+that doesn't use the vertex k,
+
+883
+00:51:03,920 --> 00:51:05,390
+or there is a path that uses k,
+
+884
+00:51:05,460 --> 00:51:07,590
+and then it would have to look like that.
+
+885
+00:51:07,660 --> 00:51:09,990
+OK, so there would have to be a path here,
+
+886
+00:51:10,060 --> 00:51:12,450
+and there would have to be a path there.
+
+887
+00:51:12,520 --> 00:51:16,420
+So, the min and plus get replaced with or and and.
+
+888
+00:51:16,490 --> 00:51:17,990
+And if you remember, this used to be plus,
+
+889
+00:51:18,060 --> 00:51:20,800
+and this used to be product in the matrix world.
+
+890
+00:51:20,880 --> 00:51:26,580
+So, plus is now like or. And, multiply is now like and,
+
+891
+00:51:26,650 --> 00:51:29,120
+which sounds very good, right?
+
+892
+00:51:29,220 --> 00:51:32,580
+Plus does feel like or, and multiply does feel like and
+
+893
+00:51:32,650 --> 00:51:35,750
+if you live in a zero-one world. So, in fact,
+
+894
+00:51:35,820 --> 00:51:42,770
+this is not quite the field Z mod two,
+
+895
+00:51:42,870 --> 00:51:46,630
+but this is a good, nice, field to work in.
+
+896
+00:51:46,740 --> 00:51:50,510
+This is the Boolean world.
+
+897
+00:51:52,080 --> 00:51:54,020
+So, I'll just write Boole.
+
+898
+00:51:54,090 --> 00:51:56,560
+Good old Boole knows all about this.
+
+899
+00:51:56,670 --> 00:51:59,080
+It's like his master's thesis, I think.
+
+900
+00:51:59,180 --> 00:52:01,600
+Talking about Boolean algebra.
+
+901
+00:52:01,670 --> 00:52:03,590
+And, this actually means that
+
+902
+00:52:03,660 --> 00:52:05,600
+you can use fast matrix multiply.
+
+903
+00:52:05,670 --> 00:52:07,030
+You can use Strassen's algorithm,
+
+904
+00:52:07,110 --> 00:52:08,740
+and the fancier algorithms, and you can compute
+
+905
+00:52:08,800 --> 00:52:11,390
+the transitive closure in sub-cubic time.
+
+906
+00:52:11,460 --> 00:52:15,200
+So, this is sub cubic if the edges are sparse.
+
+907
+00:52:15,270 --> 00:52:17,170
+But, it's cubic in the worst case
+
+908
+00:52:17,280 --> 00:52:19,630
+if there are lots of edges. This is cubic.
+
+909
+00:52:19,730 --> 00:52:24,300
+You can actually do better using Strassen.
+
+910
+00:52:26,010 --> 00:52:28,680
+So, I'll just say you can do it.
+
+911
+00:52:28,730 --> 00:52:34,830
+No details here. I think it should be,
+
+912
+00:52:34,900 --> 00:52:36,850
+so in fact, there is a theorem.
+
+913
+00:52:36,960 --> 00:52:38,740
+This is probably not in the textbook,
+
+914
+00:52:38,810 --> 00:52:40,000
+but there's a theorem that says
+
+915
+00:52:40,070 --> 00:52:44,800
+transitive closure is just as hard as matrix multiply.
+
+916
+00:52:44,860 --> 00:52:45,730
+OK, they are equivalent.
+
+917
+00:52:45,800 --> 00:52:47,100
+Their running times are the same.
+
+918
+00:52:47,170 --> 00:52:48,850
+We don't know how long it takes
+
+919
+00:52:48,930 --> 00:52:52,960
+to do a matrix multiply over a field.
+
+920
+00:52:53,030 --> 00:52:57,960
+It's somewhere between n^2 and n^2.3.
+
+921
+00:52:58,460 --> 00:52:59,500
+But, whatever the answer is
+
+922
+00:52:59,600 --> 00:53:01,340
+same for transitive closure.
+
+923
+00:53:01,440 --> 00:53:04,040
+OK, there's the interlude.
+
+924
+00:53:08,780 --> 00:53:09,860
+And that's where we actually
+
+925
+00:53:09,930 --> 00:53:13,510
+get to use Strassen and friends.
+
+926
+00:53:17,740 --> 00:53:23,710
+Remember, Strassen was n to the log base two of seven algorithm.
+
+927
+00:53:23,800 --> 00:53:26,200
+Remember that, especially on the final.
+
+928
+00:53:26,310 --> 00:53:29,350
+Those are things you should have at the tip of your tongue
+
+929
+00:53:31,010 --> 00:53:34,550
+OK, the last algorithm we're going to cover
+
+930
+00:53:34,840 --> 00:53:36,310
+is really going to build on
+
+931
+00:53:36,380 --> 00:53:40,720
+what we saw last time Johnson's algorithm.
+
+932
+00:53:40,830 --> 00:53:43,330
+And, I've lost some of the running times here.
+
+933
+00:53:43,400 --> 00:53:47,800
+But, when we had unweighted graphs,
+
+934
+00:53:47,880 --> 00:53:49,320
+we could do all pairs really fast,
+
+935
+00:53:49,410 --> 00:53:53,550
+just as fast as a single source Bellman-Ford.
+
+936
+00:53:53,620 --> 00:53:54,580
+That's kind of nifty.
+
+937
+00:53:54,650 --> 00:53:56,010
+We don't know how to improve
+
+938
+00:53:56,080 --> 00:53:58,070
+Bellman-Ford in the single source case.
+
+939
+00:53:58,170 --> 00:53:59,530
+So, we can't really help
+
+940
+00:53:59,600 --> 00:54:01,950
+to get anything better than V times E.
+
+941
+00:54:02,090 --> 00:54:05,440
+And, if you remember running V times Dijkstra,
+
+942
+00:54:05,550 --> 00:54:07,400
+V times Dijkstra was about the same.
+
+943
+00:54:07,470 --> 00:54:10,650
+So, just put this in the recall bubble here:
+
+944
+00:54:10,760 --> 00:54:21,840
+V times Dijkstra would give us V times E plus V^2 log V.
+
+945
+00:54:21,920 --> 00:54:26,010
+And, if you ignore that log factor, this is just VE.
+
+946
+00:54:26,080 --> 00:54:28,050
+OK, so this was really good. Dijkstra was great.
+
+947
+00:54:28,110 --> 00:54:29,450
+And this was for nonnegative edge weights.
+
+948
+00:54:29,560 --> 00:54:30,830
+So, with negative edge weights,
+
+949
+00:54:30,900 --> 00:54:34,680
+somehow we'd like to get the same running time.
+
+950
+00:54:34,820 --> 00:54:38,350
+Now, how might I get the same running time?
+
+951
+00:54:38,660 --> 00:54:40,280
+Well, it would be really nice if I could use Dijkstra.
+
+952
+00:54:40,350 --> 00:54:42,830
+Of course, Dijkstra doesn't work with negative weights.
+
+953
+00:54:42,900 --> 00:54:52,120
+So what could I do? What would I hope to do?
+
+954
+00:54:52,260 --> 00:54:55,260
+What could I hope to? Suppose I want,
+
+955
+00:54:55,360 --> 00:54:56,430
+in the middle of the algorithm,
+
+956
+00:54:56,540 --> 00:55:00,430
+it says run Dijkstra n times.
+
+957
+00:55:00,820 --> 00:55:04,220
+Then, what should I do to prepare for that?
+
+958
+00:55:05,340 --> 00:55:08,340
+Make all the weights positive, or nonnegative.
+
+959
+00:55:08,580 --> 00:55:12,110
+Why not, right? We're being wishful thinking.
+
+960
+00:55:12,180 --> 00:55:13,950
+That's what we'll do.
+
+961
+00:55:14,100 --> 00:55:17,180
+So, this is called graph re-weighting.
+
+962
+00:55:19,240 --> 00:55:22,100
+And, what's cool is we actually already know how to do it.
+
+963
+00:55:22,170 --> 00:55:24,600
+We just don't know that we know how to do it.
+
+964
+00:55:25,950 --> 00:55:29,340
+But I know that we know that we know how to do it.
+
+965
+00:55:29,440 --> 00:55:30,950
+You don't yet know that we know that
+
+966
+00:55:31,080 --> 00:55:35,180
+I know that we know how to do it.
+
+967
+00:55:37,120 --> 00:55:41,230
+So, it turns out you can re-weight the vertices.
+
+968
+00:55:41,300 --> 00:55:43,990
+So, at the end of the last class someone asked me,
+
+969
+00:55:44,100 --> 00:55:46,800
+can you just, like, add the same weight to all the edges?
+
+970
+00:55:46,870 --> 00:55:48,740
+That doesn't work.
+
+971
+00:55:48,810 --> 00:55:50,530
+Not quite, because different paths
+
+972
+00:55:50,640 --> 00:55:52,210
+have different numbers of edges.
+
+973
+00:55:52,280 --> 00:55:53,220
+What we are going to do
+
+974
+00:55:53,370 --> 00:55:56,130
+is add a particular weight to each vertex.
+
+975
+00:55:56,200 --> 00:55:57,480
+What does that mean?
+
+976
+00:55:57,550 --> 00:55:59,870
+Because we really only have weights on the edges,
+
+977
+00:55:59,940 --> 00:56:00,940
+here's what we'll do.
+
+978
+00:56:01,000 --> 00:56:10,170
+We'll re-weight each edge, so, (u,v),let's say,
+
+979
+00:56:10,280 --> 00:56:15,470
+going to go back into graph speak instead of matrix speak,
+
+980
+00:56:15,540 --> 00:56:17,820
+(u,v) instead of i and j,
+
+981
+00:56:17,980 --> 00:56:20,830
+and we'll call this modified weight w_h.
+
+982
+00:56:20,900 --> 00:56:22,370
+h is our function.
+
+983
+00:56:22,440 --> 00:56:25,010
+It gives us a number for every vertex.
+
+984
+00:56:25,120 --> 00:56:29,400
+And, it's just going to be the old weight of that edge
+
+985
+00:56:29,470 --> 00:56:32,720
+plus the weight of the start vertex
+
+986
+00:56:32,790 --> 00:56:37,680
+minus the weight of the terminating vertex.
+
+987
+00:56:37,750 --> 00:56:39,480
+I'm sure these have good names.
+
+988
+00:56:39,630 --> 00:56:41,180
+One of these is the head, and the other is the tail,
+
+989
+00:56:41,290 --> 00:56:43,060
+but I can never remember which.
+
+990
+00:56:43,130 --> 00:56:44,790
+OK, so we've directed edge (u,v)
+
+991
+00:56:44,860 --> 00:56:46,880
+Just add one of them; subtract the other.
+
+992
+00:56:46,950 --> 00:56:47,920
+And, it's a directed edge,
+
+993
+00:56:47,990 --> 00:56:51,030
+so that's a consistent definition.
+
+994
+00:56:51,470 --> 00:56:54,760
+OK, so that's called re-weighting.
+
+995
+00:56:54,870 --> 00:56:56,930
+Now, this is actually a theorem.
+
+996
+00:56:57,000 --> 00:57:03,070
+If you do this, then, let's say,
+
+997
+00:57:03,140 --> 00:57:10,700
+for any vertices, u and v in the graph,
+
+998
+00:57:10,770 --> 00:57:12,660
+for any two vertices,
+
+999
+00:57:13,040 --> 00:57:23,190
+all paths from u to v have the same weight
+
+1000
+00:57:23,940 --> 00:57:27,270
+as they did before, well, not quite.
+
+1001
+00:57:27,820 --> 00:57:31,120
+They have the same re-weighting.
+
+1002
+00:57:32,680 --> 00:57:36,300
+So, if you look at all the different paths and you say,
+
+1003
+00:57:36,380 --> 00:57:38,370
+well, what's the difference between vh, well,
+
+1004
+00:57:38,440 --> 00:57:42,760
+sorry, let's say delta, which is the old shortest paths,
+
+1005
+00:57:42,830 --> 00:57:44,980
+and delta sub h, which is the shortest path weights
+
+1006
+00:57:45,040 --> 00:57:47,230
+according to this new weight function,
+
+1007
+00:57:47,300 --> 00:57:50,080
+then that difference is the same.
+
+1008
+00:57:50,150 --> 00:57:52,310
+So, we'll say that all these paths
+
+1009
+00:57:52,410 --> 00:57:55,070
+are re-weighted by the same amounts.
+
+1010
+00:57:55,140 --> 00:57:56,150
+OK, this is actually a statement about
+
+1011
+00:57:56,220 --> 00:57:58,470
+all paths, not just shortest paths.
+
+1012
+00:57:59,920 --> 00:58:04,660
+There we go. OK, to how many people
+
+1013
+00:58:04,740 --> 00:58:07,080
+is this obvious already?
+
+1014
+00:58:07,150 --> 00:58:09,910
+A few, yeah, it is.
+
+1015
+00:58:09,990 --> 00:58:12,270
+And what's the one word?
+
+1016
+00:58:13,810 --> 00:58:17,390
+OK, it's maybe not that obvious.
+
+1017
+00:58:17,500 --> 00:58:20,330
+All right, shout out the word when you figure it out.
+
+1018
+00:58:20,440 --> 00:58:25,800
+Meanwhile, I'll write out this rather verbose proof.
+
+1019
+00:58:25,900 --> 00:58:32,310
+There's a one word proof, still waiting.
+
+1020
+00:58:37,350 --> 00:58:39,250
+So, let's just take one of these paths
+
+1021
+00:58:39,320 --> 00:58:43,050
+that starts at u and ends at v. Take any path.
+
+1022
+00:58:43,120 --> 00:58:44,070
+We're just going to see what its
+
+1023
+00:58:44,140 --> 00:58:46,870
+new weight is relative to its old weight.
+
+1024
+00:58:46,940 --> 00:58:50,130
+And so, let's just write out w_h of the path,
+
+1025
+00:58:50,200 --> 00:58:51,700
+which we define in the usual way
+
+1026
+00:58:51,770 --> 00:59:00,120
+as the sum over all edges of the new weight
+
+1027
+00:59:00,190 --> 00:59:05,810
+of the edge from v_i to v_i plus one.
+
+1028
+00:59:06,460 --> 00:59:08,050
+Do you have the word?
+
+1029
+00:59:08,130 --> 00:59:11,200
+No? Tough puzzle then,
+
+1030
+00:59:11,570 --> 00:59:16,030
+OK. So that's the definition of the weight of a path.
+
+1031
+00:59:16,100 --> 00:59:20,220
+And, then we know this thing
+
+1032
+00:59:20,370 --> 00:59:26,240
+is just w of v_i, v_i plus one.
+
+1033
+00:59:26,310 --> 00:59:29,190
+I'll get it right, plus the weight of the first vertex,
+
+1034
+00:59:29,230 --> 00:59:32,590
+plus, sorry, the re-weighting of v_i
+
+1035
+00:59:32,670 --> 00:59:37,430
+minus the re-weighting of v_i plus one.
+
+1036
+00:59:37,540 --> 00:59:41,400
+This is all in parentheses that's summed over i.
+
+1037
+00:59:41,500 --> 00:59:45,280
+Now I need the magic word. Telescopes, good.
+
+1038
+00:59:45,360 --> 00:59:46,280
+Now this is obvious:
+
+1039
+00:59:46,390 --> 00:59:48,350
+each of these telescopes with the next and previous,
+
+1040
+00:59:48,410 --> 00:59:51,060
+except the very beginning and the very end.
+
+1041
+00:59:51,170 --> 00:59:57,040
+So, this is the sum of these weights of edges,
+
+1042
+00:59:57,240 --> 00:59:59,740
+but then outside the sum,
+
+1043
+00:59:59,840 --> 01:00:07,130
+we have plus h of v_1, and minus h of v_k.
+
+1044
+01:00:07,440 --> 01:00:08,850
+OK, those guys don't quite cancel.
+
+1045
+01:00:08,920 --> 01:00:11,720
+We're not looking at a cycle, just a path.
+
+1046
+01:00:11,900 --> 01:00:18,050
+And, this thing is just w of the path,
+
+1047
+01:00:18,690 --> 01:00:21,360
+as this is the normal weight of the path.
+
+1048
+01:00:21,470 --> 01:00:22,650
+And so the change,
+
+1049
+01:00:22,760 --> 01:00:28,370
+the difference between w_h of P and w of P is this thing,
+
+1050
+01:00:28,820 --> 01:00:33,040
+which is just h of u minus h of v. And, the point is
+
+1051
+01:00:33,140 --> 01:00:35,640
+that's the same as long as you fix the endpoints,
+
+1052
+01:00:35,710 --> 01:00:37,900
+u and v, of the shortest path,
+
+1053
+01:00:37,980 --> 01:00:40,500
+you're changing this path weight
+
+1054
+01:00:40,570 --> 01:00:43,550
+by the same thing for all paths.
+
+1055
+01:00:43,660 --> 01:00:45,570
+This is for any path from u to v,
+
+1056
+01:00:45,640 --> 01:00:46,990
+and that proves the theorem.
+
+1057
+01:00:47,090 --> 01:00:50,660
+So, the one word here was telescopes.
+
+1058
+01:00:51,380 --> 01:00:54,830
+These change in weights telescope over any path.
+
+1059
+01:00:54,940 --> 01:00:58,000
+Therefore, if we want to find shortest paths,
+
+1060
+01:00:58,110 --> 01:00:59,350
+you just find the shortest paths
+
+1061
+01:00:59,460 --> 01:01:00,640
+in this re-weighted version,
+
+1062
+01:01:00,750 --> 01:01:03,480
+and then you just change it by this one amount.
+
+1063
+01:01:03,580 --> 01:01:05,940
+You subtract off this amount instead of adding it.
+
+1064
+01:01:06,050 --> 01:01:07,340
+That will give you the shortest path weight
+
+1065
+01:01:07,450 --> 01:01:09,340
+in the original weights.
+
+1066
+01:01:09,940 --> 01:01:12,530
+OK, so this is a tool.
+
+1067
+01:01:12,670 --> 01:01:15,310
+We now know how to change weights in the graph.
+
+1068
+01:01:15,420 --> 01:01:17,920
+But what we really want is to change weights in the graph
+
+1069
+01:01:18,020 --> 01:01:21,120
+so that the weights all come out nonnegative.
+
+1070
+01:01:21,220 --> 01:01:22,990
+OK, how do we do that?
+
+1071
+01:01:23,090 --> 01:01:25,990
+Why in the world would there be a function, h,
+
+1072
+01:01:26,100 --> 01:01:29,890
+that makes all the edge weights nonnegative?
+
+1073
+01:01:30,030 --> 01:01:37,000
+It doesn't make sense. It turns out we already know.
+
+1074
+01:01:44,310 --> 01:01:51,050
+So, I should write down this consequence.
+
+1075
+01:02:09,880 --> 01:02:12,500
+Let me get this in the right order. So in particular,
+
+1076
+01:02:12,600 --> 01:02:15,730
+the shortest path changes by this amount.
+
+1077
+01:02:15,800 --> 01:02:17,090
+And if you want to know this value,
+
+1078
+01:02:17,160 --> 01:02:18,920
+you just move the stuff to the other side.
+
+1079
+01:02:18,990 --> 01:02:22,270
+So, we compute deltas of h, then we can compute delta.
+
+1080
+01:02:22,340 --> 01:02:24,580
+That's the consequence here.
+
+1081
+01:02:24,680 --> 01:02:30,040
+How many people here pronounce this word corollary?
+
+1082
+01:02:30,610 --> 01:02:33,810
+OK, and how many people pronounce it corollary?
+
+1083
+01:02:33,910 --> 01:02:36,810
+Yeah, we are alone.
+
+1084
+01:02:36,880 --> 01:02:38,480
+Usually get at least one other student,
+
+1085
+01:02:38,590 --> 01:02:43,290
+and they're usually Canadian or British or something.
+
+1086
+01:02:43,360 --> 01:02:44,810
+I think that the accent.
+
+1087
+01:02:44,880 --> 01:02:47,140
+So, I always avoid pronouncing this word
+
+1088
+01:02:47,210 --> 01:02:51,820
+unless I really think, it's corollary, and get it right.
+
+1089
+01:02:51,930 --> 01:02:56,180
+I at least say Z not Zed. OK, here we go.
+
+1090
+01:02:56,220 --> 01:03:05,690
+So, what we want to do is find one of these functions.
+
+1091
+01:03:05,760 --> 01:03:09,260
+I mean, let's just write down what we could hope to have.
+
+1092
+01:03:09,330 --> 01:03:11,230
+We want to find a re-weighted function, h,
+
+1093
+01:03:11,300 --> 01:03:13,100
+that assign weight to each vertex
+
+1094
+01:03:13,160 --> 01:03:18,920
+such that w sub h u, v is nonnegative.
+
+1095
+01:03:19,030 --> 01:03:28,630
+That would be great for all edges, all (u,v) in E.
+
+1096
+01:03:29,830 --> 01:03:32,150
+OK, then we could run Dijkstra.
+
+1097
+01:03:34,710 --> 01:03:37,300
+We could run Dijkstra, get the delta h's,
+
+1098
+01:03:37,730 --> 01:03:40,540
+and then just undo the re-weighting,
+
+1099
+01:03:40,650 --> 01:03:44,330
+and get what we want. And, that is Johnson's algorithm.
+
+1100
+01:03:44,440 --> 01:03:47,280
+The claim is that this is always possible.
+
+1101
+01:03:47,350 --> 01:03:49,060
+OK, why should it always be possible?
+
+1102
+01:03:49,130 --> 01:03:50,730
+Well, let's look at this constraint.
+
+1103
+01:03:50,840 --> 01:03:53,450
+w_h(u,v) is that.
+
+1104
+01:03:53,520 --> 01:04:00,880
+So, it's w(u,v) plus h(u) u minus h(v)
+
+1105
+01:04:00,990 --> 01:04:03,210
+should be nonnegative.
+
+1106
+01:04:03,310 --> 01:04:07,870
+Let me rewrite this a little bit.
+
+1107
+01:04:13,260 --> 01:04:16,480
+I'm going to put these guys over here.
+
+1108
+01:04:16,590 --> 01:04:18,430
+That would be the right thing,
+
+1109
+01:04:18,500 --> 01:04:25,490
+h of v minus h of u is less than or equal to w of u,v.
+
+1110
+01:04:25,560 --> 01:04:37,590
+Does that look familiar? Did I get it right?
+
+1111
+01:04:38,000 --> 01:04:45,060
+It should be right. Anyone seen that inequality before?
+
+1112
+01:04:45,580 --> 01:04:46,470
+[student]Inaudible
+
+1113
+01:04:46,570 --> 01:04:48,220
+[Prof]:Yeah, yes, correct answer.
+
+1114
+01:04:48,290 --> 01:04:50,470
+OK, where?
+
+1115
+01:04:50,520 --> 01:04:52,990
+[student]Inaudible
+
+1116
+01:04:53,060 --> 01:04:54,920
+[Prof]:In a previous lecture?
+
+1117
+01:04:55,660 --> 01:04:59,290
+In the re-previous lecture.
+
+1118
+01:05:00,280 --> 01:05:06,990
+What is this called if I replace h with x?
+
+1119
+01:05:13,590 --> 01:05:15,550
+Charles knows.
+
+1120
+01:05:15,620 --> 01:05:18,230
+Good, anyone else remember
+
+1121
+01:05:18,330 --> 01:05:21,100
+all the way back to episode two?
+
+1122
+01:05:21,170 --> 01:05:24,160
+I know there was a weekend.
+
+1123
+01:05:24,580 --> 01:05:28,610
+What's this operator called?
+
+1124
+01:05:29,410 --> 01:05:36,540
+Not subtraction but, I think I heard it,
+
+1125
+01:05:37,630 --> 01:05:42,920
+oh man. All right, I'll tell you.
+
+1126
+01:05:42,990 --> 01:05:45,430
+It's a difference constraint, all right?
+
+1127
+01:05:45,530 --> 01:05:47,540
+This is the difference operator.
+
+1128
+01:05:47,610 --> 01:05:51,070
+OK, it's our good friend difference constraints.
+
+1129
+01:05:51,140 --> 01:05:52,740
+So, this is what we want to satisfy.
+
+1130
+01:05:52,810 --> 01:05:54,760
+We have a system of difference constraints.
+
+1131
+01:05:54,830 --> 01:05:57,260
+h of V minus h of u should be, we want to find these.
+
+1132
+01:05:57,330 --> 01:06:00,130
+These are our unknowns. Subject to these constraints,
+
+1133
+01:06:00,240 --> 01:06:02,720
+we are given the w's.  Now,
+
+1134
+01:06:02,790 --> 01:06:06,990
+we know when these difference constraints are satisfiable.
+
+1135
+01:06:07,060 --> 01:06:08,660
+Can someone tell me
+
+1136
+01:06:08,730 --> 01:06:12,050
+when these constraints are satisfiable?
+
+1137
+01:06:12,160 --> 01:06:18,430
+We know exactly when for any set of difference constraints.
+
+1138
+01:06:28,510 --> 01:06:30,990
+You've got to remember the math.
+
+1139
+01:06:31,060 --> 01:06:32,470
+Terminology, I can understand.
+
+1140
+01:06:32,550 --> 01:06:37,090
+It's hard to remember words
+
+1141
+01:06:37,160 --> 01:06:42,220
+unless you're a linguist, perhaps.
+
+1142
+01:06:45,010 --> 01:06:46,060
+So, when is the system of
+
+1143
+01:06:46,130 --> 01:06:49,160
+different constraints satisfiable?
+
+1144
+01:06:59,950 --> 01:07:02,720
+All right, you should definitely … very good.
+
+1145
+01:07:02,830 --> 01:07:06,540
+[student]Inaudible
+
+1146
+01:07:06,640 --> 01:07:09,830
+[Prof]Yes, very good. Someone brought their lecture notes
+
+1147
+01:07:09,900 --> 01:07:13,870
+when the constraint graph has no negative weight cycles.
+
+1148
+01:07:14,030 --> 01:07:16,000
+Good, thank you.
+
+1149
+01:07:22,090 --> 01:07:25,980
+Now, what is the constraint graph?
+
+1150
+01:07:32,360 --> 01:07:37,220
+OK, this has a one letter answer more or less.
+
+1151
+01:07:37,300 --> 01:07:39,970
+I'll accept the one letter answer.
+
+1152
+01:07:41,540 --> 01:07:43,070
+What? A?
+
+1153
+01:07:43,180 --> 01:07:46,490
+close. G.
+
+1154
+01:07:46,590 --> 01:07:48,120
+Yeah, I mean, same thing.
+
+1155
+01:07:48,230 --> 01:07:51,790
+Yeah, so the constraint graph is essentially G.
+
+1156
+01:07:51,890 --> 01:07:55,290
+Actually, it is G. The constraint graph is G, good.
+
+1157
+01:07:55,360 --> 01:07:58,210
+And, we prove this by adding a new source vertex,
+
+1158
+01:07:58,320 --> 01:07:59,380
+and connecting that to everyone.
+
+1159
+01:07:59,480 --> 01:08:01,760
+But that's sort of beside the point.
+
+1160
+01:08:01,870 --> 01:08:03,750
+That was in order to actually satisfy them.
+
+1161
+01:08:03,850 --> 01:08:08,430
+But this is our characterization. So, if we assume that
+
+1162
+01:08:08,500 --> 01:08:10,180
+there are no negative weight cycles in our graph,
+
+1163
+01:08:10,290 --> 01:08:12,110
+which we've been doing all the time,
+
+1164
+01:08:12,210 --> 01:08:14,700
+then we know that this thing is satisfiable.
+
+1165
+01:08:14,800 --> 01:08:17,240
+Therefore, there is an assignment of this h's.
+
+1166
+01:08:17,310 --> 01:08:18,490
+There is a re-weighting that
+
+1167
+01:08:18,590 --> 01:08:19,780
+makes all the weights nonnegative.
+
+1168
+01:08:19,890 --> 01:08:22,990
+Then we can run Dijkstra. OK, we're done.
+
+1169
+01:08:23,100 --> 01:08:26,660
+Isn't that cool? And how do we satisfy these constraints?
+
+1170
+01:08:26,740 --> 01:08:29,330
+We know how to do that with one run of Bellman-Ford,
+
+1171
+01:08:29,430 --> 01:08:31,520
+which costs order VE,
+
+1172
+01:08:31,630 --> 01:08:35,130
+which is less than V times Dijkstra.
+
+1173
+01:08:35,200 --> 01:08:40,540
+So, that's it, write down the details somewhere.
+
+1174
+01:08:57,630 --> 01:09:01,010
+So, this is Johnson's algorithm.
+
+1175
+01:09:01,670 --> 01:09:04,580
+This is the fanciest of them all.
+
+1176
+01:09:04,800 --> 01:09:07,220
+It will be our fastest,
+
+1177
+01:09:07,700 --> 01:09:10,600
+all pairs shortest path algorithm.
+
+1178
+01:09:10,720 --> 01:09:18,400
+So, the claim is, we can find a function, h, from V to R
+
+1179
+01:09:19,640 --> 01:09:24,900
+Such that the modified weight of every edge
+
+1180
+01:09:24,970 --> 01:09:34,080
+is nonnegative for every edge (u,v) in our graph.
+
+1181
+01:09:34,190 --> 01:09:38,890
+And, we do that using Bellman-Ford
+
+1182
+01:09:39,400 --> 01:09:42,640
+to solve the difference constraints.
+
+1183
+01:09:55,350 --> 01:09:57,600
+These are exactly the difference constraints that
+
+1184
+01:09:57,670 --> 01:10:01,100
+we were born to solve that we learned to solve last time.
+
+1185
+01:10:01,170 --> 01:10:03,590
+The graphs here are corresponding exactly
+
+1186
+01:10:03,660 --> 01:10:05,660
+if you look back at the definition.
+
+1187
+01:10:05,730 --> 01:10:08,120
+Or, Bellman-Ford will tell us that
+
+1188
+01:10:08,230 --> 01:10:10,760
+there is a negative weight cycle.
+
+1189
+01:10:10,870 --> 01:10:13,750
+OK, great, so it's not that we really have to assume that
+
+1190
+01:10:13,830 --> 01:10:17,670
+there is no negative weight cycle. We'll get to know.
+
+1191
+01:10:17,740 --> 01:10:20,130
+And if your fancy, you can actually
+
+1192
+01:10:20,200 --> 01:10:22,120
+figure out the minus infinities from this.
+
+1193
+01:10:22,190 --> 01:10:25,540
+But, at this point,
+
+1194
+01:10:25,780 --> 01:10:27,390
+I just want to think about the case
+
+1195
+01:10:27,500 --> 01:10:31,010
+where there is no negative weight cycle.
+
+1196
+01:10:31,040 --> 01:10:33,970
+But if there is, we can find out that it exists,
+
+1197
+01:10:34,030 --> 01:10:37,160
+and that just tell the user. OK, then we'd stop.
+
+1198
+01:10:37,270 --> 01:10:39,530
+Otherwise, there is no negative weight cycle.
+
+1199
+01:10:39,600 --> 01:10:40,610
+Therefore, there is an assignment
+
+1200
+01:10:40,720 --> 01:10:42,540
+that gives us nonnegative edge weights.
+
+1201
+01:10:42,610 --> 01:10:52,760
+So, we just use it. We use it to run Dijkstra.
+
+1202
+01:10:58,880 --> 01:11:00,630
+So, step two is, oh,
+
+1203
+01:11:00,700 --> 01:11:05,090
+I should say the running time of all this is V times E.
+
+1204
+01:11:05,430 --> 01:11:06,800
+So, we're just running Bellman-Ford
+
+1205
+01:11:06,880 --> 01:11:09,330
+on exactly the input graph.
+
+1206
+01:11:09,440 --> 01:11:12,440
+Plus, we add a source, if you recall,
+
+1207
+01:11:12,540 --> 01:11:15,170
+to solve a set of difference constraints.
+
+1208
+01:11:15,240 --> 01:11:16,550
+You add a source vertex, S,
+
+1209
+01:11:16,620 --> 01:11:18,590
+connected to everyone at weight zero,
+
+1210
+01:11:18,660 --> 01:11:20,120
+run Bellman-Ford from there
+
+1211
+01:11:20,220 --> 01:11:21,400
+because we don't have a source here.
+
+1212
+01:11:21,400 --> 01:11:22,250
+We just have a graph.
+
+1213
+01:11:22,270 --> 01:11:23,850
+We want to know all pairs.
+
+1214
+01:11:23,960 --> 01:11:24,970
+So, this, you can use to find
+
+1215
+01:11:25,050 --> 01:11:27,700
+whether there is a negative weight cycle anywhere.
+
+1216
+01:11:27,780 --> 01:11:29,980
+Or, we get this magic assignment.
+
+1217
+01:11:30,050 --> 01:11:31,960
+So now, w_h is nonnegative,
+
+1218
+01:11:32,030 --> 01:11:37,430
+so we can run Dijkstra on w_h.
+
+1219
+01:11:40,760 --> 01:11:45,540
+using w_h, so you compute w_h.
+
+1220
+01:11:45,610 --> 01:11:47,540
+That takes linear time.
+
+1221
+01:11:47,610 --> 01:11:53,680
+And, we run Dijkstra for each possible source.
+
+1222
+01:11:54,630 --> 01:11:55,920
+I'll write this out explicitly.
+
+1223
+01:11:55,990 --> 01:11:57,700
+We've had this in our minds several times.
+
+1224
+01:11:57,770 --> 01:12:00,950
+But, when we said n times Dijkstra
+
+1225
+01:12:01,020 --> 01:12:03,660
+n times BFS, here it is.
+
+1226
+01:12:03,730 --> 01:12:10,110
+We want to compute delta sub h now, of u,v for all v
+
+1227
+01:12:10,180 --> 01:12:13,620
+and we do this separately for all u.
+
+1228
+01:12:15,750 --> 01:12:23,330
+And so, the running time here is VE plus V^2 log V.
+
+1229
+01:12:23,400 --> 01:12:26,460
+This is just V times the running time of Dijkstra,
+
+1230
+01:12:26,530 --> 01:12:28,640
+which is E plus V log V.
+
+1231
+01:12:28,740 --> 01:12:31,520
+OK, it happens that this term is the same as this one,
+
+1232
+01:12:31,590 --> 01:12:33,350
+which is nice, because that means step one
+
+1233
+01:12:33,430 --> 01:12:38,380
+costs us nothing asymptotically. OK, and then,
+
+1234
+01:12:38,450 --> 01:12:41,180
+last step is, well, now we know delta h.
+
+1235
+01:12:41,250 --> 01:12:43,280
+We just need to compute delta.
+
+1236
+01:12:43,350 --> 01:12:48,600
+So, for each pair of vertices,
+
+1237
+01:12:48,670 --> 01:12:55,610
+we'll call it (u,v), we just compute
+
+1238
+01:12:55,680 --> 01:12:58,640
+what the original weights would be,
+
+1239
+01:12:58,720 --> 01:13:01,390
+so what delta (u,v) is.
+
+1240
+01:13:01,460 --> 01:13:05,530
+And we can do that using this corollary.
+
+1241
+01:13:06,800 --> 01:13:15,970
+It's just delta sub h, (u,v), minus h of u plus h of v.
+
+1242
+01:13:16,040 --> 01:13:21,800
+I got the signs right. Yeah, so this takes V^2 time,
+
+1243
+01:13:21,990 --> 01:13:25,520
+also dwarfed by the running time of Dijkstra.
+
+1244
+01:13:25,600 --> 01:13:33,310
+So, the overall running time of Johnson's algorithm
+
+1245
+01:13:33,370 --> 01:13:35,780
+is just the running time of step two,
+
+1246
+01:13:35,850 --> 01:13:38,420
+running Dijkstra n times --
+
+1247
+01:13:49,880 --> 01:13:52,120
+- which is pretty cool.
+
+1248
+01:13:52,300 --> 01:13:56,340
+When it comes to single source shortest paths,
+
+1249
+01:13:56,790 --> 01:13:58,810
+Bellman-Ford is the best thing for general weights.
+
+1250
+01:13:58,880 --> 01:14:01,860
+Dijkstra is the best thing for nonnegative weights.
+
+1251
+01:14:01,930 --> 01:14:03,540
+But for all pair shortest paths,
+
+1252
+01:14:03,610 --> 01:14:06,740
+we can skirt the whole negative weight issue
+
+1253
+01:14:06,840 --> 01:14:10,430
+by using this magic result from Bellman-Ford.
+
+1254
+01:14:10,510 --> 01:14:12,430
+But now, running Dijkstra n times, which is
+
+1255
+01:14:12,500 --> 01:14:14,080
+still the best thing we know how to do,
+
+1256
+01:14:14,150 --> 01:14:18,390
+pretty much for the all pairs nonnegative weights,
+
+1257
+01:14:18,460 --> 01:14:21,790
+now we can do it for general weights too,
+
+1258
+01:14:21,860 --> 01:14:24,590
+which is a pretty nice combination
+
+1259
+01:14:24,660 --> 01:14:26,470
+of all the techniques we've seen.
+
+1260
+01:14:26,580 --> 01:14:27,670
+In the trilogy, and along the way,
+
+1261
+01:14:27,740 --> 01:14:29,850
+we saw lots of dynamic programming,
+
+1262
+01:14:29,920 --> 01:14:31,970
+which is always good practice.
+
+1263
+01:14:32,040 --> 01:14:33,860
+Any questions?
+
+1264
+01:14:34,090 --> 01:14:40,890
+This is the last new content lecture before the quiz.
+
+1265
+01:14:40,960 --> 01:14:43,840
+On Wednesday it will be quiz review,
+
+1266
+01:14:43,990 --> 01:14:47,570
+if I recall correctly.
+
+1267
+01:14:47,680 --> 01:14:50,080
+And then it's Thanksgiving, so there's no recitation.
+
+1268
+01:14:50,150 --> 01:14:51,730
+And then the quiz starts on Monday.
+
+1269
+01:14:51,800 --> 01:14:55,370
+So, study up. See you then.
+

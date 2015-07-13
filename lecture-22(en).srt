@@ -1,0 +1,5736 @@
+﻿1
+00:00:07,470 --> 00:00:08,870
+Woohoo!
+
+2
+00:00:10,210 --> 00:00:11,910
+The topic of this final week,
+
+3
+00:00:11,970 --> 00:00:15,550
+among our advanced topics, is cache oblivious algorithms.
+
+4
+00:00:15,620 --> 00:00:20,240
+This is a particularly fun area, one dear to my heart
+
+5
+00:00:20,310 --> 00:00:22,940
+because I've done a lot of research in this area.
+
+6
+00:00:23,050 --> 00:00:28,690
+This is an area co-founded by Professor Leiserson. So, in fact
+
+7
+00:00:28,800 --> 00:00:32,480
+the first context in which I met Professor Leiserson
+
+8
+00:00:32,550 --> 00:00:37,430
+was him giving a talk about cache oblivious algorithms
+
+9
+00:00:37,480 --> 00:00:41,000
+at WADS '99 in Vancouver I think.
+
+10
+00:00:41,010 --> 00:00:43,610
+Am I get that right? Yeah, that has to be an odd year.
+
+11
+00:00:43,640 --> 00:00:46,560
+So, I learned about cache oblivious algorithms then,
+
+12
+00:00:46,630 --> 00:00:47,970
+started working in the area,
+
+13
+00:00:48,070 --> 00:00:51,430
+and it's been a fun place to play.
+
+14
+00:00:51,500 --> 00:00:53,630
+But this topic in some sense was also
+
+15
+00:00:53,700 --> 00:00:56,140
+developed in the context of this class.
+
+16
+00:00:56,210 --> 00:00:58,980
+I think there was one semester,
+
+17
+00:00:59,050 --> 00:01:02,770
+probably also '98-'99 where all of the problem sets
+
+18
+00:01:02,840 --> 00:01:04,920
+were about cache oblivious algorithms.
+
+19
+00:01:04,990 --> 00:01:06,350
+And they were, in particular, working out
+
+20
+00:01:06,360 --> 00:01:08,500
+the research ideas at the same time.
+
+21
+00:01:08,570 --> 00:01:12,140
+So, it must have been fun semester.
+
+22
+00:01:12,210 --> 00:01:15,090
+We consider doing that this semester,
+
+23
+00:01:15,130 --> 00:01:17,450
+but we kept it to the simple.
+
+24
+00:01:17,510 --> 00:01:19,580
+We know a lot more about cache oblivious algorithms by now
+
+25
+00:01:19,690 --> 00:01:21,640
+as you might expect.
+
+26
+00:01:23,320 --> 00:01:26,600
+Right, I think that's all the setting. I mean,
+
+27
+00:01:26,700 --> 00:01:29,180
+it was kind of developed also with a bunch of MIT students
+
+28
+00:01:29,250 --> 00:01:31,920
+in particular, an M.Eng. student, Harold Prokop.
+
+29
+00:01:31,980 --> 00:01:33,620
+It was his M.Eng. thesis.
+
+30
+00:01:33,720 --> 00:01:37,410
+There is all the citations I will give for now.
+
+31
+00:01:37,480 --> 00:01:39,730
+I haven't posted yet, but there are some...
+
+32
+00:01:39,830 --> 00:01:42,040
+there are lecture notes that are already on my webpage.
+
+33
+00:01:42,110 --> 00:01:44,150
+But I will link to them from the course website that gives
+
+34
+00:01:44,220 --> 00:01:46,780
+all the references for all the results I'll be talking about.
+
+35
+00:01:46,860 --> 00:01:49,320
+They've all been done in the last five years or so,
+
+36
+00:01:49,390 --> 00:01:51,340
+in particular, starting in '99
+
+37
+00:01:51,410 --> 00:01:54,240
+when the first paper was published.
+
+38
+00:01:54,310 --> 00:01:59,390
+But I won't give the specific citations in lecture.
+
+39
+00:02:01,810 --> 00:02:09,970
+And, this topic is related to the topic of last week,
+
+40
+00:02:10,040 --> 00:02:14,860
+multithreaded algorithms, although at a somewhat high level.
+
+41
+00:02:14,930 --> 00:02:19,590
+And it's also dealing with parallelism in modern machines.
+
+42
+00:02:19,690 --> 00:02:23,460
+And we've had throughout all of these last two lectures,
+
+43
+00:02:23,530 --> 00:02:26,090
+we've had this very simple model of a computer
+
+44
+00:02:26,160 --> 00:02:27,470
+where we have random access.
+
+45
+00:02:27,540 --> 00:02:29,540
+You can access memory at a cost of one.
+
+46
+00:02:29,610 --> 00:02:33,520
+You can read and write a word of memory.
+
+47
+00:02:33,590 --> 00:02:36,080
+There is some details on how big a word can be and whatnot.
+
+48
+00:02:36,150 --> 00:02:39,850
+It's pretty basic, simple, flat model.
+
+49
+00:02:39,920 --> 00:02:43,600
+And, at the multithreaded algorithm is the idea that, well
+
+50
+00:02:43,670 --> 00:02:46,470
+maybe you have multiple threads of computation running at once
+
+51
+00:02:46,570 --> 00:02:48,310
+but you still have this very flat memory.
+
+52
+00:02:48,380 --> 00:02:51,580
+Everyone can access anything in memory at a constant cost.
+
+53
+00:02:51,690 --> 00:02:53,910
+We're going to change that model now.
+
+54
+00:02:53,920 --> 00:03:00,410
+And we are going to realize that a real machine,
+
+55
+00:03:00,480 --> 00:03:04,070
+the memory of a real machine is some hierarchy.
+
+56
+00:03:04,150 --> 00:03:07,640
+You have some CPU, you have some cache,
+
+57
+00:03:07,710 --> 00:03:11,100
+probably on the same chip, level 1 cache,
+
+58
+00:03:11,170 --> 00:03:12,960
+you have some level 2 cache,
+
+59
+00:03:13,070 --> 00:03:15,890
+if you're lucky, maybe you have some level 3 cache,
+
+60
+00:03:15,960 --> 00:03:19,060
+before you get to main memory.
+
+61
+00:03:21,660 --> 00:03:26,500
+And then, you probably have a really big disk
+
+62
+00:03:26,610 --> 00:03:29,740
+and probably there's even some cache out here,
+
+63
+00:03:29,810 --> 00:03:31,850
+but I won't even think about that.
+
+64
+00:03:31,920 --> 00:03:33,240
+So, the point is,
+
+65
+00:03:33,310 --> 00:03:36,150
+you have lots of different levels of memory
+
+66
+00:03:36,220 --> 00:03:37,530
+and what's changing here is that
+
+67
+00:03:37,630 --> 00:03:39,190
+things that are very close to the CPU
+
+68
+00:03:39,260 --> 00:03:41,390
+are very fast to access. Usually level 1 cache
+
+69
+00:03:41,460 --> 00:03:44,460
+you can access in one clock cycle or a few.
+
+70
+00:03:44,530 --> 00:03:46,640
+And then, things get slower and slower.
+
+71
+00:03:46,710 --> 00:03:50,510
+Memory still costs like 70 ns or so
+
+72
+00:03:50,590 --> 00:03:54,390
+to access a chunk out of. And that's a long time.
+
+73
+00:03:54,460 --> 00:03:57,570
+70 ns is, of course, a very long time.
+
+74
+00:03:57,990 --> 00:04:02,460
+So, as we go out here, we get slower.
+
+75
+00:04:02,530 --> 00:04:05,810
+But we also get bigger. I mean,
+
+76
+00:04:05,880 --> 00:04:08,630
+if we could put everything at level 1 cache,
+
+77
+00:04:08,710 --> 00:04:10,110
+the problem would be solved.
+
+78
+00:04:10,180 --> 00:04:12,140
+You know that would be a flat memory.
+
+79
+00:04:12,220 --> 00:04:13,260
+Accessing everything in here,
+
+80
+00:04:13,330 --> 00:04:15,350
+we assumed takes the same amount of time.
+
+81
+00:04:15,420 --> 00:04:20,160
+But usually, we can't afford, it's not even possible
+
+82
+00:04:20,240 --> 00:04:22,010
+to put everything in level 1 cache. I mean,
+
+83
+00:04:22,120 --> 00:04:25,970
+there's a reason why there is a memory hierarchy.
+
+84
+00:04:26,030 --> 00:04:29,910
+Does anyone have a suggestion on what that reason might be?
+
+85
+00:04:29,980 --> 00:04:36,550
+It's like one of these limits in life. Yeah?
+
+86
+00:04:36,620 --> 00:04:39,330
+Fast memory is expensive.
+
+87
+00:04:39,400 --> 00:04:41,350
+That's the practical limitations indeed,
+
+88
+00:04:41,420 --> 00:04:43,910
+you could try to build more and more at level 1 cache
+
+89
+00:04:43,980 --> 00:04:48,250
+and maybe you could try to, well, yeah.
+
+90
+00:04:48,350 --> 00:04:51,600
+Expenses is a good reason, and practically,
+
+91
+00:04:51,670 --> 00:04:55,400
+that's why they may be the sizes are what they are.
+
+92
+00:04:55,470 --> 00:04:56,820
+But suppose really fast memory were really cheap.
+
+93
+00:04:56,930 --> 00:04:59,310
+Really fast memory were really cheap.
+
+94
+00:04:59,390 --> 00:05:04,020
+There is a physical limitation of what's going on, yeah?
+
+95
+00:05:04,090 --> 00:05:05,370
+The speed of light.
+
+96
+00:05:05,440 --> 00:05:06,970
+Yeah, that's a bit of a problem, right?
+
+97
+00:05:07,040 --> 00:05:10,220
+No matter how much, let's suppose
+
+98
+00:05:10,290 --> 00:05:13,570
+you can only fit so many bits in an atom.
+
+99
+00:05:13,670 --> 00:05:17,040
+You can only fit so many bits in a particular amount of space.
+
+100
+00:05:17,110 --> 00:05:20,480
+If you want more bits, and you need more space,
+
+101
+00:05:20,550 --> 00:05:21,680
+and the more space you have,
+
+102
+00:05:21,750 --> 00:05:23,960
+the longer it's going to take for a round-trip.
+
+103
+00:05:24,030 --> 00:05:27,940
+So, if you assume your CPU is like this point in space,
+
+104
+00:05:28,010 --> 00:05:31,530
+so it's relatively small and it has to get the data in,
+
+105
+00:05:31,600 --> 00:05:36,150
+the bigger the data, the farther it has to be away.
+
+106
+00:05:36,220 --> 00:05:39,680
+But, you can have these cores around the CPU that are,
+
+107
+00:05:39,780 --> 00:05:41,810
+we don't usually live in 3-D,
+
+108
+00:05:41,880 --> 00:05:44,390
+and chips were usually in 2-D, but never mind.
+
+109
+00:05:44,460 --> 00:05:48,170
+You can have the sphere that's closer to the CPU
+
+110
+00:05:48,240 --> 00:05:49,740
+that's a lot faster to access.
+
+111
+00:05:49,780 --> 00:05:52,030
+And as you get further away it costs more.
+
+112
+00:05:52,100 --> 00:05:54,740
+And that's essentially what this model is representing,
+
+113
+00:05:54,810 --> 00:05:57,270
+although it's a bit approximated from the
+
+114
+00:05:57,340 --> 00:06:00,450
+intrinsic physics and geometry and whatnot.
+
+115
+00:06:00,500 --> 00:06:05,160
+But that's the idea. The latency, the round-trip time
+
+116
+00:06:05,230 --> 00:06:08,090
+to get some of this memory has to be big.
+
+117
+00:06:08,160 --> 00:06:15,290
+In general, the costs to access memory
+
+118
+00:06:16,090 --> 00:06:20,890
+is made up of two things, the latency, the round-trip time
+
+119
+00:06:20,960 --> 00:06:24,320
+which in particular is limited by the speed of light.
+
+120
+00:06:24,390 --> 00:06:30,570
+And, plus the round-trip time,
+
+121
+00:06:30,670 --> 00:06:32,610
+you also have to get the data out.
+
+122
+00:06:32,670 --> 00:06:34,600
+And depending on how much data you want,
+
+123
+00:06:34,670 --> 00:06:38,780
+it could take longer. OK, so there's something.
+
+124
+00:06:38,850 --> 00:06:42,830
+There could be, get this right, let's say,
+
+125
+00:06:42,940 --> 00:06:49,690
+the amount of data divided by the bandwidth.
+
+126
+00:06:50,070 --> 00:06:53,360
+OK, the bandwidth is at what rate can you get the data out?
+
+127
+00:06:53,460 --> 00:06:55,440
+And if you look at the bandwidth of these
+
+128
+00:06:55,520 --> 00:06:59,900
+various levels of memory, it's all pretty much the same.
+
+129
+00:06:59,970 --> 00:07:01,700
+If you have a well-designed computer
+
+130
+00:07:01,770 --> 00:07:03,690
+the bandwidths should all be the same.
+
+131
+00:07:03,830 --> 00:07:07,830
+OK, as you can still get data off disc really, really fast,
+
+132
+00:07:07,900 --> 00:07:09,950
+usually at about the speed of your bus,
+
+133
+00:07:10,020 --> 00:07:11,820
+and then the bus gets the CPU hopefully
+
+134
+00:07:11,890 --> 00:07:13,450
+as fast as everything else.
+
+135
+00:07:13,520 --> 00:07:14,950
+So, even though they're slower,
+
+136
+00:07:15,020 --> 00:07:17,550
+they're really only slower in terms of latency.
+
+137
+00:07:17,620 --> 00:07:22,160
+And so, this part is maybe reasonable.
+
+138
+00:07:22,230 --> 00:07:24,610
+The bandwidth looks pretty much the same universally.
+
+139
+00:07:24,680 --> 00:07:27,420
+It's the latency that's going up.
+
+140
+00:07:27,490 --> 00:07:30,290
+So, if the latency is going up but we still
+
+141
+00:07:30,310 --> 00:07:32,820
+get to divide by the same amount of bandwidth,
+
+142
+00:07:32,890 --> 00:07:35,760
+what should we do to make the access cost
+
+143
+00:07:35,830 --> 00:07:39,400
+at all these levels about the same?
+
+144
+00:07:41,790 --> 00:07:47,430
+This is fixed. Let's say this is increasing,
+
+145
+00:07:47,500 --> 00:07:50,570
+but this is still staying big.
+
+146
+00:07:50,610 --> 00:07:54,230
+What could we do to balance this formula?
+
+147
+00:07:59,000 --> 00:08:01,000
+Change the amounts.
+
+148
+00:08:01,070 --> 00:08:04,410
+As the latency goes up, if we increase the amount,
+
+149
+00:08:04,480 --> 00:08:10,220
+then the amortized cost to access one element will go down.
+
+150
+00:08:10,330 --> 00:08:16,550
+So, this is amortization in a very simple sense.
+
+151
+00:08:17,250 --> 00:08:21,840
+So, this was to access a whole block,
+
+152
+00:08:21,940 --> 00:08:25,300
+let's say, and this amount was the size of the block.
+
+153
+00:08:26,250 --> 00:08:31,190
+So, the amortized cost, then, to access one element
+
+154
+00:08:34,480 --> 00:08:40,990
+is going to be the latency divided by the size of the block,
+
+155
+00:08:41,060 --> 00:08:45,920
+the amount plus one over the bandwidth.
+
+156
+00:08:49,030 --> 00:08:50,610
+OK, so this is what you should
+
+157
+00:08:50,670 --> 00:08:52,610
+implicitly be thinking in your head.
+
+158
+00:08:52,680 --> 00:08:54,940
+So, I'm just dividing here by the amounts because
+
+159
+00:08:55,060 --> 00:08:57,470
+the amount is how many elements you get
+
+160
+00:08:57,540 --> 00:09:00,000
+in one access, let's suppose.
+
+161
+00:09:00,070 --> 00:09:03,170
+OK, so we get this formula for the amortized cost.
+
+162
+00:09:03,240 --> 00:09:04,750
+The one over bandwidth is going to be good
+
+163
+00:09:04,820 --> 00:09:07,260
+no matter what level we are on, I claim.
+
+164
+00:09:07,340 --> 00:09:09,500
+There's no real fundamental limitation there
+
+165
+00:09:09,570 --> 00:09:11,570
+except it might be expensive.
+
+166
+00:09:11,670 --> 00:09:14,800
+And the latency we get the amortized out by the amounts,
+
+167
+00:09:14,860 --> 00:09:16,350
+so whatever the latency is,
+
+168
+00:09:16,360 --> 00:09:17,990
+as the latency gets bigger out here,
+
+169
+00:09:18,060 --> 00:09:20,160
+we just get more and more stuff and then
+
+170
+00:09:20,230 --> 00:09:22,950
+we make these two terms equal, let's say.
+
+171
+00:09:23,020 --> 00:09:26,060
+That would be a good way to balance things.
+
+172
+00:09:26,130 --> 00:09:29,850
+So in particular, disc has a really high latency.
+
+173
+00:09:29,920 --> 00:09:33,280
+Not only is there speed of light issues here,
+
+174
+00:09:33,350 --> 00:09:35,050
+but there's actually the speed of the head
+
+175
+00:09:35,120 --> 00:09:36,970
+moving on the tracks of the disk.
+
+176
+00:09:37,070 --> 00:09:39,130
+That takes a long time. There's a physical motion.
+
+177
+00:09:39,200 --> 00:09:42,510
+Everything else here doesn't usually have physical motion.
+
+178
+00:09:42,590 --> 00:09:44,230
+It's just electric.
+
+179
+00:09:44,330 --> 00:09:46,670
+So, this is really, really slow and latency,
+
+180
+00:09:46,730 --> 00:09:48,470
+so when you read something out of disk,
+
+181
+00:09:48,540 --> 00:09:51,950
+you might as well read a lot of data from disc,
+
+182
+00:09:52,020 --> 00:09:55,420
+like a megabyte or so. It's probably even old these days.
+
+183
+00:09:55,490 --> 00:09:57,770
+Maybe you read multiple megabytes when you read
+
+184
+00:09:57,870 --> 00:10:03,000
+anything from disk if you want these to be matched.
+
+185
+00:10:03,480 --> 00:10:06,990
+OK, there's a bit of a problem with doing that.
+
+186
+00:10:07,830 --> 00:10:09,800
+Any suggestions what the problem would be?
+
+187
+00:10:09,860 --> 00:10:11,350
+So, you have this algorithm. You know.
+
+188
+00:10:11,430 --> 00:10:14,300
+And, whenever it reads something off of disk,
+
+189
+00:10:14,370 --> 00:10:16,040
+it reads an entire megabyte of stuff
+
+190
+00:10:16,110 --> 00:10:19,380
+around the element it asked for.
+
+191
+00:10:21,580 --> 00:10:28,050
+So the amortized cost to access is going to be reasonable,
+
+192
+00:10:28,120 --> 00:10:32,280
+but that's actually sort of assuming something. Yeah?
+
+193
+00:10:32,280 --> 00:10:34,980
+[Student]:...
+
+194
+00:10:35,090 --> 00:10:36,680
+[Prof]:Right. I'm assuming that
+
+195
+00:10:36,790 --> 00:10:39,480
+I'm ever going to use the rest of that data.
+
+196
+00:10:39,550 --> 00:10:43,190
+If I'm going to read 10 MB around the one
+
+197
+00:10:43,260 --> 00:10:47,370
+element that asked for, I access A bracket I,
+
+198
+00:10:47,440 --> 00:10:52,600
+and I get 10 million items from A around I,
+
+199
+00:10:52,710 --> 00:10:54,760
+it would be kind of good if the algorithm
+
+200
+00:10:54,760 --> 00:10:58,250
+actually used that data for something.
+
+201
+00:10:59,220 --> 00:11:05,880
+It seems reasonable. So, this would be spatial locality.
+
+202
+00:11:06,790 --> 00:11:10,420
+So, we want, I mean the goal of this world
+
+203
+00:11:10,520 --> 00:11:12,790
+in cache oblivious algorithms and cache efficient algorithms
+
+204
+00:11:12,860 --> 00:11:17,830
+in general is you want algorithms that
+
+205
+00:11:17,900 --> 00:11:22,050
+perform well when this is happening.
+
+206
+00:11:23,170 --> 00:11:27,590
+So, this is the idea of blocking.
+
+207
+00:11:27,660 --> 00:11:32,690
+And we want the algorithm to use all or
+
+208
+00:11:32,700 --> 00:11:37,980
+at least most of the elements in a block,
+
+209
+00:11:39,490 --> 00:11:42,090
+a consecutive chunk of memory.
+
+210
+00:11:42,150 --> 00:11:45,910
+So, this is spatial locality.
+
+211
+00:11:52,960 --> 00:11:56,030
+Ideally, we'd use all of them right then. But I mean,
+
+212
+00:11:56,100 --> 00:11:58,470
+depending on your algorithm, that's a little bit tricky.
+
+213
+00:11:58,540 --> 00:11:59,780
+There is another issue, though.
+
+214
+00:11:59,850 --> 00:12:02,220
+So, you read in your thing into,
+
+215
+00:12:02,300 --> 00:12:05,280
+read your 10 MB into main memory, let's say,
+
+216
+00:12:05,350 --> 00:12:07,540
+and your memory, let's say, is at least,
+
+217
+00:12:07,610 --> 00:12:10,170
+these days you should have a 4 GB memory or something.
+
+218
+00:12:10,240 --> 00:12:11,470
+So, you could read and actually
+
+219
+00:12:11,510 --> 00:12:14,650
+a lot of different blocks into main memory.
+
+220
+00:12:14,720 --> 00:12:16,530
+What you'd like is that you can use those blocks
+
+221
+00:12:16,600 --> 00:12:19,970
+for as long as possible. Maybe you don't even use them.
+
+222
+00:12:20,040 --> 00:12:21,570
+If you have a linear time algorithm, you're probably
+
+223
+00:12:21,640 --> 00:12:23,910
+only going to visit each element a constant number of times
+
+224
+00:12:23,980 --> 00:12:25,050
+So, this is enough.
+
+225
+00:12:25,160 --> 00:12:27,730
+But if your algorithm is more than linear time,
+
+226
+00:12:27,800 --> 00:12:30,300
+you're going to be accessing elements more than once.
+
+227
+00:12:30,410 --> 00:12:32,330
+So, it would be a good idea
+
+228
+00:12:32,430 --> 00:12:34,290
+not only to use all the elements of the blocks,
+
+229
+00:12:34,400 --> 00:12:36,010
+but use them as many times as you can
+
+230
+00:12:36,080 --> 00:12:38,160
+before you have to throw the block out.
+
+231
+00:12:38,230 --> 00:12:41,270
+That's temporal locality.
+
+232
+00:12:42,870 --> 00:12:51,060
+So ideally, you even reuse blocks as much as possible.
+
+233
+00:12:51,130 --> 00:12:54,070
+So, I mean, we have all these caches.
+
+234
+00:12:54,140 --> 00:12:56,410
+So, I didn't write this word.
+
+235
+00:12:56,520 --> 00:12:59,010
+Just in case I don't know how to spell it,
+
+236
+00:12:59,080 --> 00:13:01,660
+it's not the money.
+
+237
+00:13:03,490 --> 00:13:05,870
+We should use those caches for something.
+
+238
+00:13:05,940 --> 00:13:08,330
+I mean, the fact that they store more than one block,
+
+239
+00:13:08,390 --> 00:13:12,080
+each cache can store several blocks. How many?
+
+240
+00:13:12,150 --> 00:13:16,480
+Well, we'll get to that in a second.
+
+241
+00:13:16,980 --> 00:13:19,860
+OK, so this is the general motivation,
+
+242
+00:13:19,930 --> 00:13:22,710
+but at this point the model is still pretty damn ugly.
+
+243
+00:13:22,750 --> 00:13:24,200
+If you wanted to design an algorithm
+
+244
+00:13:24,280 --> 00:13:27,770
+that runs well on this kind of machine directly,
+
+245
+00:13:27,850 --> 00:13:29,860
+it's possible but pretty difficult,
+
+246
+00:13:29,930 --> 00:13:33,520
+and essentially never done, let's say,
+
+247
+00:13:33,590 --> 00:13:36,720
+even though this is what real machines look like.
+
+248
+00:13:37,400 --> 00:13:41,080
+At least in theory, and pretty much in practice,
+
+249
+00:13:41,150 --> 00:13:45,980
+the main thing to think about is two levels at a time.
+
+250
+00:13:49,520 --> 00:13:51,400
+So, this is a simplification where we can
+
+251
+00:13:51,470 --> 00:13:55,770
+say a lot more about algorithms,
+
+252
+00:13:55,850 --> 00:13:58,140
+a simplification over this model.
+
+253
+00:13:58,240 --> 00:14:01,090
+So, in this model, each of these levels
+
+254
+00:14:01,160 --> 00:14:04,530
+has different block sizes, and a different total sizes,
+
+255
+00:14:04,610 --> 00:14:07,820
+it's a mess to deal with and design algorithms for.
+
+256
+00:14:07,890 --> 00:14:11,490
+If you just think about two levels, it's relatively easy.
+
+257
+00:14:11,600 --> 00:14:15,650
+So, we have our CPU which we assume
+
+258
+00:14:15,790 --> 00:14:20,780
+has a constant number of registers only.
+
+259
+00:14:20,850 --> 00:14:23,790
+So, you know, once it has a couple of data items,
+
+260
+00:14:23,860 --> 00:14:26,530
+you can add them and whatnot.
+
+261
+00:14:27,120 --> 00:14:29,830
+Then we have this really fast pipe.
+
+262
+00:14:29,910 --> 00:14:34,820
+So, I draw it thick to some cache.
+
+263
+00:14:39,370 --> 00:14:45,880
+So this is cache. And, we have a relatively narrow pipe
+
+264
+00:14:45,960 --> 00:14:52,350
+to some really big other storage,
+
+265
+00:14:56,150 --> 00:14:58,910
+which I will call main memory.
+
+266
+00:15:04,970 --> 00:15:06,850
+So, I mean, that's the general picture.
+
+267
+00:15:06,920 --> 00:15:10,170
+Now, this could represent any two of these levels.
+
+268
+00:15:10,240 --> 00:15:13,080
+It could be between L3 cache and main memory.
+
+269
+00:15:13,150 --> 00:15:16,160
+That's maybe, what the naming corresponds to best.
+
+270
+00:15:16,240 --> 00:15:18,920
+Or cache could in fact be main memory,
+
+271
+00:15:18,990 --> 00:15:21,240
+what we consider the RAM of the machine,
+
+272
+00:15:21,340 --> 00:15:24,740
+and what's called a memory over there to be the disk.
+
+273
+00:15:24,810 --> 00:15:26,250
+It's whatever you care about.
+
+274
+00:15:26,280 --> 00:15:28,890
+And usually, if you have a program,
+
+275
+00:15:28,930 --> 00:15:32,470
+you know, usually we assume everything fits in main memory.
+
+276
+00:15:32,540 --> 00:15:34,290
+Then you care about the caching behavior.
+
+277
+00:15:34,360 --> 00:15:36,260
+So you probably look between these two levels.
+
+278
+00:15:36,300 --> 00:15:38,380
+That's probably what matters the most in your program
+
+279
+00:15:38,490 --> 00:15:41,780
+because the cost differential here is really big
+
+280
+00:15:44,020 --> 00:15:46,710
+If your data doesn't even fit it main memory,
+
+281
+00:15:46,780 --> 00:15:47,840
+and you have to go to disk,
+
+282
+00:15:47,910 --> 00:15:49,890
+then you really care about this level
+
+283
+00:15:49,960 --> 00:15:51,760
+because the cost differential here is huge.
+
+284
+00:15:51,830 --> 00:15:55,270
+It's like six orders of magnitude, let's say.
+
+285
+00:15:55,300 --> 00:15:59,680
+So, in practice you may think of just
+
+286
+00:15:59,780 --> 00:16:02,840
+two memory levels that are the most relevant.
+
+287
+00:16:02,920 --> 00:16:05,140
+OK, now I'm going to define some parameters.
+
+288
+00:16:05,210 --> 00:16:06,920
+I'm going to call them cache and main memory
+
+289
+00:16:06,990 --> 00:16:09,640
+just for clarity because I like to think of
+
+290
+00:16:09,680 --> 00:16:12,380
+main memory just the way it used to be.
+
+291
+00:16:12,450 --> 00:16:13,700
+And now all we have to worry about is
+
+292
+00:16:13,770 --> 00:16:18,410
+this extra thing called cache. It has some bounded size,
+
+293
+00:16:18,480 --> 00:16:23,980
+and there's a block size. The block size is B.
+
+294
+00:16:28,270 --> 00:16:33,460
+and a number of blocks is M over B.
+
+295
+00:16:36,650 --> 00:16:41,370
+So, the total size of the cache is M.
+
+296
+00:16:49,110 --> 00:16:54,080
+OK, main memory is also blocked into blocks of size B.
+
+297
+00:16:54,300 --> 00:16:56,700
+And we assume that it has essentially infinite size.
+
+298
+00:16:56,770 --> 00:16:59,220
+We don't care about its size in this picture.
+
+299
+00:16:59,290 --> 00:17:02,520
+It's whatever is big enough to hold the size of
+
+300
+00:17:02,560 --> 00:17:05,370
+your algorithm, or data structure, or whatever.
+
+301
+00:17:05,440 --> 00:17:09,010
+OK, so that's the general model.
+
+302
+00:17:11,760 --> 00:17:13,640
+And for strange, historical reasons,
+
+303
+00:17:13,750 --> 00:17:14,800
+which I don't want to get into,
+
+304
+00:17:14,880 --> 00:17:17,470
+these things are called capital M and capital B.
+
+305
+00:17:17,540 --> 00:17:19,110
+Even though M sounds a lot like memory,
+
+306
+00:17:19,180 --> 00:17:22,840
+it's really for cache, and don't ask.
+
+307
+00:17:22,990 --> 00:17:28,150
+OK, this is to preserve history.
+
+308
+00:17:29,600 --> 00:17:31,750
+OK, now what do we do with this model?
+
+309
+00:17:31,780 --> 00:17:34,590
+It seems nice, but now what do we measure about it?
+
+310
+00:17:34,660 --> 00:17:38,210
+What I'm going to assume is that the cache is really fast.
+
+311
+00:17:38,280 --> 00:17:42,010
+So the CPU can access cache essentially instantaneously.
+
+312
+00:17:42,040 --> 00:17:46,720
+I still have to pay for the computation that the CPU is doing
+
+313
+00:17:46,790 --> 00:17:49,040
+but I'm assuming cache is close enough that I don't care.
+
+314
+00:17:49,110 --> 00:17:51,610
+And that main memory is so big that it has to be far away,
+
+315
+00:17:51,680 --> 00:17:56,920
+and therefore, this pipe is a problem. I mean,
+
+316
+00:17:56,990 --> 00:17:59,030
+what I should really draw is that pipe is still thick,
+
+317
+00:17:59,100 --> 00:18:02,330
+but is really long. So, the latency is high.
+
+318
+00:18:02,400 --> 00:18:06,940
+The bandwidth is still high.
+
+319
+00:18:07,050 --> 00:18:10,040
+OK, and all transfers here happened in blocks.
+
+320
+00:18:10,110 --> 00:18:12,480
+So, when you don't have something,
+
+321
+00:18:12,580 --> 00:18:15,160
+so the idea is CPU asks for A of I,
+
+322
+00:18:15,200 --> 00:18:16,350
+ask for something in memory,
+
+323
+00:18:16,420 --> 00:18:20,270
+if it's in the cache, it gets it. That's free.
+
+324
+00:18:20,330 --> 00:18:23,250
+Otherwise, it has to grab the entire block
+
+325
+00:18:23,330 --> 00:18:25,290
+containing that element from main memory,
+
+326
+00:18:25,360 --> 00:18:27,820
+brings it into cache, maybe kicks somebody out
+
+327
+00:18:27,820 --> 00:18:29,220
+if the cache was full,
+
+328
+00:18:29,230 --> 00:18:31,620
+and then the CPU can use that data and keep going.
+
+329
+00:18:31,730 --> 00:18:34,340
+Until it accesses something else that's not in cache,
+
+330
+00:18:34,410 --> 00:18:35,950
+then it has to grab it from main memory.
+
+331
+00:18:36,020 --> 00:18:37,020
+When you kick something out,
+
+332
+00:18:37,090 --> 00:18:41,490
+you're actually writing back to memory. That's the model.
+
+333
+00:18:42,710 --> 00:18:50,960
+So, we suppose the accesses to cache are free.
+
+334
+00:18:51,930 --> 00:18:57,730
+But we can still think about the running time of the algorithm.
+
+335
+00:18:57,770 --> 00:19:02,750
+I'm not going to change the definition of running time.
+
+336
+00:19:04,990 --> 00:19:06,410
+This would be the computation time,
+
+337
+00:19:06,480 --> 00:19:11,870
+or the work, if you want to use multithreaded lingo,
+
+338
+00:19:11,880 --> 00:19:15,470
+Computation time.
+
+339
+00:19:16,040 --> 00:19:18,380
+OK, so we still have time,
+
+340
+00:19:18,490 --> 00:19:20,580
+and T of N will still mean what it did before.
+
+341
+00:19:20,700 --> 00:19:24,510
+This is just an extra level of refinement of understanding
+
+342
+00:19:24,590 --> 00:19:27,520
+of what's going on. Essentially, measuring the parallelism
+
+343
+00:19:27,590 --> 00:19:29,760
+that we can exploit out of the memory system,
+
+344
+00:19:29,830 --> 00:19:33,100
+that when you access something you actually get B items.
+
+345
+00:19:34,100 --> 00:19:37,460
+So, this is the old stuff.
+
+346
+00:19:37,570 --> 00:19:42,160
+Now, what I want to do is count memory transfers.
+
+347
+00:19:47,620 --> 00:19:50,880
+These are transfers of blocks, so I should say
+
+348
+00:19:50,950 --> 00:19:55,420
+block memory transfers between the two levels,
+
+349
+00:19:55,500 --> 00:19:58,690
+so, between the cache and main memory.
+
+350
+00:20:08,390 --> 00:20:12,530
+So, memory transfers are either reading reads or writes.
+
+351
+00:20:12,680 --> 00:20:19,870
+Maybe I should say that. These are number of block
+
+352
+00:20:20,440 --> 00:20:29,620
+reads and writes from and to the main memory.
+
+353
+00:20:29,840 --> 00:20:32,160
+OK, so I'm going to introduce some notation.
+
+354
+00:20:32,230 --> 00:20:36,740
+This is new notation, so we'll see how it works out.
+
+355
+00:20:36,810 --> 00:20:41,510
+MT of N I want to represent the number of memory transfers
+
+356
+00:20:41,580 --> 00:20:45,410
+instead of just normal time of the problem of size N.
+
+357
+00:20:45,490 --> 00:20:49,600
+Really, this is a function that depends not only on N
+
+358
+00:20:49,670 --> 00:20:53,360
+but also on these parameters, B and M, in our model.
+
+359
+00:20:53,430 --> 00:20:58,390
+So, this is what it should be, MT_B,M(N),
+
+360
+00:20:58,460 --> 00:21:00,610
+but that's obviously pretty messy,
+
+361
+00:21:00,670 --> 00:21:03,600
+so I'm going to stick to MT of N.
+
+362
+00:21:03,670 --> 00:21:06,260
+But this will always, because mainly I care about
+
+363
+00:21:06,340 --> 00:21:07,890
+the growth in terms of N. well,
+
+364
+00:21:07,970 --> 00:21:09,600
+I care about the growth in terms of all things,
+
+365
+00:21:09,670 --> 00:21:11,900
+but the only thing I could change is N.
+
+366
+00:21:11,980 --> 00:21:14,210
+So, most of the time I only think about,
+
+367
+00:21:14,280 --> 00:21:17,330
+like when we are writing recurrences, only N is changing.
+
+368
+00:21:17,390 --> 00:21:19,950
+I can't recurse on the block size.
+
+369
+00:21:20,030 --> 00:21:21,520
+I can't recurse on the size of cache.
+
+370
+00:21:21,590 --> 00:21:23,530
+Those are given to me. They're fixed.
+
+371
+00:21:23,600 --> 00:21:26,050
+OK, so we'll be changing N mainly.
+
+372
+00:21:26,130 --> 00:21:29,100
+But B and M always matter here. They're not constants.
+
+373
+00:21:29,170 --> 00:21:32,410
+They're parameters of the model.
+
+374
+00:21:32,480 --> 00:21:36,540
+OK, easy enough.
+
+375
+00:21:36,700 --> 00:21:40,420
+This is something called the disk access model,
+
+376
+00:21:40,490 --> 00:21:46,050
+if you like DAM models, or the external memory model,
+
+377
+00:21:46,130 --> 00:21:47,900
+or the cache aware model.
+
+378
+00:21:47,970 --> 00:21:53,020
+Maybe I should mention that; this is the cache aware.
+
+379
+00:21:53,610 --> 00:21:55,400
+In general, you have some algorithm that
+
+380
+00:21:55,470 --> 00:21:58,560
+runs on this kind of model, machine model.
+
+381
+00:21:58,630 --> 00:22:02,530
+That's a cache aware algorithm.
+
+382
+00:22:04,370 --> 00:22:06,840
+OK, we're not too interested in cache aware algorithms.
+
+383
+00:22:06,950 --> 00:22:10,430
+We've seen one, B trees.
+
+384
+00:22:10,510 --> 00:22:12,630
+B trees are cache aware data structure.
+
+385
+00:22:12,670 --> 00:22:15,270
+You assume that there is some block size, B, underlying.
+
+386
+00:22:15,350 --> 00:22:17,200
+Maybe you didn't see exactly this model.
+
+387
+00:22:17,240 --> 00:22:20,350
+In particular, it didn't really matter how big the cache was
+
+388
+00:22:20,380 --> 00:22:22,020
+because you just wanted to know, when I read B items,
+
+389
+00:22:22,100 --> 00:22:24,360
+I can use all of them as much as possible
+
+390
+00:22:24,430 --> 00:22:26,310
+and figure out where I fit among those B items,
+
+391
+00:22:26,380 --> 00:22:31,020
+and that gives me log base B of N memory transfers
+
+392
+00:22:31,070 --> 00:22:33,790
+instead of log N, which would be, if you just
+
+393
+00:22:33,880 --> 00:22:37,570
+threw your favorite balanced binary search tree. So,
+
+394
+00:22:37,650 --> 00:22:40,720
+log base B of N is definitely better than log base 2 of N.
+
+395
+00:22:40,800 --> 00:22:45,080
+B trees are a cache aware algorithm.
+
+396
+00:22:46,570 --> 00:22:51,030
+what we would like to do today and next lecture
+
+397
+00:22:51,100 --> 00:22:54,310
+is get cache oblivious algorithms.
+
+398
+00:23:01,590 --> 00:23:03,190
+So, there's essentially only one difference
+
+399
+00:23:03,270 --> 00:23:05,750
+between cache aware algorithms and cache oblivious algorithms.
+
+400
+00:23:05,820 --> 00:23:07,520
+In cache oblivious algorithms,
+
+401
+00:23:07,580 --> 00:23:12,850
+the algorithm doesn't know what B and M are.
+
+402
+00:23:22,560 --> 00:23:27,020
+So this is a bit of a subtle point, but very cool idea.
+
+403
+00:23:27,110 --> 00:23:29,860
+You assume that this is the model of the machine,
+
+404
+00:23:29,930 --> 00:23:31,920
+and you care about the number of memory transfers
+
+405
+00:23:31,990 --> 00:23:34,260
+between this cache of size M with blocking B,
+
+406
+00:23:34,370 --> 00:23:37,010
+and main memory with blocking B.
+
+407
+00:23:37,080 --> 00:23:39,920
+But you don't actually know what the model is.
+
+408
+00:23:39,990 --> 00:23:41,610
+You don't know the other parameters of the model.
+
+409
+00:23:41,720 --> 00:23:44,140
+It looks like this, but you don't know the width.
+
+410
+00:23:44,210 --> 00:23:48,890
+You don't know the height. Why not?
+
+411
+00:23:48,960 --> 00:23:51,710
+So, the analysis knows what B and M are.
+
+412
+00:23:51,790 --> 00:23:53,690
+We are going to write some algorithms
+
+413
+00:23:53,760 --> 00:23:56,090
+which look just like boring old algorithms that
+
+414
+00:23:56,130 --> 00:23:57,090
+we've seen throughout the lecture.
+
+415
+00:23:57,160 --> 00:23:58,700
+That's one of the nice things about this model.
+
+416
+00:23:58,770 --> 00:24:02,220
+Every algorithm we have seen is a cache oblivious algorithm,
+
+417
+00:24:02,260 --> 00:24:03,370
+all right, because we didn't even know
+
+418
+00:24:03,450 --> 00:24:06,020
+the word cache in this class until today.
+
+419
+00:24:06,100 --> 00:24:09,780
+So, we already have lots of algorithms to choose from.
+
+420
+00:24:09,820 --> 00:24:12,070
+The thing is, some of them will perform well in this model,
+
+421
+00:24:12,140 --> 00:24:13,680
+and some of them won't. So, we would like to
+
+422
+00:24:13,740 --> 00:24:16,750
+design algorithms that just like our old algorithms
+
+423
+00:24:16,810 --> 00:24:20,110
+that happened to perform well in this context,
+
+424
+00:24:20,180 --> 00:24:22,480
+no matter what B and M are.
+
+425
+00:24:22,550 --> 00:24:24,430
+So, another way this is the same algorithm
+
+426
+00:24:24,570 --> 00:24:28,000
+should work well for all values of B and M
+
+427
+00:24:28,040 --> 00:24:30,820
+if you have a good cache oblivious algorithm.
+
+428
+00:24:30,890 --> 00:24:34,880
+OK, there are a few consequences to this assumption.
+
+429
+00:24:34,990 --> 00:24:38,610
+In a cache aware algorithm, you can explicitly say,
+
+430
+00:24:38,690 --> 00:24:41,880
+OK, I'm blocking my memory into chunks of size B.
+
+431
+00:24:41,960 --> 00:24:45,610
+Here they are. I was going to store these B elements here,
+
+432
+00:24:45,690 --> 00:24:46,900
+because you know B, you can do that.
+
+433
+00:24:46,980 --> 00:24:48,460
+You can say, well, OK, now I want to
+
+434
+00:24:48,530 --> 00:24:50,460
+read these B items into my cache,
+
+435
+00:24:50,540 --> 00:24:52,870
+and then write out these ones over here.
+
+436
+00:24:52,940 --> 00:24:54,720
+You can explicitly maintain your cache.
+
+437
+00:24:54,790 --> 00:24:55,960
+With cache oblivious algorithms,
+
+438
+00:24:56,040 --> 00:24:58,220
+you can't because you don't know what it is.
+
+439
+00:24:58,260 --> 00:25:00,370
+So, it's got to be all implicit.
+
+440
+00:25:00,400 --> 00:25:02,560
+And this is pretty much how caches work anyway
+
+441
+00:25:02,630 --> 00:25:04,810
+except for disk.
+
+442
+00:25:04,940 --> 00:25:10,890
+So, it's a pretty reasonable model. In particular,
+
+443
+00:25:10,940 --> 00:25:15,610
+when you access an element that's not in cache,
+
+444
+00:25:15,670 --> 00:25:21,120
+you automatically fetch the block containing that element.
+
+445
+00:25:31,730 --> 00:25:34,270
+And you pay one memory transfer for that
+
+446
+00:25:34,340 --> 00:25:36,230
+if it wasn't already there.
+
+447
+00:25:36,300 --> 00:25:41,100
+Another bit of a catch here is,
+
+448
+00:25:41,140 --> 00:25:42,590
+what if your cache is full?
+
+449
+00:25:42,630 --> 00:25:45,760
+Then you've got to kick some block out of your cache.
+
+450
+00:25:46,020 --> 00:25:48,710
+And then, so we need some model of which block
+
+451
+00:25:48,780 --> 00:25:50,520
+gets kicked out because we can't control that.
+
+452
+00:25:50,590 --> 00:25:54,270
+We have no knowledge of what the blocks are in our algorithm.
+
+453
+00:25:55,440 --> 00:26:01,010
+So what we're going to assume in this model is the ideal thing
+
+454
+00:26:01,090 --> 00:26:04,050
+that when you fetch a new block, if your cache is full,
+
+455
+00:26:04,120 --> 00:26:12,740
+you evict a block that will be used farthest in the future
+
+456
+00:26:15,660 --> 00:26:19,140
+Sorry, the furthest.
+
+457
+00:26:19,280 --> 00:26:22,180
+Farthest is distance. Furthest is time.
+
+458
+00:26:22,250 --> 00:26:26,780
+Furthest in the future.
+
+459
+00:26:26,970 --> 00:26:29,750
+OK, this would be the best possible thing to do.
+
+460
+00:26:29,820 --> 00:26:31,270
+It's a little bit hard to do in practice
+
+461
+00:26:31,340 --> 00:26:33,620
+because you don't know the future generally,
+
+462
+00:26:33,660 --> 00:26:34,770
+unless you're omniscient.
+
+463
+00:26:34,900 --> 00:26:39,170
+So, this is a bit of an idealized model.
+
+464
+00:26:39,210 --> 00:26:43,510
+But it's pretty reasonable in the sense that
+
+465
+00:26:43,580 --> 00:26:47,680
+if you've read the reading handout number 20,
+
+466
+00:26:47,770 --> 00:26:50,020
+this paper by Sleator and Tarjan,
+
+467
+00:26:50,090 --> 00:26:52,550
+they introduce the idea of competitive algorithms.
+
+468
+00:26:52,620 --> 00:26:55,060
+So, we only talked about a small portion of that paper
+
+469
+00:26:55,130 --> 00:26:59,090
+that moved to front heuristic for storing a list.
+
+470
+00:26:59,160 --> 00:27:03,020
+But, it also proves that there are strategies,
+
+471
+00:27:03,090 --> 00:27:04,980
+and maybe you heard this in recitation.
+
+472
+00:27:05,090 --> 00:27:06,930
+Some people covered it; some didn't,
+
+473
+00:27:06,970 --> 00:27:10,310
+that these are called paging strategies.
+
+474
+00:27:10,350 --> 00:27:13,270
+So, you want to maintain some cache of pages or blocks,
+
+475
+00:27:13,340 --> 00:27:16,100
+and you pay whenever you have to access
+
+476
+00:27:16,170 --> 00:27:19,200
+a block that's not in your cache.
+
+477
+00:27:19,300 --> 00:27:21,340
+The best thing to do is to always kick out the block
+
+478
+00:27:21,420 --> 00:27:23,220
+that will be used farthest in the future
+
+479
+00:27:23,290 --> 00:27:25,640
+because that way you'll use all the blocks that are in there.
+
+480
+00:27:25,700 --> 00:27:29,350
+This turns out to be the offline optimal strategy
+
+481
+00:27:29,420 --> 00:27:30,930
+if you knew the future.
+
+482
+00:27:31,000 --> 00:27:33,300
+But, there are algorithms that are
+
+483
+00:27:33,370 --> 00:27:36,790
+essentially constant competitive against this strategy.
+
+484
+00:27:36,800 --> 00:27:37,830
+I don't want to get into details because
+
+485
+00:27:37,900 --> 00:27:40,250
+they're not exactly constant competitive.
+
+486
+00:27:40,290 --> 00:27:43,170
+But they are sufficiently constant competitive
+
+487
+00:27:43,210 --> 00:27:45,570
+for the purposes of this lecture that we can assume this,
+
+488
+00:27:45,640 --> 00:27:48,250
+not have to worry about it. Most of the time,
+
+489
+00:27:48,320 --> 00:27:50,300
+we don't even really use this assumption.
+
+490
+00:27:50,370 --> 00:27:53,910
+But there it is. That's the cache oblivious model.
+
+491
+00:27:53,990 --> 00:27:56,250
+It makes things cleaner to think about
+
+492
+00:27:56,290 --> 00:27:59,630
+just anything that should be done, will be done.
+
+493
+00:27:59,700 --> 00:28:02,620
+And you can simulate that with least recently used
+
+494
+00:28:02,690 --> 00:28:07,990
+or whatever good heuristic that you want to
+
+495
+00:28:08,050 --> 00:28:10,680
+that's competitive against the optimal.
+
+496
+00:28:12,470 --> 00:28:15,570
+OK, that's pretty much the cache oblivious algorithm.
+
+497
+00:28:15,630 --> 00:28:17,770
+Once you have the two level model,
+
+498
+00:28:17,850 --> 00:28:19,580
+you just assume you don't know B and M.
+
+499
+00:28:19,660 --> 00:28:24,100
+You have this automatic request in writing, and whatnot.
+
+500
+00:28:24,680 --> 00:28:27,730
+A little bit more to say, I guess,
+
+501
+00:28:28,810 --> 00:28:30,210
+it may be obvious at this point,
+
+502
+00:28:30,290 --> 00:28:33,190
+but I've been drawing everything as tables.
+
+503
+00:28:33,260 --> 00:28:35,870
+So, it's not really clear what the linear order is.
+
+504
+00:28:35,940 --> 00:28:39,980
+Linear order is just the reading order.
+
+505
+00:28:41,520 --> 00:28:46,640
+So, although we don't explicitly say it most of the time,
+
+506
+00:28:46,710 --> 00:28:51,210
+a typical model is that memory is a linear array.
+
+507
+00:28:51,280 --> 00:28:53,760
+Everything that you ever store in your program
+
+508
+00:28:53,830 --> 00:28:55,590
+is written in this linear array.
+
+509
+00:28:55,660 --> 00:28:58,220
+If you've ever programmed in Assembly or whatever,
+
+510
+00:28:58,290 --> 00:29:00,320
+that's the model. You have the address space,
+
+511
+00:29:00,470 --> 00:29:01,840
+and any number between here and here,
+
+512
+00:29:01,910 --> 00:29:04,270
+that's where you can actually, this is physical memory.
+
+513
+00:29:04,310 --> 00:29:06,480
+This is all you can write to.
+
+514
+00:29:06,550 --> 00:29:08,510
+So, it starts at zero and goes out to,
+
+515
+00:29:08,540 --> 00:29:11,000
+let's call it infinity over here.
+
+516
+00:29:11,070 --> 00:29:13,090
+And, if you allocate some array,
+
+517
+00:29:13,180 --> 00:29:16,520
+maybe it occupies some space in the middle. Who knows?
+
+518
+00:29:16,590 --> 00:29:18,900
+OK, we usually don't think about that much.
+
+519
+00:29:18,970 --> 00:29:21,130
+What I care about now is that memory itself
+
+520
+00:29:21,200 --> 00:29:24,930
+is blocked in this view.
+
+521
+00:29:25,000 --> 00:29:29,320
+So, however your stuff is stored in memory,
+
+522
+00:29:30,290 --> 00:29:34,170
+it's blocked into clusters of length B.
+
+523
+00:29:34,240 --> 00:29:38,200
+So, if this is, let me call it one
+
+524
+00:29:38,270 --> 00:29:40,900
+and be a little bit nicer. This is B.
+
+525
+00:29:40,940 --> 00:29:42,790
+This is position B plus one.
+
+526
+00:29:42,890 --> 00:29:47,590
+This is 2B, and 2B plus one, and so on.
+
+527
+00:29:48,090 --> 00:29:50,200
+These are the indexes into memory.
+
+528
+00:29:50,270 --> 00:29:51,840
+This is how the blocking happens.
+
+529
+00:29:51,940 --> 00:29:57,450
+If you access something here, you get that chunk from U,
+
+530
+00:29:57,520 --> 00:30:00,200
+round it down to the previous multiple of B,
+
+531
+00:30:00,270 --> 00:30:03,550
+round it up to the next multiple of B.
+
+532
+00:30:03,590 --> 00:30:05,120
+That's what you always get.
+
+533
+00:30:05,190 --> 00:30:08,330
+OK, so if you think about some array
+
+534
+00:30:08,400 --> 00:30:11,690
+that's maybe allocated here,
+
+535
+00:30:11,760 --> 00:30:12,590
+OK, you have to keep in mind that
+
+536
+00:30:12,660 --> 00:30:15,250
+that array may not be perfectly aligned with the blocks.
+
+537
+00:30:15,320 --> 00:30:17,780
+But more or less it will be so we don't care too much.
+
+538
+00:30:17,850 --> 00:30:22,310
+But that's a bit of a subtlety there.
+
+539
+00:30:22,970 --> 00:30:27,010
+OK, so that's pretty much the model.
+
+540
+00:30:27,080 --> 00:30:30,300
+So every algorithm we've seen, except B trees,
+
+541
+00:30:30,370 --> 00:30:34,470
+is a cache oblivious algorithm. And our question is, now,
+
+542
+00:30:34,510 --> 00:30:37,300
+we know how everything runs in terms of running time.
+
+543
+00:30:37,370 --> 00:30:40,630
+Now we want to measure the number of memory transfers,
+
+544
+00:30:40,710 --> 00:30:43,080
+It's MT of N.
+
+545
+00:30:43,150 --> 00:30:46,940
+I want to mention one other fact or theorem.
+
+546
+00:30:47,010 --> 00:30:50,660
+I'll put it in brackets
+
+547
+00:30:52,410 --> 00:30:55,210
+because I don't want to state it precisely.
+
+548
+00:30:56,460 --> 00:31:01,880
+But if you have an algorithm that is efficient on two levels,
+
+549
+00:31:01,950 --> 00:31:04,570
+so in other words, what we're looking at,
+
+550
+00:31:04,570 --> 00:31:06,650
+if we just think about the two level world
+
+551
+00:31:06,720 --> 00:31:11,160
+and your algorithm is cache oblivious,
+
+552
+00:31:12,510 --> 00:31:15,470
+then it is efficient on any number of levels
+
+553
+00:31:15,540 --> 00:31:24,720
+in your memory hierarchy, say, L levels.
+
+554
+00:31:24,800 --> 00:31:26,740
+So, I don't want to define what efficient means.
+
+555
+00:31:26,780 --> 00:31:30,470
+But the intuition is, if your machine really looks like this
+
+556
+00:31:30,540 --> 00:31:32,300
+and you have a cache oblivious algorithm,
+
+557
+00:31:32,380 --> 00:31:36,130
+you can apply the cache oblivious analysis for all B and M.
+
+558
+00:31:36,210 --> 00:31:38,230
+So you can analyze the number of memory transfers here,
+
+559
+00:31:38,300 --> 00:31:41,480
+here, here, here, and here.
+
+560
+00:31:41,530 --> 00:31:44,890
+And if you have a good cache oblivious algorithm,
+
+561
+00:31:44,960 --> 00:31:48,660
+the performances at all those levels has to be good.
+
+562
+00:31:48,730 --> 00:31:50,620
+And therefore, the whole performance is good.
+
+563
+00:31:50,690 --> 00:31:52,420
+Good here means asymptotically optimal
+
+564
+00:31:52,480 --> 00:31:54,510
+up to constant factors, something like that.
+
+565
+00:31:54,580 --> 00:31:56,510
+OK, so I don't want to prove that,
+
+566
+00:31:56,580 --> 00:31:59,350
+and you can read the cache oblivious papers.
+
+567
+00:31:59,420 --> 00:32:01,740
+That's a nice fact about cache oblivious algorithms.
+
+568
+00:32:01,780 --> 00:32:03,630
+If you have a cache aware algorithm that
+
+569
+00:32:03,700 --> 00:32:07,970
+tunes to a particular value of B, and a particular value of M,
+
+570
+00:32:08,040 --> 00:32:10,330
+you're not going to have that property.
+
+571
+00:32:10,370 --> 00:32:13,680
+So, this is one nice feature of cache obliviousness.
+
+572
+00:32:13,750 --> 00:32:17,730
+Another nice feature is when you are coding the algorithm,
+
+573
+00:32:17,800 --> 00:32:19,740
+you don't have to put in B and M.
+
+574
+00:32:19,810 --> 00:32:23,600
+So, that simplifies things a bit.
+
+575
+00:32:24,200 --> 00:32:29,530
+So, let's do some algorithms.
+
+576
+00:32:29,610 --> 00:32:32,080
+Enough about models.
+
+577
+00:32:34,480 --> 00:32:36,700
+OK, we're going to start out with some really simple things
+
+578
+00:32:36,770 --> 00:32:41,220
+just to get warmed up on the analysis side.
+
+579
+00:32:41,290 --> 00:32:42,600
+The most basic thing you can do
+
+580
+00:32:42,640 --> 00:32:46,660
+that's good in a cache oblivious world is scanning.
+
+581
+00:32:48,970 --> 00:32:56,110
+So, scanning is just visiting the items in an array in order.
+
+582
+00:33:00,800 --> 00:33:03,900
+So, visit A_1 up to A_N in order.
+
+583
+00:33:03,970 --> 00:33:05,730
+For some notion of visit, this is presumably
+
+584
+00:33:05,800 --> 00:33:08,250
+some constant time operation. For example,
+
+585
+00:33:08,320 --> 00:33:10,500
+suppose you want to compute the aggregate of the array.
+
+586
+00:33:10,570 --> 00:33:12,660
+You want to sum all the elements in the array.
+
+587
+00:33:12,710 --> 00:33:15,310
+So, you have one extra variable using,
+
+588
+00:33:15,380 --> 00:33:17,600
+but you can store that in a register or whatever,
+
+589
+00:33:17,670 --> 00:33:24,180
+so that's one simple example. Sum the array.
+
+590
+00:33:26,140 --> 00:33:31,870
+OK, so here's the picture. We have our memory.
+
+591
+00:33:34,040 --> 00:33:38,550
+Each of these cells represents one item, one element,
+
+592
+00:33:38,620 --> 00:33:40,590
+log N bits, one word, whatever.
+
+593
+00:33:40,660 --> 00:33:46,820
+Our array is somewhere in here. Maybe it's there.
+
+594
+00:33:46,850 --> 00:33:51,000
+And we go from here to here to here to here.
+
+595
+00:33:51,080 --> 00:33:54,430
+OK, and so on. So, what does this cost?
+
+596
+00:33:54,480 --> 00:33:55,680
+What is the number of memory transfers?
+
+597
+00:33:55,750 --> 00:33:57,440
+We know that this is a linear time algorithm.
+
+598
+00:33:57,510 --> 00:33:59,710
+It takes order N time.
+
+599
+00:33:59,810 --> 00:34:03,380
+What does it cost in terms of memory transfers?
+
+600
+00:34:06,670 --> 00:34:09,910
+N over B, pretty much.
+
+601
+00:34:14,540 --> 00:34:17,850
+We like to say it's order N over B
+
+602
+00:34:17,920 --> 00:34:25,390
+plus two or one in the big O. This is a bit of worry.
+
+603
+00:34:25,450 --> 00:34:27,030
+I mean, N could be smaller than B.
+
+604
+00:34:27,100 --> 00:34:29,560
+We really want to think about all the cases, especially
+
+605
+00:34:29,560 --> 00:34:31,840
+because usually you're not doing this on something of size N.
+
+606
+00:34:31,910 --> 00:34:34,030
+You're doing it on something of size k,
+
+607
+00:34:34,100 --> 00:34:36,420
+where we don't really know much about k.
+
+608
+00:34:36,490 --> 00:34:38,940
+But in general, it's N over B plus one
+
+609
+00:34:39,010 --> 00:34:41,810
+because we always need at least one memory transfer
+
+610
+00:34:41,920 --> 00:34:45,090
+to look at something, unless N is zero.
+
+611
+00:34:45,160 --> 00:34:47,160
+And in particular,
+
+612
+00:34:47,230 --> 00:34:50,440
+it's plus two if you care about the constants.
+
+613
+00:34:50,540 --> 00:34:53,220
+If I don't write the big O then it would be plus two at most
+
+614
+00:34:53,290 --> 00:34:57,120
+because you could essentially waste the first block
+
+615
+00:34:57,180 --> 00:34:59,620
+and that everything is fine for awhile.
+
+616
+00:34:59,700 --> 00:35:01,310
+And then, if you're unlucky,
+
+617
+00:35:01,380 --> 00:35:03,110
+you essentially waste the last blocked.
+
+618
+00:35:03,180 --> 00:35:04,470
+There is just one element in that block,
+
+619
+00:35:04,540 --> 00:35:06,350
+and you're not getting much out of it.
+
+620
+00:35:06,420 --> 00:35:07,990
+Everything in the middle, though,
+
+621
+00:35:08,090 --> 00:35:11,300
+every block between the first and last block has to be full.
+
+622
+00:35:11,400 --> 00:35:13,010
+So, you're using all of those elements.
+
+623
+00:35:13,120 --> 00:35:16,080
+So out of the N elements, you only have N over B blocks
+
+624
+00:35:16,130 --> 00:35:17,840
+because the block has B elements.
+
+625
+00:35:17,910 --> 00:35:20,450
+OK, that's pretty trivial.
+
+626
+00:35:20,500 --> 00:35:26,340
+Let me do something slightly more interesting,
+
+627
+00:35:29,830 --> 00:35:33,370
+which is two scans at once.
+
+628
+00:35:36,420 --> 00:35:40,180
+OK, here we are not assuming anything about M.
+
+629
+00:35:40,220 --> 00:35:42,990
+we're not assuming anything about the size of the cache,
+
+630
+00:35:43,560 --> 00:35:45,250
+just that I can hold a single block.
+
+631
+00:35:45,320 --> 00:35:50,120
+The last block that we visited has to be there.
+
+632
+00:35:50,140 --> 00:35:54,580
+OK, you can also do a constant number of parallel scans.
+
+633
+00:35:54,620 --> 00:35:56,630
+This is not really parallel
+
+634
+00:35:56,700 --> 00:36:01,740
+in the sense of multithreaded, bit simulated parallelism.
+
+635
+00:36:01,780 --> 00:36:02,820
+I mean, if you have a constant number,
+
+636
+00:36:02,900 --> 00:36:04,500
+do one, do the other, do the other,
+
+637
+00:36:04,580 --> 00:36:05,890
+come back, come back, come back, all right,
+
+638
+00:36:05,960 --> 00:36:08,420
+visit them in turn round robin, whatever.
+
+639
+00:36:08,490 --> 00:36:14,170
+For example, here's a cute piece of code.
+
+640
+00:36:14,280 --> 00:36:17,810
+If you want to reverse an array,
+
+641
+00:36:18,780 --> 00:36:24,980
+OK, then you can do it. This is a good puzzle.
+
+642
+00:36:31,210 --> 00:36:34,950
+You can do it by essentially two scans
+
+643
+00:36:35,020 --> 00:36:39,630
+where you repeatedly swapped the first and last element.
+
+644
+00:36:39,700 --> 00:36:47,240
+So I was swapping A_i with N minus i plus one,
+
+645
+00:36:47,270 --> 00:36:55,180
+and just restart at one. So, here's your array.
+
+646
+00:36:55,290 --> 00:36:57,030
+Suppose this is actually my array.
+
+647
+00:36:57,100 --> 00:37:00,510
+I swap these two guys, and I swap these two guys, and so on.
+
+648
+00:37:00,580 --> 00:37:03,460
+That will reverse my array, and this should
+
+649
+00:37:03,540 --> 00:37:05,870
+work hopefully the middle as well if it's odd.
+
+650
+00:37:05,940 --> 00:37:09,590
+It should not do anything.
+
+651
+00:37:09,670 --> 00:37:13,340
+And you can view this as two scans.
+
+652
+00:37:13,430 --> 00:37:14,810
+There is one scan that's coming in this way.
+
+653
+00:37:14,860 --> 00:37:17,030
+There's also a reverse scan, ooh,
+
+654
+00:37:17,170 --> 00:37:19,070
+some more sophisticated, coming back this way.
+
+655
+00:37:19,140 --> 00:37:21,400
+Of course, reverse scan has the same analysis.
+
+656
+00:37:21,470 --> 00:37:24,800
+And as long as your cache is big enough
+
+657
+00:37:24,860 --> 00:37:26,860
+to store at least two blocks,
+
+658
+00:37:26,930 --> 00:37:30,430
+which is a pretty reasonable assumption,
+
+659
+00:37:35,000 --> 00:37:36,800
+so let's write it.
+
+660
+00:37:36,970 --> 00:37:40,840
+Assuming the number of blocks in the cache,
+
+661
+00:37:40,910 --> 00:37:45,650
+which is M over B, is at least two in this algorithm,
+
+662
+00:37:45,720 --> 00:37:49,830
+the number of memory transfers is still
+
+663
+00:37:49,890 --> 00:37:53,770
+order N over B plus one.
+
+664
+00:37:55,430 --> 00:37:57,370
+OK, the constant goes up maybe,
+
+665
+00:37:57,470 --> 00:38:01,010
+but in this case it probably doesn't. But who cares.
+
+666
+00:38:01,160 --> 00:38:03,650
+OK, as long as you're doing a constant number of scans,
+
+667
+00:38:03,720 --> 00:38:05,290
+in some constant number of arrays,
+
+668
+00:38:05,360 --> 00:38:07,810
+it happens to be one of them's reversed, whatever,
+
+669
+00:38:07,880 --> 00:38:10,850
+it will take, we call this linear time.
+
+670
+00:38:10,930 --> 00:38:13,450
+It's linear in the number of blocks in your input.
+
+671
+00:38:13,520 --> 00:38:19,700
+OK, great. So now you can reverse an array: exciting.
+
+672
+00:38:19,750 --> 00:38:32,230
+Let's try another simple algorithm on another board.
+
+673
+00:38:45,550 --> 00:38:54,170
+Let's try binary search. So just like last week,
+
+674
+00:38:54,250 --> 00:38:56,040
+we're going back to our basics here.
+
+675
+00:38:56,120 --> 00:38:58,850
+Scanning we didn't even talk about in this class.
+
+676
+00:38:58,890 --> 00:39:00,790
+Binary search is something we talked about a little bit.
+
+677
+00:39:00,850 --> 00:39:02,980
+It was a simple divide and conquer algorithm.
+
+678
+00:39:03,100 --> 00:39:08,760
+I hope you all remember it. And if we look at an array,
+
+679
+00:39:08,840 --> 00:39:10,140
+and I'm not going to draw the cells here
+
+680
+00:39:10,210 --> 00:39:12,490
+because I want to imagine a really big array,
+
+681
+00:39:12,570 --> 00:39:14,690
+binary search, but suppose it always goes to left.
+
+682
+00:39:14,740 --> 00:39:17,080
+It starts by visiting this element in the middle.
+
+683
+00:39:17,140 --> 00:39:19,200
+Then it goes to the quarter marked.
+
+684
+00:39:19,280 --> 00:39:21,380
+Then it goes to the one eighth mark.
+
+685
+00:39:21,450 --> 00:39:26,810
+OK, this is one hypothetical execution of a binary search.
+
+686
+00:39:27,080 --> 00:39:29,250
+OK, and eventually it finds the element it's looking for.
+
+687
+00:39:29,310 --> 00:39:31,440
+It finds where it fits at least.
+
+688
+00:39:31,510 --> 00:39:37,430
+So x is over here. So, we know that it takes log N time.
+
+689
+00:39:37,570 --> 00:39:41,320
+How many memory transfers does it take?
+
+690
+00:39:42,260 --> 00:39:46,420
+Now, I blocked this array into chunks of size B,
+
+691
+00:39:46,530 --> 00:39:50,190
+blocks of size B. How many blocks do I touch?
+
+692
+00:39:50,290 --> 00:39:53,590
+This one's a little bit more subtle.
+
+693
+00:40:16,150 --> 00:40:18,770
+It depends on the relative sizes of N and B, yeah.
+
+694
+00:40:20,320 --> 00:40:22,910
+Log base B of N would be a good guess.
+
+695
+00:40:22,980 --> 00:40:25,410
+We would like it to be, let's say,
+
+696
+00:40:25,420 --> 00:40:30,850
+hope, is that it's log base B of N because we know that
+
+697
+00:40:30,900 --> 00:40:34,130
+B trees can search in what's essentially
+
+698
+00:40:34,220 --> 00:40:36,650
+a sorted list of N items in log base B of N time.
+
+699
+00:40:36,710 --> 00:40:40,450
+That turns out to be optimal in the cache oblivious model
+
+700
+00:40:40,520 --> 00:40:42,170
+or in the two level model
+
+701
+00:40:42,240 --> 00:40:44,220
+you've got to pay log base B of N.
+
+702
+00:40:44,280 --> 00:40:46,070
+I won't prove that here.
+
+703
+00:40:46,140 --> 00:40:49,350
+The same reason you need log N comparisons
+
+704
+00:40:49,470 --> 00:40:53,020
+to do a binary search in the normal model.
+
+705
+00:40:53,090 --> 00:40:57,510
+Alas, it is possible to get log base B of N
+
+706
+00:40:57,580 --> 00:41:03,300
+even without knowing B. But, binary search does not do it.
+
+707
+00:41:07,080 --> 00:41:09,920
+Log of N over B, yes.
+
+708
+00:41:15,430 --> 00:41:18,670
+So the number of memory transfers on N items
+
+709
+00:41:18,740 --> 00:41:24,950
+is log of N over B also known as, let's say, plus one,
+
+710
+00:41:25,050 --> 00:41:29,890
+also known as log N minus log B.
+
+711
+00:41:31,030 --> 00:41:38,110
+OK, whereas log base B of N is log N divided by log B,
+
+712
+00:41:38,340 --> 00:41:41,900
+OK, clearly this is much better than subtracting.
+
+713
+00:41:41,980 --> 00:41:45,160
+So, this would be good, but this is bad.
+
+714
+00:41:45,190 --> 00:41:47,300
+Most of the time, this is log N,
+
+715
+00:41:47,370 --> 00:41:50,200
+which is no better, I mean, you're not
+
+716
+00:41:50,270 --> 00:41:52,070
+using blocks at all essentially.
+
+717
+00:41:52,140 --> 00:41:53,950
+The idea is, out here, I mean,
+
+718
+00:41:54,050 --> 00:41:56,380
+there's some little tiny block that contains this thing.
+
+719
+00:41:56,450 --> 00:41:59,600
+I mean, tiny depends on how big B is.
+
+720
+00:41:59,630 --> 00:42:02,000
+But, each of these items will be in a different block
+
+721
+00:42:02,070 --> 00:42:07,310
+Until you get essentially one block worth of x.
+
+722
+00:42:07,410 --> 00:42:08,590
+When you get within one block worth of x,
+
+723
+00:42:08,660 --> 00:42:11,230
+there's only like a constant number of blocks that matters,
+
+724
+00:42:11,340 --> 00:42:14,420
+and so all of these accesses are indeed within the same block.
+
+725
+00:42:14,490 --> 00:42:16,940
+But, how many are there? Well, just log B
+
+726
+00:42:17,010 --> 00:42:18,670
+because you're only spending log B with any
+
+727
+00:42:18,740 --> 00:42:21,150
+if you're within an interval of size k,
+
+728
+00:42:21,220 --> 00:42:24,250
+you're only going to spend log k steps in it.
+
+729
+00:42:24,330 --> 00:42:26,050
+So, you're saving log B in here,
+
+730
+00:42:26,160 --> 00:42:27,220
+but overall you're paying log N,
+
+731
+00:42:27,290 --> 00:42:31,040
+so you only get log N minus log B plus some constant.
+
+732
+00:42:31,670 --> 00:42:33,750
+OK, so this is bad news for binary search.
+
+733
+00:42:33,820 --> 00:42:35,610
+So, not all of the algorithms we've seen
+
+734
+00:42:35,650 --> 00:42:37,100
+are going to work well in this model.
+
+735
+00:42:37,170 --> 00:42:39,650
+We need a lot more thinking before we can solve
+
+736
+00:42:39,710 --> 00:42:41,340
+what is essentially the binary search problem,
+
+737
+00:42:41,450 --> 00:42:43,370
+finding an element in a sorted list,
+
+738
+00:42:43,420 --> 00:42:46,890
+in log base B of N without knowing B.
+
+739
+00:42:47,190 --> 00:42:49,180
+OK, we know we could use B trees.
+
+740
+00:42:49,250 --> 00:42:54,360
+If you knew B, great, that works, and that's optimal.
+
+741
+00:42:54,470 --> 00:42:57,520
+But without knowing B, it's a little bit harder.
+
+742
+00:42:57,590 --> 00:43:00,870
+And this gets us into the world of divide and conquer.
+
+743
+00:43:03,110 --> 00:43:06,200
+Also like last week,
+
+744
+00:43:06,280 --> 00:43:09,560
+and like the first few weeks of this class,
+
+745
+00:43:10,780 --> 00:43:13,540
+divide and conquer is your friend.
+
+746
+00:43:18,130 --> 00:43:21,530
+And, it turns out divide and conquer is not the only tool,
+
+747
+00:43:21,600 --> 00:43:22,960
+but it's a really useful tool in designing
+
+748
+00:43:23,030 --> 00:43:30,010
+cache oblivious algorithms. And, let me say why.
+
+749
+00:43:42,320 --> 00:43:45,620
+So we'll see a bunch of divide and conquer based algorithms
+
+750
+00:43:46,350 --> 00:43:48,520
+cache oblivious.
+
+751
+00:43:49,230 --> 00:43:53,470
+And, the intuition is that
+
+752
+00:43:53,640 --> 00:43:56,420
+we can take all the favorite algorithms we have,
+
+753
+00:43:56,530 --> 00:43:58,220
+obviously it doesn't always work.
+
+754
+00:43:58,300 --> 00:44:00,000
+Binary search was a divide and conquer algorithm.
+
+755
+00:44:00,070 --> 00:44:02,240
+It's not so great. But, in general,
+
+756
+00:44:02,280 --> 00:44:05,420
+the idea is that your algorithm can just do
+
+757
+00:44:05,490 --> 00:44:07,430
+the normal divide and conquer thing, right?
+
+758
+00:44:07,520 --> 00:44:09,420
+You divide your problem into subproblems
+
+759
+00:44:09,490 --> 00:44:11,410
+of smaller size repeatedly,
+
+760
+00:44:11,480 --> 00:44:16,020
+all the way down to problems of constant size,
+
+761
+00:44:17,610 --> 00:44:22,440
+OK, just like before. But, if you're recursively
+
+762
+00:44:22,510 --> 00:44:24,500
+dividing your problem into smaller things,
+
+763
+00:44:24,570 --> 00:44:26,660
+at some point you can think about it and say,
+
+764
+00:44:26,730 --> 00:44:28,590
+well, wait, I mean, the algorithm divides all the way,
+
+765
+00:44:28,660 --> 00:44:30,130
+but we can think about the point at which
+
+766
+00:44:30,160 --> 00:44:33,410
+the problem fits in a block or fits in cache.
+
+767
+00:44:33,520 --> 00:44:35,400
+OK, and that's the analysis.
+
+768
+00:44:35,470 --> 00:44:39,730
+We'll think about the time when your problem is small enough
+
+769
+00:44:39,800 --> 00:44:41,710
+that we can analyze it in some other way.
+
+770
+00:44:41,780 --> 00:44:44,700
+So usually, we analyze it recursively. We get a recurrence
+
+771
+00:44:44,760 --> 00:44:47,640
+What we're changing, essentially, is the base case.
+
+772
+00:44:50,010 --> 00:44:51,520
+So, in the base case,
+
+773
+00:44:51,590 --> 00:44:53,740
+we don't want to go down to a constant size.
+
+774
+00:44:53,850 --> 00:44:57,780
+That's too far. I'll show you some examples.
+
+775
+00:44:57,850 --> 00:45:01,950
+We want to consider the point in recursion
+
+776
+00:45:01,990 --> 00:45:07,660
+at which either the problem fits in cache,
+
+777
+00:45:11,710 --> 00:45:15,440
+so it has size less than or equal to M,
+
+778
+00:45:15,540 --> 00:45:20,980
+or it fits in order one blocks.
+
+779
+00:45:21,050 --> 00:45:23,380
+That's another natural time to do it.
+
+780
+00:45:27,200 --> 00:45:30,540
+Order one blocks would be even better than fitting in cache.
+
+781
+00:45:30,610 --> 00:45:32,850
+So, this means a size order B.
+
+782
+00:45:35,310 --> 00:45:39,580
+OK, this will change the base case of the recurrence,
+
+783
+00:45:39,650 --> 00:45:41,010
+and it will turn out to give us good answers
+
+784
+00:45:41,080 --> 00:45:45,160
+instead of bad ones. So, let's do a simple example.
+
+785
+00:45:46,380 --> 00:45:50,940
+Our good friend order statistics,
+
+786
+00:45:52,590 --> 00:45:55,210
+in particular, for finding medians.
+
+787
+00:45:59,300 --> 00:46:02,350
+So, I hope you all know this by heart.
+
+788
+00:46:02,460 --> 00:46:06,180
+Remember the worst case linear time,
+
+789
+00:46:06,250 --> 00:46:10,790
+median finding algorithm by Blum et al.
+
+790
+00:46:10,860 --> 00:46:14,750
+I'll write this fast. We partition our array.
+
+791
+00:46:14,820 --> 00:46:17,090
+It turns out, this is a good algorithm as it is.
+
+792
+00:46:17,200 --> 00:46:27,290
+We partition our array conceptually into N over five,
+
+793
+00:46:27,400 --> 00:46:31,570
+five tuples into little groups of five.
+
+794
+00:46:31,640 --> 00:46:33,500
+This may not have been exactly how I wrote it last time.
+
+795
+00:46:33,570 --> 00:46:38,860
+I didn't check. But, it's the same algorithm.
+
+796
+00:46:39,570 --> 00:46:44,130
+You compute the median of each five tuple.
+
+797
+00:46:47,430 --> 00:46:50,760
+Then you recursively compute
+
+798
+00:46:50,830 --> 00:46:54,810
+the median of the medians of these medians.
+
+799
+00:47:08,960 --> 00:47:12,550
+Then, you partition around x.
+
+800
+00:47:13,030 --> 00:47:15,190
+So, that gave us some element that was roughly in the middle.
+
+801
+00:47:15,260 --> 00:47:18,910
+It was within the middle half, I think.
+
+802
+00:47:19,330 --> 00:47:25,040
+Partition around x, and then we show that
+
+803
+00:47:25,090 --> 00:47:28,460
+you could always recurse on just one of the sides.
+
+804
+00:47:36,760 --> 00:47:39,320
+OK, this was our good old friend for computing,
+
+805
+00:47:39,390 --> 00:47:42,800
+order statistics, or medians, or whatnot.
+
+806
+00:47:43,680 --> 00:47:46,340
+OK, so how much time does this, well,
+
+807
+00:47:46,410 --> 00:47:47,580
+we know how much time this takes.
+
+808
+00:47:47,650 --> 00:47:48,630
+It should be linear time.
+
+809
+00:47:48,690 --> 00:47:53,950
+But how many memory transfers does this take?
+
+810
+00:47:54,020 --> 00:47:57,390
+Well, conceptually partitioning that, I can do, in zero.
+
+811
+00:47:57,400 --> 00:47:59,390
+Maybe I have to compute N over five, no big deal here.
+
+812
+00:47:59,410 --> 00:48:01,920
+We're not thinking about computation.
+
+813
+00:48:02,030 --> 00:48:05,420
+I have to find the median of each tuple.
+
+814
+00:48:05,490 --> 00:48:08,000
+So, here it matters how my array is laid out.
+
+815
+00:48:08,040 --> 00:48:12,620
+But, what I'm going to do is take my array,
+
+816
+00:48:12,690 --> 00:48:15,360
+take the first five elements,
+
+817
+00:48:15,400 --> 00:48:18,610
+and then the next five elements and so on.
+
+818
+00:48:18,720 --> 00:48:20,950
+Those will be my five tuples.
+
+819
+00:48:21,290 --> 00:48:23,610
+So, I can implement this just by scanning,
+
+820
+00:48:23,760 --> 00:48:26,200
+and then computing the median on those five elements,
+
+821
+00:48:26,240 --> 00:48:28,210
+which I stored in the five registers on my CPU.
+
+822
+00:48:28,250 --> 00:48:30,830
+I'll assume that there are enough registers for that.
+
+823
+00:48:30,860 --> 00:48:33,730
+And, I compute the median,
+
+824
+00:48:33,800 --> 00:48:37,130
+write it out to some array out here.
+
+825
+00:48:37,350 --> 00:48:38,680
+So, it's going to be one element.
+
+826
+00:48:38,750 --> 00:48:40,120
+So, the median of here goes into there.
+
+827
+00:48:40,190 --> 00:48:42,000
+The median of these guys goes into there, and so on.
+
+828
+00:48:42,070 --> 00:48:43,340
+So, I'm scanning in here,
+
+829
+00:48:43,380 --> 00:48:45,580
+and in parallel, I'm scanning an output in here.
+
+830
+00:48:45,620 --> 00:48:47,110
+So, it's two parallel scans.
+
+831
+00:48:47,180 --> 00:48:48,900
+So, that takes linear time.
+
+832
+00:48:49,170 --> 00:48:57,470
+So, this takes order N over B plus one memory transfers.
+
+833
+00:48:57,530 --> 00:49:01,870
+Then we have recursively compute the median of the medians.
+
+834
+00:49:01,940 --> 00:49:07,250
+This step used to be T of N over five.
+
+835
+00:49:07,320 --> 00:49:10,140
+Now it's MT of N over five,
+
+836
+00:49:10,210 --> 00:49:12,540
+OK, with the same values of B and M.
+
+837
+00:49:12,570 --> 00:49:14,150
+Then we partition around x.
+
+838
+00:49:14,190 --> 00:49:17,330
+Partitioning is also like three parallel scans
+
+839
+00:49:17,410 --> 00:49:19,000
+if you work it out.
+
+840
+00:49:19,070 --> 00:49:26,110
+So, this is also going to take linear memory transfers,
+
+841
+00:49:26,180 --> 00:49:28,200
+N over B plus one.
+
+842
+00:49:28,270 --> 00:49:30,590
+And then, we recurse on one of the sides,
+
+843
+00:49:30,630 --> 00:49:33,550
+and this is the fun part of the analysis
+
+844
+00:49:33,590 --> 00:49:35,010
+which I won't repeat here.
+
+845
+00:49:35,080 --> 00:49:39,350
+But, we get MT of, like, three quarters N.
+
+846
+00:49:39,420 --> 00:49:40,670
+I think originally it was seven tenths,
+
+847
+00:49:40,710 --> 00:49:42,200
+so we simplified to three quarters,
+
+848
+00:49:42,270 --> 00:49:45,610
+which is hopefully bigger than seven tenths.
+
+849
+00:49:45,680 --> 00:49:51,730
+Yeah, it is. OK, so this is the new analysis.
+
+850
+00:49:51,800 --> 00:49:54,010
+Now we get a recurrence.
+
+851
+00:49:54,140 --> 00:49:57,060
+So, let's do that.
+
+852
+00:50:14,040 --> 00:50:22,390
+So, the analysis is we get this MT of N is MT of N over five
+
+853
+00:50:22,460 --> 00:50:29,440
+plus MT of three quarters N plus, this is just as before.
+
+854
+00:50:29,510 --> 00:50:31,840
+Before we had linear work here.
+
+855
+00:50:31,910 --> 00:50:33,210
+And now, we have what we call
+
+856
+00:50:33,270 --> 00:50:37,200
+linear number of memory transfers, linear number of blocks.
+
+857
+00:50:37,430 --> 00:50:41,610
+I'll sort of ignore this plus one. It's not too critical.
+
+858
+00:50:43,730 --> 00:50:47,420
+So, this is our recurrence.
+
+859
+00:50:47,490 --> 00:50:49,400
+Now, it depends what our base case is.
+
+860
+00:50:49,470 --> 00:50:53,520
+And, usually we would use a base case of constant size.
+
+861
+00:50:53,600 --> 00:50:55,360
+So, let's see what happens
+
+862
+00:50:56,090 --> 00:50:58,790
+if we use a base case of constant size so that just
+
+863
+00:50:58,790 --> 00:51:02,220
+it's clear why this base case is so important.
+
+864
+00:51:02,330 --> 00:51:06,310
+This describes a recurrence as one of these hairy recurrences.
+
+865
+00:51:06,420 --> 00:51:09,140
+And, I don't want to use substitution.
+
+866
+00:51:09,180 --> 00:51:10,930
+I just want the intuition of why
+
+867
+00:51:11,000 --> 00:51:14,150
+this is going to solve to something rather big.
+
+868
+00:51:14,500 --> 00:51:18,140
+And for me the best intuition always comes from recursion trees
+
+869
+00:51:18,210 --> 00:51:20,110
+If you don't know the solution to recurrence
+
+870
+00:51:20,210 --> 00:51:23,230
+and you need a good guess, use recursion trees.
+
+871
+00:51:23,260 --> 00:51:25,680
+And today, I will only give you good guesses.
+
+872
+00:51:25,740 --> 00:51:27,760
+I don't want to prove anything with substitution
+
+873
+00:51:27,800 --> 00:51:29,920
+because I want to get to the bigger ideas.
+
+874
+00:51:29,960 --> 00:51:34,690
+So, this is even messy from a recursion tree point of view
+
+875
+00:51:34,730 --> 00:51:37,430
+because you have these unbalanced sizes
+
+876
+00:51:37,500 --> 00:51:40,130
+where you start at the root with some of size N over B.
+
+877
+00:51:40,200 --> 00:51:45,630
+Then you split it into something size one fifth N over B,
+
+878
+00:51:45,740 --> 00:51:49,460
+and something of size three quarters N over B,
+
+879
+00:51:49,530 --> 00:51:51,430
+which is annoying because now this subtree
+
+880
+00:51:51,500 --> 00:51:53,570
+will be a lot bigger than this one,
+
+881
+00:51:53,630 --> 00:51:55,510
+or this one will terminate faster.
+
+882
+00:51:55,580 --> 00:51:58,120
+So, it's pretty unbalanced. But we can...
+
+883
+00:51:58,200 --> 00:52:01,350
+summing per level doesn't really tell you a lot at this point.
+
+884
+00:52:01,420 --> 00:52:03,140
+But let's just look at the bottom level.
+
+885
+00:52:03,210 --> 00:52:05,880
+Look at all the leaves in this recursion tree.
+
+886
+00:52:05,920 --> 00:52:07,590
+So, that's the base cases.
+
+887
+00:52:07,630 --> 00:52:10,240
+How many base cases are there?
+
+888
+00:52:10,380 --> 00:52:11,410
+This is an interesting question.
+
+889
+00:52:11,480 --> 00:52:14,140
+We've never thought about it in the context of this recurrence.
+
+890
+00:52:14,210 --> 00:52:15,890
+It gives a somewhat surprising answer.
+
+891
+00:52:15,960 --> 00:52:20,960
+It was surprising to me the first time I worked it out.
+
+892
+00:52:23,690 --> 00:52:28,610
+So, how many leaves does this recursion tree have?
+
+893
+00:52:28,670 --> 00:52:33,720
+Well, we can write a recurrence.
+
+894
+00:52:33,730 --> 00:52:37,400
+The number of leaves in a problem of size N,
+
+895
+00:52:37,470 --> 00:52:39,060
+it's going to be the number of leaves in this problem
+
+896
+00:52:39,100 --> 00:52:42,330
+plus the number of leaves in this problem plus zero.
+
+897
+00:52:42,370 --> 00:52:43,910
+So, that's another recurrence.
+
+898
+00:52:43,980 --> 00:52:45,830
+We'll call this L of N.
+
+899
+00:52:56,340 --> 00:52:58,770
+OK, now the base case is really relevant.
+
+900
+00:52:58,840 --> 00:53:01,550
+It determines the solution to this recurrence.
+
+901
+00:53:01,610 --> 00:53:04,880
+And let's, again, assume that in a problem of size one,
+
+902
+00:53:04,950 --> 00:53:09,070
+we have one leaf. That's our only base case.
+
+903
+00:53:10,750 --> 00:53:14,670
+Well, it turns out, and here you need to guess, I think.
+
+904
+00:53:14,710 --> 00:53:16,590
+This is not particularly obvious.
+
+905
+00:53:16,660 --> 00:53:20,240
+Any of the TA's have guesses of the form of this solution?
+
+906
+00:53:20,310 --> 00:53:22,030
+Or anybody, not just TA's.
+
+907
+00:53:22,100 --> 00:53:24,710
+But this is open to everyone.
+
+908
+00:53:24,780 --> 00:53:27,880
+If Charles were here, I would ask him.
+
+909
+00:53:28,930 --> 00:53:32,850
+I had to think for a while, and it's not linear, right,
+
+910
+00:53:32,920 --> 00:53:35,440
+because you're somehow decreasing quite a bit.
+
+911
+00:53:35,590 --> 00:53:36,980
+So, it's smaller than linear,
+
+912
+00:53:37,020 --> 00:53:38,390
+but it's more than a constant.
+
+913
+00:53:38,460 --> 00:53:43,000
+OK, it's actually more than polylog,
+
+914
+00:53:43,390 --> 00:53:47,270
+so what's your favorite function in the middle?
+
+915
+00:53:49,810 --> 00:53:52,450
+N over log N, that's still too big.
+
+916
+00:53:53,110 --> 00:53:56,520
+Keep going. You have an oracle here, so you can,
+
+917
+00:53:56,590 --> 00:53:59,470
+N to the k, yeah, close.
+
+918
+00:53:59,540 --> 00:54:01,020
+I mean, k is usually an integer.
+
+919
+00:54:01,130 --> 00:54:04,010
+N to the alpha for some real number between zero and one.
+
+920
+00:54:04,080 --> 00:54:05,010
+Yeah, that's what you meant.
+
+921
+00:54:05,050 --> 00:54:08,260
+Sorry. It's like the shortest mathematical joke.
+
+922
+00:54:08,300 --> 00:54:11,520
+Let epsilon be less than zero or
+
+923
+00:54:11,530 --> 00:54:14,980
+for a sufficiently large epsilon. I don't know.
+
+924
+00:54:15,050 --> 00:54:18,600
+So, you've got to use the right letters.
+
+925
+00:54:18,700 --> 00:54:21,870
+So, let's suppose that it's N to the alpha.
+
+926
+00:54:22,780 --> 00:54:29,600
+Then we would get this N over five to the alpha,
+
+927
+00:54:29,670 --> 00:54:33,710
+and we'd get three quarters N to the alpha.
+
+928
+00:54:33,780 --> 00:54:35,240
+When you have a nice recurrence like this,
+
+929
+00:54:35,290 --> 00:54:39,510
+you can just try plugging in a guess and see whether it works,
+
+930
+00:54:39,620 --> 00:54:42,980
+OK, and of course this will work only depending on alpha.
+
+931
+00:54:43,080 --> 00:54:45,690
+So, we should get an equation on alpha here.
+
+932
+00:54:45,730 --> 00:54:48,380
+So, everything has an N to the alpha,
+
+933
+00:54:48,450 --> 00:54:49,830
+in fact, all of these terms.
+
+934
+00:54:49,870 --> 00:54:51,950
+So, I can divide through my N to the alpha.
+
+935
+00:54:52,020 --> 00:54:54,290
+That's assuming that it's not zero or something.
+
+936
+00:54:54,330 --> 00:54:55,560
+That seems reasonable.
+
+937
+00:54:55,630 --> 00:55:00,060
+So, we have one equals one fifth to the alpha
+
+938
+00:55:00,150 --> 00:55:02,600
+plus three quarters to the alpha.
+
+939
+00:55:02,640 --> 00:55:05,030
+This is something you won't get on a final
+
+940
+00:55:05,060 --> 00:55:07,040
+because I don't know any good way to solve this
+
+941
+00:55:07,110 --> 00:55:09,240
+except with like Maple or Mathematica.
+
+942
+00:55:09,280 --> 00:55:12,430
+If you're smart I'm sure you could compute it in a nicer way,
+
+943
+00:55:12,480 --> 00:55:22,530
+but alpha is about 0.8, it turns out.
+
+944
+00:55:22,880 --> 00:55:27,850
+So, the number of leaves is this
+
+945
+00:55:27,890 --> 00:55:32,250
+sort of in between constant and linear.
+
+946
+00:55:32,320 --> 00:55:36,880
+Usually polynomial means you have an integer power.
+
+947
+00:55:40,020 --> 00:55:42,510
+Let's call it a polynomial. Why not?
+
+948
+00:55:43,860 --> 00:55:46,520
+There's a lot of leaves, is the point,
+
+949
+00:55:46,590 --> 00:55:47,830
+and if we say that each leaf costs
+
+950
+00:55:47,910 --> 00:55:51,070
+a constant number of memory transfers, we're in trouble
+
+951
+00:55:51,110 --> 00:55:52,880
+because then the number of memory transfers
+
+952
+00:55:52,950 --> 00:55:57,030
+has to be at least this. If it's at least that,
+
+953
+00:55:57,090 --> 00:56:00,880
+that's potentially bigger than N over B,
+
+954
+00:56:00,990 --> 00:56:02,560
+I mean, bigger than in an asymptotic sense.
+
+955
+00:56:02,630 --> 00:56:10,540
+This is little omega of N over B if B is big.
+
+956
+00:56:10,690 --> 00:56:15,520
+If B is at least N to the 0.2 something,
+
+957
+00:56:17,970 --> 00:56:19,350
+OK, or one seventh something.
+
+958
+00:56:19,390 --> 00:56:22,680
+But if, in particular, B is at least N to the 0.2,
+
+959
+00:56:22,720 --> 00:56:25,720
+then this should be bigger than that.
+
+960
+00:56:25,790 --> 00:56:27,690
+So, this is a bad analysis because we're
+
+961
+00:56:27,730 --> 00:56:29,790
+not going to get the answer we want, which is N over B.
+
+962
+00:56:29,830 --> 00:56:31,870
+The best you can do for median is N over B
+
+963
+00:56:31,940 --> 00:56:33,140
+because you have to read all the element,
+
+964
+00:56:33,170 --> 00:56:34,880
+and you should spend linear time.
+
+965
+00:56:35,130 --> 00:56:36,340
+So, we want to get N over B.
+
+966
+00:56:36,410 --> 00:56:39,180
+This algorithm is N over B plus one.
+
+967
+00:56:39,250 --> 00:56:42,720
+So, this is why you need a good base case, all right?
+
+968
+00:56:42,800 --> 00:56:45,930
+So that makes the point.
+
+969
+00:56:45,970 --> 00:56:51,030
+So, the question is, what base case should I use?
+
+970
+00:57:02,460 --> 00:57:05,660
+So, we have this recurrence
+
+971
+00:57:19,380 --> 00:57:24,650
+What base case should I use? Constant was too small.
+
+972
+00:57:24,800 --> 00:57:29,030
+We have a couple of choices listed up here.
+
+973
+00:57:44,970 --> 00:57:46,860
+Any suggestions?
+
+974
+00:57:48,080 --> 00:57:54,680
+B, OK, MT of B is?
+
+975
+00:57:54,750 --> 00:57:58,270
+Ah. The hard part.
+
+976
+00:57:58,390 --> 00:58:01,040
+So, if my problem, if the size of my array
+
+977
+00:58:01,100 --> 00:58:05,970
+fits in a block and I do all this stuff on it,
+
+978
+00:58:06,160 --> 00:58:09,790
+how many memory transfers could that take?
+
+979
+00:58:12,960 --> 00:58:18,410
+One, or a constant, depending on alignment.
+
+980
+00:58:18,520 --> 00:58:21,510
+OK, maybe it takes two memory transfers, but constant.
+
+981
+00:58:22,070 --> 00:58:25,830
+Good. That's clearly a lot better than this base case,
+
+982
+00:58:25,870 --> 00:58:28,920
+MT of one equals order one, clearly stronger.
+
+983
+00:58:28,960 --> 00:58:30,640
+So, hopefully, it gives the right answer,
+
+984
+00:58:30,680 --> 00:58:32,520
+and now indeed it does.
+
+985
+00:58:35,530 --> 00:58:39,400
+I love this analysis. So, I'm going to wave my hands.
+
+986
+00:58:39,800 --> 00:58:41,910
+OK, but in particular, what this gives us,
+
+987
+00:58:41,950 --> 00:58:43,770
+if we do the previous analysis,
+
+988
+00:58:43,810 --> 00:58:46,130
+what is the number of leaves?
+
+989
+00:58:46,270 --> 00:58:50,110
+So, in the leaves, now L of B equals one
+
+990
+00:58:50,170 --> 00:58:52,050
+instead of L of one equals one.
+
+991
+00:58:52,120 --> 00:58:54,960
+So, this stops earlier. When does it stop?
+
+992
+00:58:55,030 --> 00:58:59,460
+Well, instead of getting N to the order of 0.8, whatever,
+
+993
+00:58:59,540 --> 00:59:04,120
+we get N over B to the power of 0.8 whatever.
+
+994
+00:59:04,430 --> 00:59:09,990
+So it turns out the number of leaves is N over B to the alpha,
+
+995
+00:59:10,060 --> 00:59:12,580
+which is little o of N over B.
+
+996
+00:59:12,620 --> 00:59:15,320
+So, we don't care. It's tiny.
+
+997
+00:59:15,420 --> 00:59:17,500
+And, if you look at the root cost
+
+998
+00:59:17,570 --> 00:59:19,140
+is N over B in the recursion tree,
+
+999
+00:59:19,220 --> 00:59:21,230
+the leaf cost is little o of N over B,
+
+1000
+00:59:21,300 --> 00:59:25,210
+and if you wave your hands, and close your eyes, and squint,
+
+1001
+00:59:25,290 --> 00:59:29,550
+the cost should be geometrically decreasing as we go down,
+
+1002
+00:59:29,620 --> 00:59:31,170
+I hope, more or less.
+
+1003
+00:59:31,240 --> 00:59:34,090
+It's a bit messy because of all the things terminating,
+
+1004
+00:59:34,170 --> 00:59:38,730
+but let's say cost is roughly geometric.
+
+1005
+00:59:38,820 --> 00:59:40,840
+We don't do this in the final,
+
+1006
+00:59:40,910 --> 00:59:43,660
+but you won't have any messy recurrences like this.
+
+1007
+00:59:43,780 --> 00:59:45,050
+So, don't worry.
+
+1008
+00:59:46,830 --> 00:59:52,910
+Down the tree, so you'd have to prove this formally,
+
+1009
+00:59:52,990 --> 00:59:57,020
+but I claim that the root cost dominates.
+
+1010
+00:59:58,020 --> 01:00:00,750
+And, the root cost is N over B.
+
+1011
+01:00:11,660 --> 01:00:17,100
+So, we get N over B. OK, so this is a nice,
+
+1012
+01:00:17,170 --> 01:00:21,140
+linear time algorithm for order statistics
+
+1013
+01:00:21,220 --> 01:00:27,010
+for cache oblivious. Great.
+
+1014
+01:00:27,070 --> 01:00:29,160
+This may turn you off a little bit,
+
+1015
+01:00:29,230 --> 01:00:31,930
+but even though this is like the simplest algorithm,
+
+1016
+01:00:32,110 --> 01:00:34,750
+it's also probably the most complicated analysis that we will do
+
+1017
+01:00:34,820 --> 01:00:37,120
+In the future, our algorithms will be more complicated,
+
+1018
+01:00:37,160 --> 01:00:39,430
+and the analyses will be relatively simple.
+
+1019
+01:00:39,480 --> 01:00:42,330
+And usually, it's that way with cache oblivious algorithms.
+
+1020
+01:00:42,420 --> 01:00:44,350
+So, I'm giving you this sort of as
+
+1021
+01:00:44,410 --> 01:00:45,900
+the intuition of why this should be enough.
+
+1022
+01:00:45,970 --> 01:00:47,530
+Then you have to prove it.
+
+1023
+01:00:47,880 --> 01:00:51,700
+OK, let's go to another problem
+
+1024
+01:00:52,120 --> 01:00:54,350
+where divide and conquer is useful,
+
+1025
+01:00:54,440 --> 01:00:58,020
+our good friend, matrix multiplication.
+
+1026
+01:00:58,120 --> 01:01:01,180
+I don't know how many times we've seen this in this class,
+
+1027
+01:01:01,270 --> 01:01:03,130
+but in particular we saw it last week
+
+1028
+01:01:03,180 --> 01:01:06,870
+with a recursive matrix multiply, multithreaded algorithm.
+
+1029
+01:01:07,000 --> 01:01:09,390
+So, I won't give you the algorithm yet again,
+
+1030
+01:01:09,470 --> 01:01:12,980
+but we're going to analyze it in a very different way.
+
+1031
+01:01:13,070 --> 01:01:18,510
+So, we have C and we have A and...
+
+1032
+01:01:18,610 --> 01:01:21,880
+actually, up to you.
+
+1033
+01:01:21,950 --> 01:01:25,730
+So, I could cover standard matrix multiplication,
+
+1034
+01:01:25,800 --> 01:01:28,580
+which is when you do it row by row, and column by column.
+
+1035
+01:01:28,670 --> 01:01:31,890
+And, we could see why that's bad. And then,
+
+1036
+01:01:31,960 --> 01:01:34,510
+we could do the recursive one and see why that's good.
+
+1037
+01:01:34,590 --> 01:01:37,960
+Or, we could skip the standard algorithm.
+
+1038
+01:01:38,030 --> 01:01:39,330
+So, how many people would like to see
+
+1039
+01:01:39,410 --> 01:01:40,940
+why the standard algorithm is bad?
+
+1040
+01:01:41,020 --> 01:01:42,720
+Because it's not totally obvious.
+
+1041
+01:01:43,040 --> 01:01:45,810
+One, two, three, four, five, half?
+
+1042
+01:01:45,890 --> 01:01:46,980
+Wow, that's a lot of votes.
+
+1043
+01:01:47,060 --> 01:01:50,140
+Now, how many people want to skip to the chase?
+
+1044
+01:01:50,350 --> 01:01:54,350
+No one. One, OK. And, everyone else is asleep.
+
+1045
+01:01:54,430 --> 01:01:58,060
+So, that's pretty good, 50% awake, not bad.
+
+1046
+01:01:58,140 --> 01:02:03,750
+OK, then, so standard matrix multiplication.
+
+1047
+01:02:03,860 --> 01:02:06,880
+I'll do this fast because it is, I mean,
+
+1048
+01:02:06,960 --> 01:02:09,440
+you all know the algorithm, right?
+
+1049
+01:02:09,520 --> 01:02:14,200
+To compute this value of C;
+
+1050
+01:02:14,290 --> 01:02:19,140
+in A, you take this row, and in B you take this column.
+
+1051
+01:02:19,210 --> 01:02:21,220
+Sorry I did a little bit sloppily.
+
+1052
+01:02:21,300 --> 01:02:23,370
+But this is supposed to be aligned. Right?
+
+1053
+01:02:23,450 --> 01:02:24,440
+So I take all of this stuff,
+
+1054
+01:02:24,510 --> 01:02:27,270
+I multiply it with all of the stuff, add them up,
+
+1055
+01:02:27,380 --> 01:02:29,970
+the dot product. That gives me this element.
+
+1056
+01:02:30,050 --> 01:02:33,230
+And, let's say I do them in this order row by row.
+
+1057
+01:02:33,300 --> 01:02:35,280
+So for every item in C,
+
+1058
+01:02:35,440 --> 01:02:37,600
+I loop over this row and this column, B,
+
+1059
+01:02:37,650 --> 01:02:42,020
+multiply them together. That is an access pattern in memory.
+
+1060
+01:02:42,100 --> 01:02:45,580
+So, exactly how much that costs depends
+
+1061
+01:02:45,680 --> 01:02:48,540
+how these matrices are laid out in memory.
+
+1062
+01:02:48,570 --> 01:02:50,910
+OK, this is a subtlety we haven't had to worry about before
+
+1063
+01:02:50,990 --> 01:02:52,640
+because everything was uniform.
+
+1064
+01:02:52,720 --> 01:02:58,960
+I'm going to assume to give the standard algorithm
+
+1065
+01:02:59,030 --> 01:03:01,020
+the best chances of being good,
+
+1066
+01:03:01,100 --> 01:03:04,910
+I'm going to store C in row major order,
+
+1067
+01:03:04,980 --> 01:03:08,840
+A in row major order, and B in column major order.
+
+1068
+01:03:08,900 --> 01:03:11,440
+So, everything is nice and you're scanning.
+
+1069
+01:03:11,480 --> 01:03:13,210
+So then this inner product is a scan.
+
+1070
+01:03:13,290 --> 01:03:19,000
+Cool. Sounds great, doesn't it? It's bad, though.
+
+1071
+01:03:19,100 --> 01:03:28,830
+Assume A is row major, and B is column major.
+
+1072
+01:03:28,930 --> 01:03:31,290
+And C, you could assume is really either way,
+
+1073
+01:03:31,350 --> 01:03:35,940
+but if I'm doing it row by row, I'll assume it's row major.
+
+1074
+01:03:36,830 --> 01:03:39,150
+So, this is what I call the layout,
+
+1075
+01:03:39,230 --> 01:03:41,920
+the memory layout, of these matrices.
+
+1076
+01:03:42,470 --> 01:03:44,290
+OK, it's good for this algorithm,
+
+1077
+01:03:44,360 --> 01:03:46,290
+but the algorithm is not good.
+
+1078
+01:03:46,380 --> 01:03:48,560
+So, it won't be that great.
+
+1079
+01:04:10,900 --> 01:04:13,340
+So, how long does this take?
+
+1080
+01:04:13,410 --> 01:04:15,980
+How many memory transfers? We know it takes M^3 time.
+
+1081
+01:04:16,130 --> 01:04:18,940
+Not going to try and beat M^3 here. Just going to try to
+
+1082
+01:04:19,010 --> 01:04:21,970
+get standard matrix multiplication going faster.
+
+1083
+01:04:22,040 --> 01:04:28,290
+So, well, for each item over here
+
+1084
+01:04:28,340 --> 01:04:33,220
+I pay N over B to do the scans and get the inner product.
+
+1085
+01:04:33,290 --> 01:04:38,980
+So, N over B per item. So, it's N over B,
+
+1086
+01:04:41,010 --> 01:04:43,580
+or we could go with the plus one here,
+
+1087
+01:04:43,650 --> 01:04:48,840
+to compute each c_ij. So that would suggest,
+
+1088
+01:04:48,910 --> 01:04:52,920
+as an upper bound at least, it's N^3 over B.
+
+1089
+01:04:54,860 --> 01:04:57,610
+OK, and indeed that is the right bound, so theta.
+
+1090
+01:04:57,680 --> 01:05:03,540
+This is memory transfers, not time, obviously.
+
+1091
+01:05:07,040 --> 01:05:10,600
+That is indeed the case because if you look at consecutive,
+
+1092
+01:05:10,670 --> 01:05:13,080
+I do this c_ij, then this one, this one...
+
+1093
+01:05:13,080 --> 01:05:17,260
+keep incrementing j and keeping I fixed, right?
+
+1094
+01:05:17,320 --> 01:05:20,950
+So, the row that I use stays fixed for a long time.
+
+1095
+01:05:21,020 --> 01:05:24,430
+I get to reuse that if it happens,
+
+1096
+01:05:25,340 --> 01:05:28,050
+say that that fits a block maybe,
+
+1097
+01:05:28,210 --> 01:05:31,160
+I get to reuse that row several times
+
+1098
+01:05:31,270 --> 01:05:33,170
+if that happens to fit in cache.
+
+1099
+01:05:34,060 --> 01:05:37,360
+But the column is changing every single time.
+
+1100
+01:05:37,760 --> 01:05:40,890
+OK, so every time I moved here and compute the next c_ij,
+
+1101
+01:05:40,960 --> 01:05:43,420
+even if a column could fit in cache,
+
+1102
+01:05:43,490 --> 01:05:45,580
+I can't fit all the columns in cache.
+
+1103
+01:05:45,640 --> 01:05:48,740
+And the columns that I'm visiting move, you know,
+
+1104
+01:05:48,780 --> 01:05:50,030
+they just scan across.
+
+1105
+01:05:50,070 --> 01:05:51,830
+So, I'm scanning this whole matrix every time.
+
+1106
+01:05:51,900 --> 01:05:54,450
+And unless you're entire matrix fits in cache,
+
+1107
+01:05:54,480 --> 01:05:57,110
+in which case you could do anything, I don't care,
+
+1108
+01:05:57,180 --> 01:06:00,000
+it will take constant time, or you'll take M over B time,
+
+1109
+01:06:00,060 --> 01:06:01,390
+enough to read it into the cache,
+
+1110
+01:06:01,420 --> 01:06:04,110
+do your stuff, and write it back out.
+
+1111
+01:06:04,190 --> 01:06:06,650
+Except in that boring case,
+
+1112
+01:06:06,800 --> 01:06:13,030
+you're going to have to pay N^2 over B for every row here
+
+1113
+01:06:13,130 --> 01:06:16,480
+because you have to scan the whole collection of columns.
+
+1114
+01:06:16,510 --> 01:06:18,790
+You have to read this entire matrix for every row over here.
+
+1115
+01:06:18,830 --> 01:06:22,200
+So, you really do need N^3 over B for the whole thing.
+
+1116
+01:06:22,500 --> 01:06:24,670
+So, it's usually a theta.
+
+1117
+01:06:27,070 --> 01:06:29,520
+So, you might say, well, that's great.
+
+1118
+01:06:29,630 --> 01:06:30,820
+It's the size of my problem,
+
+1119
+01:06:30,850 --> 01:06:33,480
+the usual running time, divided by B.
+
+1120
+01:06:33,560 --> 01:06:36,320
+And that was the case when we are thinking about linear time,
+
+1121
+01:06:36,390 --> 01:06:37,630
+N versus N over B.
+
+1122
+01:06:37,670 --> 01:06:40,180
+It's hard to beat N over B when your problem is of size N.
+
+1123
+01:06:40,230 --> 01:06:43,920
+But now we have a cubed. And, this gets back to,
+
+1124
+01:06:43,960 --> 01:06:48,560
+we have good spatial locality.
+
+1125
+01:06:48,590 --> 01:06:50,540
+When we read a block, we use the whole thing.
+
+1126
+01:06:50,580 --> 01:06:51,950
+Great. It seems optimal.
+
+1127
+01:06:52,010 --> 01:06:54,050
+But we don't have good temporal locality.
+
+1128
+01:06:54,090 --> 01:06:56,780
+It could be that maybe if we stored the right things,
+
+1129
+01:06:56,820 --> 01:06:59,250
+we kept them around, we could use them several times
+
+1130
+01:06:59,290 --> 01:07:02,750
+because we're using each element like a cubed number of times.
+
+1131
+01:07:02,790 --> 01:07:04,130
+That's not the right way of saying it,
+
+1132
+01:07:04,170 --> 01:07:09,450
+but we're reusing the matrices a lot, reusing those items.
+
+1133
+01:07:09,480 --> 01:07:12,220
+If we are doing N^3 work on N^2 things,
+
+1134
+01:07:12,290 --> 01:07:18,220
+we're reusing a lot. So, we want to do better than this,
+
+1135
+01:07:18,260 --> 01:07:22,250
+and that's the recursive algorithm, which we've seen.
+
+1136
+01:07:22,290 --> 01:07:24,060
+So, we know the algorithm pretty much.
+
+1137
+01:07:24,090 --> 01:07:26,830
+I just have to tell you what the layout is.
+
+1138
+01:07:30,060 --> 01:07:33,170
+So, we're going to take C,
+
+1139
+01:07:33,240 --> 01:07:36,350
+partition of C_1-1, C_1-2, and so on.
+
+1140
+01:07:37,370 --> 01:07:42,140
+So, I have an N by N matrix,
+
+1141
+01:07:42,210 --> 01:07:47,220
+and I'm partitioning into N over 2 by N over 2 submatrices,
+
+1142
+01:07:47,750 --> 01:07:50,030
+all three of them
+
+1143
+01:07:54,650 --> 01:07:56,800
+times whatever.
+
+1144
+01:08:03,120 --> 01:08:06,070
+And, I could write this out yet again but I won't.
+
+1145
+01:08:06,450 --> 01:08:09,900
+OK, we can recursively compute this thing
+
+1146
+01:08:09,970 --> 01:08:12,990
+with eight matrix multiplies,
+
+1147
+01:08:13,070 --> 01:08:15,010
+and a bunch of matrix additions.
+
+1148
+01:08:15,080 --> 01:08:17,180
+I don't care how many, but a constant number.
+
+1149
+01:08:17,370 --> 01:08:21,520
+We see that at least twice now, so I won't show it again.
+
+1150
+01:08:21,820 --> 01:08:24,720
+Now, how do I lay out the matrices?
+
+1151
+01:08:25,440 --> 01:08:29,220
+Any suggestions how I lay out the matrices?
+
+1152
+01:08:29,260 --> 01:08:32,740
+I could lay them out in row major order.
+
+1153
+01:08:32,810 --> 01:08:34,530
+I'll call it major order.
+
+1154
+01:08:34,850 --> 01:08:37,610
+But that might be less natural now.
+
+1155
+01:08:37,620 --> 01:08:40,140
+We're not doing anything by rows or by columns.
+
+1156
+01:08:57,500 --> 01:09:01,760
+So, what layout should I use?
+
+1157
+01:09:08,900 --> 01:09:12,810
+Yeah? Quartet major order,
+
+1158
+01:09:12,880 --> 01:09:17,590
+maybe quadrant major order unless you're musically inclined,
+
+1159
+01:09:17,700 --> 01:09:19,520
+Yeah. Good idea.
+
+1160
+01:09:19,590 --> 01:09:20,860
+You've never seen this order before,
+
+1161
+01:09:20,920 --> 01:09:22,580
+so it's maybe not so natural.
+
+1162
+01:09:22,660 --> 01:09:26,060
+Somehow I want to cluster it by blocks.
+
+1163
+01:09:26,410 --> 01:09:28,400
+OK, I think that's about all.
+
+1164
+01:09:28,840 --> 01:09:33,110
+So, I mean, it's a recursive layout.
+
+1165
+01:09:34,160 --> 01:09:36,600
+This was not an easy question. It's OK.
+
+1166
+01:09:36,820 --> 01:09:44,470
+Store matrices or lay out the matrices recursively by block.
+
+1167
+01:09:47,530 --> 01:09:48,890
+OK, I'm cheating a little bit.
+
+1168
+01:09:48,960 --> 01:09:50,610
+I'm redefining the problem to say,
+
+1169
+01:09:50,680 --> 01:09:53,030
+assume that your matrices are laid out in this way.
+
+1170
+01:09:53,070 --> 01:09:55,190
+But, it doesn't really matter.
+
+1171
+01:09:55,300 --> 01:09:56,610
+We can cheat, can't we?
+
+1172
+01:09:56,680 --> 01:09:58,110
+In fact, it doesn't matter.
+
+1173
+01:09:58,180 --> 01:10:00,710
+You can turn a matrix into this layout
+
+1174
+01:10:00,780 --> 01:10:04,580
+without too much linear work,
+
+1175
+01:10:04,790 --> 01:10:08,220
+almost linear work. Log factors, maybe.
+
+1176
+01:10:08,420 --> 01:10:12,460
+OK, so if I want to store my matrix A as a linear thing,
+
+1177
+01:10:12,530 --> 01:10:15,090
+I'm going to recursively defined that layout
+
+1178
+01:10:15,130 --> 01:10:19,610
+to be recursively store the upper left corner,
+
+1179
+01:10:19,670 --> 01:10:21,660
+then store, let's say, the upper right corner.
+
+1180
+01:10:21,730 --> 01:10:23,770
+It doesn't matter which order I do these.
+
+1181
+01:10:23,880 --> 01:10:25,710
+I should have drawn this wider,
+
+1182
+01:10:25,780 --> 01:10:28,840
+then store the lower left corner,
+
+1183
+01:10:28,880 --> 01:10:32,250
+and then store the lower right corner recursively.
+
+1184
+01:10:32,320 --> 01:10:34,350
+So, how do you store this? Well, you divide it in four,
+
+1185
+01:10:34,410 --> 01:10:36,670
+and lay out the top left, and so on.
+
+1186
+01:10:36,740 --> 01:10:38,210
+OK, this is a recursive definition of
+
+1187
+01:10:38,280 --> 01:10:41,450
+how the element should be stored in a linear array.
+
+1188
+01:10:41,600 --> 01:10:44,770
+It's a weird one, but this is a very powerful idea
+
+1189
+01:10:44,850 --> 01:10:46,420
+in cache oblivious algorithms.
+
+1190
+01:10:46,460 --> 01:10:50,160
+We'll use this multiple times.
+
+1191
+01:10:50,370 --> 01:10:53,220
+OK, so now all we have to do
+
+1192
+01:10:53,290 --> 01:10:56,780
+is analyze the number of memory transfers.
+
+1193
+01:10:58,500 --> 01:11:01,940
+It seems...How hard could it be?
+
+1194
+01:11:01,980 --> 01:11:05,130
+So, we're going to store all the matrices in this order,
+
+1195
+01:11:05,260 --> 01:11:06,210
+and we want to compute the
+
+1196
+01:11:06,230 --> 01:11:10,380
+number of memory transfers on an N by N matrix.
+
+1197
+01:11:11,120 --> 01:11:14,290
+See, I lapsed and I switched to lowercase n.
+
+1198
+01:11:14,360 --> 01:11:16,290
+I should, throughout this week,
+
+1199
+01:11:16,330 --> 01:11:19,550
+be using uppercase N because for historical reasons,
+
+1200
+01:11:19,620 --> 01:11:23,380
+any external memory kinds of algorithms,
+
+1201
+01:11:23,420 --> 01:11:25,910
+two level algorithms, always talk about capital N.
+
+1202
+01:11:25,980 --> 01:11:28,720
+And, don't ask why.
+
+1203
+01:11:28,760 --> 01:11:31,820
+You should see what they define little n to be.
+
+1204
+01:11:31,920 --> 01:11:39,870
+So, any suggestions on what the recurrence should be now?
+
+1205
+01:11:39,940 --> 01:11:45,740
+All this fancy setup with the recurrence is actually pretty easy.
+
+1206
+01:11:46,740 --> 01:11:51,800
+So, definitely it involves multiplying matrices
+
+1207
+01:11:51,870 --> 01:11:53,750
+that are N over 2 by N over 2.
+
+1208
+01:11:53,820 --> 01:11:57,470
+So, what goes here?
+
+1209
+01:12:01,260 --> 01:12:03,810
+Eight, thank you.
+
+1210
+01:12:03,880 --> 01:12:05,020
+That you should know.
+
+1211
+01:12:05,120 --> 01:12:07,470
+And that the tricky part is what goes here.
+
+1212
+01:12:07,530 --> 01:12:10,650
+OK, what goes here is, now,
+
+1213
+01:12:10,720 --> 01:12:12,800
+the fact that I can even write this,
+
+1214
+01:12:12,870 --> 01:12:15,430
+this is the matrix additions.
+
+1215
+01:12:15,470 --> 01:12:17,400
+Ignore those for now. Suppose there weren't any.
+
+1216
+01:12:17,470 --> 01:12:19,570
+I just have to recursively multiply.
+
+1217
+01:12:19,640 --> 01:12:22,470
+The fact that this actually is eight times
+
+1218
+01:12:22,510 --> 01:12:26,520
+memory transfers of N over 2 relies on this layout.
+
+1219
+01:12:26,630 --> 01:12:29,350
+Right, I'm assuming that the arrays that I'm given
+
+1220
+01:12:29,380 --> 01:12:31,980
+are given as contiguous intervals and memory.
+
+1221
+01:12:32,050 --> 01:12:33,420
+If they aren't, I mean,
+
+1222
+01:12:33,480 --> 01:12:35,470
+if they're scattered all over memory, I'm screwed.
+
+1223
+01:12:35,540 --> 01:12:36,820
+There's nothing I can do.
+
+1224
+01:12:36,890 --> 01:12:39,610
+So, but by assuming that I have this recursive layout,
+
+1225
+01:12:39,660 --> 01:12:41,900
+I know that the recursive multiplies will
+
+1226
+01:12:41,940 --> 01:12:45,490
+always deal with three consecutive chunks of memory,
+
+1227
+01:12:45,550 --> 01:12:48,870
+one for A, one for B, one for C,
+
+1228
+01:12:48,980 --> 01:12:51,600
+OK, no matter what I do.
+
+1229
+01:12:51,670 --> 01:12:53,740
+Because these are stored consecutively,
+
+1230
+01:12:53,820 --> 01:12:56,990
+recursively I have that invariant.
+
+1231
+01:12:57,280 --> 01:12:59,410
+And I can keep recursing.
+
+1232
+01:12:59,450 --> 01:13:01,480
+And I'm always dealing with three consecutive chunks of memory.
+
+1233
+01:13:01,520 --> 01:13:04,520
+That's why I need this layout is to be able to say this.
+
+1234
+01:13:04,590 --> 01:13:08,020
+OK, Now what does addition cost?
+
+1235
+01:13:08,060 --> 01:13:09,400
+I'll just give you two matrices.
+
+1236
+01:13:09,470 --> 01:13:11,330
+They're stored in some linear order,
+
+1237
+01:13:12,240 --> 01:13:14,880
+the same linear order among the three of them.
+
+1238
+01:13:14,950 --> 01:13:18,900
+Do I care what the linear order is?
+
+1239
+01:13:24,440 --> 01:13:30,460
+How should I add two matrices, get the output?
+
+1240
+01:13:40,280 --> 01:13:41,490
+Yeah?
+
+1241
+01:13:49,080 --> 01:13:51,770
+Right, if each of the three arrays I'm dealing with
+
+1242
+01:13:51,840 --> 01:13:52,850
+are stored in the same order,
+
+1243
+01:13:52,920 --> 01:13:55,560
+I can just scan in parallel through all three of them
+
+1244
+01:13:55,630 --> 01:13:58,760
+and just add corresponding elements, and output it to the third
+
+1245
+01:13:58,790 --> 01:14:00,270
+So, I don't care what the order is,
+
+1246
+01:14:00,340 --> 01:14:03,960
+as long as it's consistent and I get N^2 over B.
+
+1247
+01:14:04,110 --> 01:14:06,310
+I'll ignore plus one here.
+
+1248
+01:14:06,380 --> 01:14:09,630
+That's just looking at the entire matrix.
+
+1249
+01:14:09,700 --> 01:14:12,160
+So, there we go: another recurrence.
+
+1250
+01:14:12,200 --> 01:14:15,050
+We've seen this with N^2, and we just got N^3.
+
+1251
+01:14:15,100 --> 01:14:17,730
+But, it turns out now we get something
+
+1252
+01:14:17,770 --> 01:14:20,940
+cooler if we use the right base case.
+
+1253
+01:14:21,010 --> 01:14:24,850
+So now we get to the base case, ah, the tricky part.
+
+1254
+01:14:24,990 --> 01:14:28,880
+So, any suggestions what base case I should use?
+
+1255
+01:14:34,860 --> 01:14:37,100
+The block size, good suggestion.
+
+1256
+01:14:37,140 --> 01:14:39,110
+So, if we have something of size order B,
+
+1257
+01:14:39,160 --> 01:14:41,210
+we know that takes a constant number of memory transfers.
+
+1258
+01:14:41,260 --> 01:14:43,070
+It turns out that's not enough.
+
+1259
+01:14:43,100 --> 01:14:44,360
+That won't solve it here.
+
+1260
+01:14:44,440 --> 01:14:47,020
+But good guess. In this case, it's not the right answer.
+
+1261
+01:14:47,090 --> 01:14:49,250
+I'll give you some intuition why.
+
+1262
+01:14:49,320 --> 01:14:51,910
+We are trying to improve on N^3 over B.
+
+1263
+01:14:51,980 --> 01:14:53,480
+If you were just trying to get it divided by B,
+
+1264
+01:14:53,520 --> 01:14:55,220
+this is a great base case.
+
+1265
+01:14:55,290 --> 01:14:57,230
+But here, we know that just the improvement
+
+1266
+01:14:57,310 --> 01:14:59,020
+afforded by the block size is not enough.
+
+1267
+01:14:59,060 --> 01:15:02,140
+We have to somehow use the fact that the cache is big.
+
+1268
+01:15:02,210 --> 01:15:05,630
+It's M, so however big M is, it's that big.
+
+1269
+01:15:05,700 --> 01:15:08,370
+OK, so if we want to get some improvement on this,
+
+1270
+01:15:08,440 --> 01:15:10,610
+we've got to have M in the formula somewhere,
+
+1271
+01:15:10,650 --> 01:15:11,740
+and there's no M's yet.
+
+1272
+01:15:11,810 --> 01:15:15,680
+So, it's got to involve M. What's that?
+
+1273
+01:15:15,780 --> 01:15:24,030
+MT of M over B? That would work, but MT of M is also OK,
+
+1274
+01:15:24,100 --> 01:15:27,230
+I mean, some constant times M, let's say.
+
+1275
+01:15:27,340 --> 01:15:29,450
+I want to make this constant small enough
+
+1276
+01:15:29,490 --> 01:15:31,740
+so that the entire problem fits in cache.
+
+1277
+01:15:31,780 --> 01:15:35,440
+So, it's like one third. I think it's actually,
+
+1278
+01:15:35,580 --> 01:15:41,550
+oh wait, is it the square root of M actually?
+
+1279
+01:15:41,900 --> 01:15:45,490
+Right, this is an N by N matrix.
+
+1280
+01:15:45,530 --> 01:15:49,750
+So, it should be C times the square root of M. Sorry.
+
+1281
+01:15:51,770 --> 01:15:54,700
+So the square root of M by square root of M matrix has M entries
+
+1282
+01:15:54,740 --> 01:15:57,180
+If I make C like one third or something,
+
+1283
+01:15:57,290 --> 01:16:00,190
+then I can fit all three matrices in memory.
+
+1284
+01:16:00,240 --> 01:16:02,570
+Actually, one over square root of three would do, but who cares?
+
+1285
+01:16:02,640 --> 01:16:05,500
+So, for some constant C, now everything fits in memory.
+
+1286
+01:16:05,540 --> 01:16:08,580
+How many memory transfers does it take?
+
+1287
+01:16:10,930 --> 01:16:12,450
+One?
+
+1288
+01:16:13,240 --> 01:16:15,160
+It's a bit too small,
+
+1289
+01:16:16,920 --> 01:16:19,850
+because I do have to read the problem in.
+
+1290
+01:16:20,590 --> 01:16:22,080
+And now, I mean, here was one
+
+1291
+01:16:22,120 --> 01:16:23,680
+because there's only one block to read.
+
+1292
+01:16:23,710 --> 01:16:26,170
+Now how many blocks are there to read?
+
+1293
+01:16:26,720 --> 01:16:28,540
+Constants? No.
+
+1294
+01:16:29,050 --> 01:16:32,640
+B? No. M over B, good.
+
+1295
+01:16:32,820 --> 01:16:34,310
+Get it right eventually.
+
+1296
+01:16:34,380 --> 01:16:37,120
+That's the great thing about thinking with an oracle.
+
+1297
+01:16:37,160 --> 01:16:39,050
+You can just keep guessing.
+
+1298
+01:16:39,440 --> 01:16:42,130
+M over B because we have cache size M.
+
+1299
+01:16:42,170 --> 01:16:47,200
+There are M over B blocks in that cache to read each one, OK?
+
+1300
+01:16:47,240 --> 01:16:49,630
+This is maybe, you forgot what M was
+
+1301
+01:16:49,670 --> 01:16:51,440
+because we haven't used it for a long time.
+
+1302
+01:16:51,510 --> 01:16:53,820
+But M is the number of elements in cache.
+
+1303
+01:16:53,860 --> 01:16:57,150
+This is the number of blocks in cache.
+
+1304
+01:16:57,520 --> 01:16:59,120
+OK, someone was saying B,
+
+1305
+01:16:59,160 --> 01:17:02,020
+and it's reasonable to assume that M over B is about B.
+
+1306
+01:17:02,060 --> 01:17:03,630
+That's like a square cache,
+
+1307
+01:17:03,670 --> 01:17:07,130
+but in general, we don't make that assumption.
+
+1308
+01:17:07,370 --> 01:17:09,460
+OK, where are we? We're hopefully done,
+
+1309
+01:17:09,500 --> 01:17:11,450
+just about, good, because we have three minutes.
+
+1310
+01:17:11,490 --> 01:17:14,550
+So, that's our base case. I have a square root here;
+
+1311
+01:17:14,620 --> 01:17:18,150
+I just forgot it. Now we just have to solve it.
+
+1312
+01:17:18,190 --> 01:17:24,090
+Now, this is an easier recurrence, right?
+
+1313
+01:17:24,200 --> 01:17:25,870
+I don't want to use the master method,
+
+1314
+01:17:25,910 --> 01:17:29,040
+because master method is not going to handle these B's and M's,
+
+1315
+01:17:29,080 --> 01:17:30,910
+and these crazy base cases.
+
+1316
+01:17:30,980 --> 01:17:35,140
+OK, master method would prove N^3. Great.
+
+1317
+01:17:36,970 --> 01:17:40,240
+Master method doesn't really think about these kinds of cases.
+
+1318
+01:17:40,310 --> 01:17:42,570
+But with recursion trees, if you remember
+
+1319
+01:17:42,610 --> 01:17:45,020
+way back to the proof of the master method,
+
+1320
+01:17:45,060 --> 01:17:46,390
+just look at the recursion tree
+
+1321
+01:17:46,460 --> 01:17:48,600
+as geometric up or down or everything is equal,
+
+1322
+01:17:48,640 --> 01:17:50,990
+and then you just add them up, every level.
+
+1323
+01:17:51,030 --> 01:17:52,780
+The point is that this is a nice recurrence.
+
+1324
+01:17:52,830 --> 01:17:55,170
+All of the sub problems are the same size,
+
+1325
+01:17:55,210 --> 01:17:58,820
+and that analysis always works, I say,
+
+1326
+01:17:58,860 --> 01:18:06,320
+when everything has the same size, all the children.
+
+1327
+01:18:10,930 --> 01:18:13,840
+So, here's the recursion tree.
+
+1328
+01:18:13,890 --> 01:18:16,450
+We have N^2 over B at the top.
+
+1329
+01:18:16,490 --> 01:18:21,020
+We split into eight subproblems
+
+1330
+01:18:21,060 --> 01:18:28,910
+where each one the cost is one half N^2 over B.
+
+1331
+01:18:28,970 --> 01:18:31,050
+I'm not going to write them all. There they are.
+
+1332
+01:18:31,090 --> 01:18:33,360
+You add them up. How much do you get?
+
+1333
+01:18:33,430 --> 01:18:38,060
+Well, there's eight of them. Eight times a half is two, right?
+
+1334
+01:18:38,090 --> 01:18:44,050
+Four. [LAUGHTER] Thanks. Four, right? OK
+
+1335
+01:18:44,120 --> 01:18:49,660
+I'm bad at arithmetic. I probably already said it,
+
+1336
+01:18:49,690 --> 01:18:51,930
+but there are three kinds of mathematicians,
+
+1337
+01:18:51,970 --> 01:18:54,430
+those who can add, and those who can't.
+
+1338
+01:18:55,180 --> 01:18:58,700
+OK, why am I looking at this? It's obvious.
+
+1339
+01:18:58,740 --> 01:19:00,350
+OK, so we keep going.
+
+1340
+01:19:00,420 --> 01:19:04,790
+This looks geometrically increasing. Right?
+
+1341
+01:19:05,020 --> 01:19:08,160
+Four, OK? You just know in your heart
+
+1342
+01:19:08,230 --> 01:19:10,590
+that if you have a recurance, work out the first two levels,
+
+1343
+01:19:10,660 --> 01:19:12,920
+you can tell whether it's geometrically increasing, decreasing
+
+1344
+01:19:13,000 --> 01:19:14,020
+or they're all equal,
+
+1345
+01:19:14,030 --> 01:19:16,700
+or something else. And then you better think.
+
+1346
+01:19:16,740 --> 01:19:18,640
+But I see this as geometrically increasing.
+
+1347
+01:19:18,670 --> 01:19:21,520
+It will indeed be like 16 at the next level, I guess.
+
+1348
+01:19:21,660 --> 01:19:23,110
+OK, it should be.
+
+1349
+01:19:23,600 --> 01:19:27,190
+So, it's increasing, that means the leaves matter.
+
+1350
+01:19:27,230 --> 01:19:28,880
+So, let's work out the leaves.
+
+1351
+01:19:28,950 --> 01:19:31,200
+And, this is where we use our base case.
+
+1352
+01:19:31,330 --> 01:19:34,450
+So, we have a problem of size square root of M.
+
+1353
+01:19:34,530 --> 01:19:37,360
+And so, yeah, you have a question?
+
+1354
+01:19:40,770 --> 01:19:42,960
+Oh, indeed. I knew there was something.
+
+1355
+01:19:43,030 --> 01:19:45,240
+I knew it was supposed to be two out here.
+
+1356
+01:19:45,430 --> 01:19:50,320
+Thanks. This is why you're here.
+
+1357
+01:19:50,430 --> 01:19:55,240
+It's actually N over two over root B. Thanks.
+
+1358
+01:19:55,290 --> 01:19:59,930
+I'm substituting N over 2 into this.
+
+1359
+01:20:01,070 --> 01:20:04,270
+OK, so this is actually N^2 over 4 B.
+
+1360
+01:20:04,350 --> 01:20:09,240
+So, I get two, because there are eight times one over four.
+
+1361
+01:20:09,310 --> 01:20:12,730
+OK, I wasn't that far off then.
+
+1362
+01:20:12,770 --> 01:20:16,840
+It's still geometrically increasing, still the case, OK?
+
+1363
+01:20:16,880 --> 01:20:18,710
+But now, it actually doesn't matter.
+
+1364
+01:20:18,780 --> 01:20:22,240
+Whatever the cost is, as long as it's bigger than one, great.
+
+1365
+01:20:22,310 --> 01:20:23,980
+Now we look at the leaves.
+
+1366
+01:20:24,010 --> 01:20:26,260
+The leaves are root M by root M.
+
+1367
+01:20:26,290 --> 01:20:28,770
+I substitute root M into this:
+
+1368
+01:20:28,810 --> 01:20:31,550
+I get M over B with some constants. Who cares?
+
+1369
+01:20:31,710 --> 01:20:35,410
+So, each leaf is M over B,
+
+1370
+01:20:35,560 --> 01:20:38,500
+OK, lots of them. How many are there?
+
+1371
+01:20:38,570 --> 01:20:41,450
+This is the only, deal with recursion trees,
+
+1372
+01:20:41,520 --> 01:20:44,570
+counting the number of leaves is always the annoying part.
+
+1373
+01:20:44,610 --> 01:20:47,680
+Oh boy, well, we start with an N by N matrix.
+
+1374
+01:20:47,760 --> 01:20:52,380
+We stop when we get down to root N by root N matrix.
+
+1375
+01:20:52,470 --> 01:20:57,800
+So, that sounds like something.
+
+1376
+01:20:58,500 --> 01:21:06,440
+Oh boy, I'm cheating here. Really? That many?
+
+1377
+01:21:06,510 --> 01:21:11,730
+It sounds plausible. OK, the claim is, and I'll cheat.
+
+1378
+01:21:11,760 --> 01:21:13,570
+So I'm going to use the oracle here,
+
+1379
+01:21:13,650 --> 01:21:16,920
+and we'll figure out why this is the case.
+
+1380
+01:21:17,370 --> 01:21:24,300
+N over root N^3 leaves,
+
+1381
+01:21:26,390 --> 01:21:30,560
+hey what? I think here, it's hard to see the tree.
+
+1382
+01:21:30,630 --> 01:21:33,280
+But it's easy to see in the matrix.
+
+1383
+01:21:33,630 --> 01:21:36,310
+Let's enter the matrix.
+
+1384
+01:21:36,380 --> 01:21:38,950
+We have our big matrix. We divided in half.
+
+1385
+01:21:39,020 --> 01:21:39,030
+We recursively divide in half.
+
+1386
+01:21:39,070 --> 01:21:42,940
+We recursively divide in half.
+
+1387
+01:21:43,020 --> 01:21:44,420
+You get the idea, OK?
+
+1388
+01:21:44,500 --> 01:21:48,700
+Now, at some point these sectors,
+
+1389
+01:21:48,730 --> 01:21:52,150
+let's say one of these sectors, and each of these sectors,
+
+1390
+01:21:52,230 --> 01:21:54,660
+fits in cache. And three of them fit in cache.
+
+1391
+01:21:54,700 --> 01:21:57,790
+So, that's when we stop the recursion in the analysis.
+
+1392
+01:21:57,830 --> 01:21:59,190
+The algorithm goes all the way.
+
+1393
+01:21:59,260 --> 01:22:02,440
+But in the analysis, let's say we stop at M.
+
+1394
+01:22:03,140 --> 01:22:07,880
+OK, now, how many leaves of problems are there?
+
+1395
+01:22:07,950 --> 01:22:10,330
+Oh man, this is still not obvious.
+
+1396
+01:22:10,370 --> 01:22:14,690
+OK, the number of leaf chunks here is, like, I mean,
+
+1397
+01:22:14,770 --> 01:22:20,710
+the number of these things is something like N over root M,
+
+1398
+01:22:20,970 --> 01:22:23,070
+right, the number of chunks.
+
+1399
+01:22:23,150 --> 01:22:26,590
+But, it's a little less clear because I have so many of these.
+
+1400
+01:22:26,660 --> 01:22:29,750
+But, all right, so let's just suppose,
+
+1401
+01:22:29,830 --> 01:22:32,520
+now, I think of normal, boring, matrix multiplication
+
+1402
+01:22:32,600 --> 01:22:34,450
+on chunks of this size.
+
+1403
+01:22:34,530 --> 01:22:36,980
+That's essentially what the leaves should tell me.
+
+1404
+01:22:37,070 --> 01:22:38,510
+I start with this big problem,
+
+1405
+01:22:38,580 --> 01:22:43,890
+I recurse down to all these little, tiny, multiply this by that
+
+1406
+01:22:43,970 --> 01:22:48,350
+OK, this root M by root M chunk.
+
+1407
+01:22:50,270 --> 01:22:51,840
+OK, how many operations,
+
+1408
+01:22:51,920 --> 01:22:55,630
+how many multiplies do I do on those things? N^3.
+
+1409
+01:22:55,720 --> 01:22:58,470
+But now, N, the size of my matrix
+
+1410
+01:22:58,520 --> 01:23:01,950
+in terms of these little sub matrices, is N over root M.
+
+1411
+01:23:02,000 --> 01:23:11,850
+So, it should be N over root M^3 subproblems of this size.
+
+1412
+01:23:13,710 --> 01:23:15,310
+If you work it out,
+
+1413
+01:23:15,360 --> 01:23:19,210
+normally we go down to things of constant size
+
+1414
+01:23:19,290 --> 01:23:21,250
+and we get exactly N^3 of them.
+
+1415
+01:23:21,320 --> 01:23:23,970
+Now we are stopping at this short point in saying,
+
+1416
+01:23:24,010 --> 01:23:27,280
+well, it's however many there are, cubed.
+
+1417
+01:23:27,380 --> 01:23:28,940
+OK, this is a bit of hand waving.
+
+1418
+01:23:29,110 --> 01:23:31,350
+You could work it out with the recurrence
+
+1419
+01:23:31,410 --> 01:23:33,770
+on the number of leaves. But there it is.
+
+1420
+01:23:33,830 --> 01:23:39,570
+So, the total here is N over, let's work it out.
+
+1421
+01:23:39,620 --> 01:23:46,650
+N^3 over M to the three halves, that's this number of leaves,
+
+1422
+01:23:46,690 --> 01:23:50,930
+times the cost at each leaf, which is M over B.
+
+1423
+01:23:51,370 --> 01:24:04,700
+So, some of the M's canceled, and we get N^3 over B root M,
+
+1424
+01:24:06,420 --> 01:24:09,650
+which is a root M factor better than N^3 over B.
+
+1425
+01:24:09,710 --> 01:24:13,500
+It's actually quite a lot, the square root of the cache size.
+
+1426
+01:24:13,570 --> 01:24:14,830
+That is optimal.
+
+1427
+01:24:14,910 --> 01:24:17,730
+The best two level matrix multiplication algorithm
+
+1428
+01:24:17,810 --> 01:24:22,750
+is N^3 over B root M memory transfers.
+
+1429
+01:24:22,840 --> 01:24:27,570
+Pretty amazing, and I'm over time.
+
+1430
+01:24:29,060 --> 01:24:31,830
+You can generalize this into all sorts of great things,
+
+1431
+01:24:31,910 --> 01:24:35,420
+but the bottom line is this is a great way
+
+1432
+01:24:35,500 --> 01:24:37,510
+to do matrix multiplication as a recursion.
+
+1433
+01:24:37,590 --> 01:24:40,380
+We'll see more recursion for cache oblivious algorithm
+
+1434
+01:24:40,430 --> 01:24:41,910
+on Wednesday.
+

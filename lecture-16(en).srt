@@ -1,0 +1,4236 @@
+﻿1
+00:00:04,990 --> 00:00:06,670
+——valuable experience.
+
+2
+00:00:06,950 --> 00:00:13,300
+OK, today we're going to start talking about
+
+3
+00:00:13,360 --> 00:00:16,070
+a particular class of algorithms called greedy algorithms.
+
+4
+00:00:16,070 --> 00:00:18,890
+But we're going to do it in the context of graphs.
+
+5
+00:00:18,950 --> 00:00:25,910
+So, I want to review a little bit about graphs,
+
+6
+00:00:26,840 --> 00:00:33,760
+which mostly you can find in the textbook in appendix B.
+
+7
+00:00:34,490 --> 00:00:39,470
+And so, if you haven't reviewed in appendix B recently,
+
+8
+00:00:39,580 --> 00:00:41,730
+please sit down and review appendix B.
+
+9
+00:00:41,800 --> 00:00:46,090
+It will pay off especially during our take-home quiz.
+
+10
+00:00:46,260 --> 00:00:50,550
+So, just reminder, a digraph,
+
+11
+00:00:51,070 --> 00:00:53,510
+what's a digraph?
+
+12
+00:00:54,370 --> 00:00:56,430
+What's that short for?
+
+13
+00:00:56,740 --> 00:00:58,620
+Directed graph, OK?
+
+14
+00:00:58,970 --> 00:01:02,490
+Directed graph, G equals (V,E),
+
+15
+00:01:03,170 --> 00:01:10,600
+OK, has a set, V, of vertices.
+
+16
+00:01:10,990 --> 00:01:18,860
+And, I always get people telling me that I have one vertice.
+
+17
+00:01:18,970 --> 00:01:24,020
+The singular is not vertice; it is vertex, OK?
+
+18
+00:01:24,160 --> 00:01:26,420
+The plural is vertices. The singular is vertex.
+
+19
+00:01:26,490 --> 00:01:30,040
+It's one of those weird English words.
+
+20
+00:01:30,240 --> 00:01:33,920
+It's probably originally like French or something, right?
+
+21
+00:01:33,980 --> 00:01:36,520
+I don't know. OK, anyway,
+
+22
+00:01:36,590 --> 00:01:38,800
+and we have a set, E,
+
+23
+00:01:39,070 --> 00:01:45,480
+which is a subset of V cross V of edges.
+
+24
+00:01:46,390 --> 00:01:48,130
+So that's a digraph.
+
+25
+00:01:48,190 --> 00:02:02,200
+And undirected graph, E contains unordered pairs.
+
+26
+00:02:14,650 --> 00:02:17,850
+sorry? It's Latin, OK,
+
+27
+00:02:17,890 --> 00:02:21,460
+so it's probably pretty old, then, in English.
+
+28
+00:02:21,460 --> 00:02:23,790
+I guess the vertex would be a little bit of
+
+29
+00:02:23,870 --> 00:02:26,310
+a giveaway that maybe it wasn't French.
+
+30
+00:02:28,550 --> 00:02:32,270
+It started to be used in 1570, OK.
+
+31
+00:02:32,950 --> 00:02:37,460
+OK, good,
+
+32
+00:02:38,780 --> 00:02:44,440
+OK, so the number of edges is,
+
+33
+00:02:44,510 --> 00:02:49,870
+whether it's directed or undirected, is O of what?
+
+34
+00:02:56,560 --> 00:02:58,670
+V^2, good.
+
+35
+00:03:00,890 --> 00:03:03,900
+And one of the conventions that will have when we're dealing,
+
+36
+00:03:04,010 --> 00:03:06,780
+once we get into graphs, we deal a lot with sets.
+
+37
+00:03:06,840 --> 00:03:12,360
+We generally drop the vertical bar notation within O's
+
+38
+00:03:12,370 --> 00:03:15,250
+just because it's implied. It just makes it messier.
+
+39
+00:03:15,320 --> 00:03:17,810
+So, once again, another abuse of notation.
+
+40
+00:03:17,870 --> 00:03:20,970
+It really should be order the size of V^2,
+
+41
+00:03:21,040 --> 00:03:23,130
+but it just messes up,
+
+42
+00:03:23,210 --> 00:03:26,210
+It means, it's just more stuff to write down.
+
+43
+00:03:26,280 --> 00:03:29,220
+You're multiplying these things, and all those vertical bars
+
+44
+00:03:29,340 --> 00:03:33,210
+Since they don't even have a sense to the vertical bar,
+
+45
+00:03:33,220 --> 00:03:34,380
+it gets messy.
+
+46
+00:03:34,390 --> 00:03:38,680
+So, we just drop the vertical bars there
+
+47
+00:03:39,360 --> 00:03:42,000
+when it's in asymptotic notation.
+
+48
+00:03:42,060 --> 00:03:46,600
+So, E is order V^2 when it's a set of pairs,
+
+49
+00:03:46,630 --> 00:03:47,820
+because if it's a set of pairs,
+
+50
+00:03:47,890 --> 00:03:50,760
+it's at most n choose two,
+
+51
+00:03:50,940 --> 00:03:53,370
+which is where it's at most n^2 over 2,
+
+52
+00:03:53,410 --> 00:03:55,510
+here it could be, at most,
+
+53
+00:03:55,550 --> 00:03:58,870
+sorry, V^2 over 2, here it's at most V^2.
+
+54
+00:03:58,940 --> 00:04:01,700
+And then, another property that sometimes comes up is
+
+55
+00:04:01,770 --> 00:04:05,470
+if the G is connected, we have another bound,
+
+56
+00:04:08,460 --> 00:04:11,450
+implies that the size of E
+
+57
+00:04:11,480 --> 00:04:15,770
+is at least the size of V minus one.
+
+58
+00:04:18,670 --> 00:04:23,170
+OK, so if it's connected, meaning,
+
+59
+00:04:23,200 --> 00:04:26,630
+what does it mean to have a graph that's connected?
+
+60
+00:04:26,650 --> 00:04:29,150
+[Student]:Inaudible.
+
+61
+00:04:29,180 --> 00:04:33,240
+Yeah, there's a path from any vertex to any other vertex in the graph
+
+62
+00:04:33,270 --> 00:04:36,160
+That's what it means to be connected.
+
+63
+00:04:36,230 --> 00:04:39,810
+So if that's the case, that a number of edges
+
+64
+00:04:39,850 --> 00:04:43,920
+is at least the number of vertices minus one, OK?
+
+65
+00:04:44,230 --> 00:04:45,920
+And so, what that says,
+
+66
+00:04:45,980 --> 00:04:48,350
+so one of the things we'll get into,
+
+67
+00:04:48,390 --> 00:04:52,790
+a fact that I just wanted to remind you, is that in that case,
+
+68
+00:04:52,860 --> 00:05:00,880
+if I look at log E, OK, log of the number of edges,
+
+69
+00:05:01,980 --> 00:05:10,080
+that, by this is O of log V.
+
+70
+00:05:10,790 --> 00:05:15,640
+And by this, is omega of log V.
+
+71
+00:05:15,680 --> 00:05:19,010
+So, it's equal to theta of log V.
+
+72
+00:05:21,210 --> 00:05:22,600
+OK, so basically the number of,
+
+73
+00:05:22,670 --> 00:05:25,890
+in the case of a connected graph, the number of edges,
+
+74
+00:05:25,960 --> 00:05:28,250
+and the number of vertices are polynomially related.
+
+75
+00:05:28,320 --> 00:05:31,340
+So, their logs are comparable.
+
+76
+00:05:33,240 --> 00:05:35,660
+OK, so that's helpful just to know because
+
+77
+00:05:35,730 --> 00:05:37,480
+sometimes I just get questions later on
+
+78
+00:05:37,520 --> 00:05:40,270
+where people will say, oh, you showed it was log E
+
+79
+00:05:40,310 --> 00:05:42,210
+but you didn't show it was log V.
+
+80
+00:05:42,250 --> 00:05:45,630
+And I could point out that it's the same thing.
+
+81
+00:05:51,610 --> 00:05:58,390
+So there's various ways of representing graphs in computers,
+
+82
+00:05:58,900 --> 00:06:01,520
+and I'm just going to cover a couple of the important ones.
+
+83
+00:06:01,560 --> 00:06:06,520
+There's actually more. We'll see some more.
+
+84
+00:06:06,590 --> 00:06:11,770
+So, the simplest one is what's called an adjacency matrix.
+
+85
+00:06:13,260 --> 00:06:23,800
+An adjacency matrix.
+
+86
+00:06:24,630 --> 00:06:30,600
+An adjacency matrix of the graph, G, equals (V,E),
+
+87
+00:06:30,880 --> 00:06:34,540
+where, for simplicity,
+
+88
+00:06:34,580 --> 00:06:41,950
+I'll let V be the set of integers from one up to n,
+
+89
+00:06:43,390 --> 00:07:01,470
+is the n by n matrix A given by the ij-th at the entry
+
+90
+00:07:01,540 --> 00:07:10,380
+is simply one if the edge, ij, is in the edge set
+
+91
+00:07:10,690 --> 00:07:17,110
+and zero if ij is not in the edge set.
+
+92
+00:07:18,510 --> 00:07:21,690
+OK, so it's simply the matrix where you say,
+
+93
+00:07:21,730 --> 00:07:24,930
+the ij entry is one if it's in the matrix.
+
+94
+00:07:25,000 --> 00:07:26,700
+So, this is, in some sense, giving you
+
+95
+00:07:26,740 --> 00:07:31,470
+the predicate for, is there an edge from i to j?
+
+96
+00:07:31,480 --> 00:07:32,850
+OK, predicate, remember,
+
+97
+00:07:32,920 --> 00:07:37,490
+is Boolean formula that is either zero or one,
+
+98
+00:07:37,560 --> 00:07:41,510
+and in this case, you're saying it's one
+
+99
+00:07:41,550 --> 00:07:46,760
+if there is an edge from i to j and zero otherwise.
+
+100
+00:07:46,970 --> 00:07:53,140
+OK, sometimes you have edge weighted graphs,
+
+101
+00:07:53,180 --> 00:07:54,890
+and then sometimes what people will do
+
+102
+00:07:54,930 --> 00:07:57,600
+is replace this by edge weights.
+
+103
+00:07:58,020 --> 00:08:01,010
+OK, it will be the weight of the edge from i to j.
+
+104
+00:08:01,140 --> 00:08:06,300
+So, let's just do an example of that
+
+105
+00:08:06,300 --> 00:08:11,320
+just to make sure that our intuition corresponds
+
+106
+00:08:11,390 --> 00:08:17,770
+to our mathematical definitions.
+
+107
+00:08:17,840 --> 00:08:22,080
+So, here's an example graph.
+
+108
+00:08:24,110 --> 00:08:28,330
+Let's say that's our graph.
+
+109
+00:08:28,640 --> 00:08:35,290
+So let's just draw the adjacency the matrix.
+
+110
+00:08:38,290 --> 00:08:43,390
+OK, so what this says: is there's an edge from one to one?
+
+111
+00:08:43,830 --> 00:08:45,110
+And the answer is no.
+
+112
+00:08:45,190 --> 00:08:48,330
+Is there an edge from one to two? Yes.
+
+113
+00:08:48,490 --> 00:08:52,400
+Is there an edge from one to three here? Yep.
+
+114
+00:08:52,430 --> 00:08:56,010
+Is there an edge for one to four? No.
+
+115
+00:08:56,080 --> 00:08:59,850
+Is there an edge from two until one? No.
+
+116
+00:08:59,880 --> 00:09:04,340
+Two to two? No. Two to three? Yes.
+
+117
+00:09:04,420 --> 00:09:08,340
+Two to four? No.
+
+118
+00:09:08,870 --> 00:09:12,990
+No edges going out of three.
+
+119
+00:09:13,640 --> 00:09:17,990
+Edge from four to three, and that's it.
+
+120
+00:09:18,060 --> 00:09:25,740
+That's the adjacency matrix for this particular graph.
+
+121
+00:09:27,410 --> 00:09:32,380
+And so, I can represent a graph as this adjacency matrix
+
+122
+00:09:32,420 --> 00:09:35,230
+OK, when I represent it in this way,
+
+123
+00:09:35,290 --> 00:09:37,360
+how much storage do I need?
+
+124
+00:09:41,050 --> 00:09:44,020
+OK, n^2 or V^2
+
+125
+00:09:44,280 --> 00:09:49,810
+because the size is the same thing for V^2 storage,
+
+126
+00:09:50,730 --> 00:09:57,680
+OK, and that's what we call a dense representation.
+
+127
+00:10:01,170 --> 00:10:04,110
+OK, it works well when the graph is dense.
+
+128
+00:10:04,180 --> 00:10:07,910
+So, the graph is dense if the number of edges
+
+129
+00:10:08,260 --> 00:10:13,320
+is close to all of the edges possible.
+
+130
+00:10:13,970 --> 00:10:16,120
+then this is a good representation.
+
+131
+00:10:16,190 --> 00:10:18,410
+But for many types of graphs, the number of edges
+
+132
+00:10:18,440 --> 00:10:25,410
+is much less than the possible number of edges,
+
+133
+00:10:25,480 --> 00:10:27,370
+in which case we say the graph is sparse.
+
+134
+00:10:27,480 --> 00:10:30,660
+Can somebody give me an example of a sparse graph?
+
+135
+00:10:30,770 --> 00:10:32,570
+A class of graphs:
+
+136
+00:10:32,600 --> 00:10:35,610
+so, I want a class of graphs that as n grows,
+
+137
+00:10:35,650 --> 00:10:39,410
+the number of edges in the graph doesn't grow as the square,
+
+138
+00:10:39,480 --> 00:10:45,980
+but grows rather as something much smaller.
+
+139
+00:10:46,450 --> 00:10:49,460
+A linked list, so, a chain,
+
+140
+00:10:49,530 --> 00:10:51,160
+OK, if you look at it from a graph theoretically,
+
+141
+00:10:51,200 --> 00:10:55,190
+is a perfectly good example: only n edges in the chain
+
+142
+00:10:55,260 --> 00:10:57,040
+for a chain of length n.
+
+143
+00:10:57,100 --> 00:11:00,000
+So therefore, the number of edges would be order V.
+
+144
+00:11:00,040 --> 00:11:07,260
+And in particular, you'd only have one edge per row here.
+
+145
+00:11:07,270 --> 00:11:12,090
+What other graphs are sparse? Yeah?
+
+146
+00:11:12,160 --> 00:11:15,840
+[Student]:Inaudible.
+
+147
+00:11:15,910 --> 00:11:17,860
+Good, a planar graph,
+
+148
+00:11:17,890 --> 00:11:20,380
+a graph that can be drawn in a plane turns out that
+
+149
+00:11:20,450 --> 00:11:24,910
+if it has V vertices has, and V is at least three,
+
+150
+00:11:24,980 --> 00:11:29,460
+then it has, at most, three V minus six edges.
+
+151
+00:11:29,490 --> 00:11:33,760
+So, it turns out that's order V edges again.
+
+152
+00:11:33,790 --> 00:11:38,040
+What's another example of a common graph?
+
+153
+00:11:38,110 --> 00:11:40,910
+Yeah, binary tree, or even actually any tree,
+
+154
+00:11:40,950 --> 00:11:44,210
+you know, what's called a free tree if you read the appendix,
+
+155
+00:11:44,350 --> 00:11:49,430
+A tree that just is a connected graph that has no cycles
+
+156
+00:11:49,500 --> 00:11:50,880
+OK, is another example.
+
+157
+00:11:50,950 --> 00:11:53,800
+What's an example of a graph that's dense?
+
+158
+00:11:59,790 --> 00:12:05,620
+A complete graph, OK: it's all ones,
+
+159
+00:12:05,680 --> 00:12:07,290
+OK, or if you have edge weights,
+
+160
+00:12:07,380 --> 00:12:09,130
+it would be a completely filled in matrix.
+
+161
+00:12:09,200 --> 00:12:10,840
+OK, good.
+
+162
+00:12:10,950 --> 00:12:14,210
+So, this is good for dense representation.
+
+163
+00:12:14,270 --> 00:12:18,140
+But sometimes you want to have a sparse representation
+
+164
+00:12:18,200 --> 00:12:26,210
+so we don't have to spend V^2 space to deal with all of the,
+
+165
+00:12:26,210 --> 00:12:29,030
+where most of it's going to be zeroes.
+
+166
+00:12:29,070 --> 00:12:31,120
+OK, it's sort of like, if we know it's zero,
+
+167
+00:12:31,190 --> 00:12:33,530
+why bother representing it as zero?
+
+168
+00:12:33,570 --> 00:12:39,060
+So, one such representation is an adjacency list representation.
+
+169
+00:12:45,240 --> 00:12:53,890
+Actually, adjacency list of a given vertex is the list,
+
+170
+00:12:53,960 --> 00:13:07,290
+which we denote by Adj of V, of vertices adjacent to V.
+
+171
+00:13:07,360 --> 00:13:09,640
+OK, just in terms by their terminology,
+
+172
+00:13:09,700 --> 00:13:16,720
+vertices are adjacent, but edges are incident on vertices.
+
+173
+00:13:16,780 --> 00:13:21,540
+OK, so the incidence is a relation between a vertex and an edge.
+
+174
+00:13:21,600 --> 00:13:26,720
+An adjacency is a relation between two vertices.
+
+175
+00:13:26,780 --> 00:13:28,730
+OK, that's just the language.
+
+176
+00:13:28,810 --> 00:13:32,120
+Why they use to different terms, I don't know,
+
+177
+00:13:32,160 --> 00:13:33,810
+but that's what they do.
+
+178
+00:13:34,640 --> 00:13:37,510
+So, in the graph, for example,
+
+179
+00:13:37,580 --> 00:13:41,500
+the adjacency list for vertex one
+
+180
+00:13:41,560 --> 00:13:49,610
+is just the list or the set of two three
+
+181
+00:13:49,680 --> 00:13:54,930
+because one has going out of one are edges to two and three.
+
+182
+00:13:55,010 --> 00:14:00,720
+The adjacency list for two is just three,
+
+183
+00:14:01,290 --> 00:14:12,210
+For three is the empty set, and for four, it is three.
+
+184
+00:14:16,540 --> 00:14:21,000
+So that's the representation.
+
+185
+00:14:21,070 --> 00:14:22,840
+Now, if we want to figure out how much storage
+
+186
+00:14:22,950 --> 00:14:26,300
+is required for this representation, OK,
+
+187
+00:14:26,370 --> 00:14:30,000
+we need to understand how long the adjacency list is.
+
+188
+00:14:30,040 --> 00:14:36,970
+So, what is the length of an adjacency list of a vertex, V?
+
+189
+00:14:37,560 --> 00:14:41,170
+What name do we give to that?
+
+190
+00:14:44,350 --> 00:14:49,200
+It's the degree. So, in an undirected graph,
+
+191
+00:14:49,590 --> 00:14:53,750
+we call it the degree of the vertex.
+
+192
+00:14:53,820 --> 00:14:55,680
+This is undirected.
+
+193
+00:14:59,330 --> 00:15:06,070
+OK, about here, OK.
+
+194
+00:15:06,140 --> 00:15:07,550
+So that's an undirected case.
+
+195
+00:15:07,620 --> 00:15:10,960
+In the directed case, OK,
+
+196
+00:15:11,010 --> 00:15:14,300
+actually I guess the way we should do this is say this.
+
+197
+00:15:14,370 --> 00:15:22,460
+If the degree, we call it the out degree for a digraph.
+
+198
+00:15:25,930 --> 00:15:27,270
+OK, so in a digraph,
+
+199
+00:15:27,340 --> 00:15:31,080
+we have an out degree and an in degree for each vertex.
+
+200
+00:15:31,190 --> 00:15:33,520
+So here, the in degree is three.
+
+201
+00:15:33,590 --> 00:15:38,190
+Here, the out degree is two, OK?
+
+202
+00:15:40,810 --> 00:15:49,240
+So, one of the important lemma that comes up is
+
+203
+00:15:51,190 --> 00:15:54,200
+what's called the handshaking lemma.
+
+204
+00:15:56,870 --> 00:16:00,930
+OK, it's one of these mathematical lemmas.
+
+205
+00:16:09,390 --> 00:16:11,940
+And so, it comes from a story.
+
+206
+00:16:12,120 --> 00:16:14,690
+Go to a dinner party,
+
+207
+00:16:14,790 --> 00:16:20,690
+and everybody at the dinner party shakes other people's hands.
+
+208
+00:16:20,760 --> 00:16:22,880
+Some people may not shake anybody's hand.
+
+209
+00:16:22,950 --> 00:16:28,640
+Some people may shake several people's hands.
+
+210
+00:16:28,710 --> 00:16:32,170
+Nobody shakes hands with themselves.
+
+211
+00:16:32,250 --> 00:16:37,030
+And at some point during the dinner party,
+
+212
+00:16:38,040 --> 00:16:42,950
+the host goes around and counts up how many,
+
+213
+00:16:43,020 --> 00:16:49,910
+the sum, of the number of hands that each person has shaken.
+
+214
+00:16:49,970 --> 00:16:51,650
+OK, so he says, how many did you shake?
+
+215
+00:16:51,690 --> 00:16:53,150
+How many did you shake? How many did you shake?
+
+216
+00:16:53,220 --> 00:17:00,680
+He adds them up, OK, and that number is guaranteed to be even.
+
+217
+00:17:01,710 --> 00:17:03,370
+OK, that's the handshaking lemma.
+
+218
+00:17:03,440 --> 00:17:09,190
+Or, stated a little bit more precisely,
+
+219
+00:17:10,340 --> 00:17:14,360
+if I take for any graph the degree of the vertex,
+
+220
+00:17:14,400 --> 00:17:18,410
+and sum them all up, that's how many hands everybody shook,
+
+221
+00:17:18,560 --> 00:17:23,410
+that's actually equal to always twice the number of edges.
+
+222
+00:17:25,120 --> 00:17:27,730
+So, why is that going to be true?
+
+223
+00:17:28,270 --> 00:17:30,960
+Why is that going to be twice the number of edges?
+
+224
+00:17:31,480 --> 00:17:32,510
+Yeah?
+
+225
+00:17:32,580 --> 00:17:37,190
+[Student]:Inaudible.
+
+226
+00:17:37,260 --> 00:17:40,280
+Yeah. Every time you put in an edge,
+
+227
+00:17:40,350 --> 00:17:45,230
+you add one to the degree of each person on each end.
+
+228
+00:17:45,280 --> 00:17:46,500
+So, it's just two different ways
+
+229
+00:17:46,570 --> 00:17:48,530
+of counting up the same number of edges.
+
+230
+00:17:48,600 --> 00:17:52,050
+OK, I can go around, and if you imagine that,
+
+231
+00:17:52,120 --> 00:17:55,270
+that every time I count the degree of the node,
+
+232
+00:17:55,340 --> 00:17:58,070
+I put a mark on every edge.
+
+233
+00:17:58,880 --> 00:18:00,490
+Then, when I'm done,
+
+234
+00:18:00,570 --> 00:18:04,790
+every edge has two marks on it, one for each end.
+
+235
+00:18:05,870 --> 00:18:09,460
+OK: a pretty simple theorem.
+
+236
+00:18:09,530 --> 00:18:13,270
+So, what that says is that for undirected graphs,
+
+237
+00:18:18,170 --> 00:18:25,230
+that implies that the adjacency list representation,
+
+238
+00:18:26,430 --> 00:18:30,650
+uses how much storage?
+
+239
+00:18:33,500 --> 00:18:38,960
+OK, at most, 2E, so order E, but that's not all.
+
+240
+00:18:43,080 --> 00:18:44,850
+[Student]:Inaudible.
+
+241
+00:18:44,920 --> 00:18:48,050
+Yeah, so you have to have the number of vertices
+
+242
+00:18:48,130 --> 00:18:52,210
+plus order the number of edges, OK,
+
+243
+00:18:52,280 --> 00:18:54,730
+whether it's directed or undirected because
+
+244
+00:18:55,120 --> 00:18:56,820
+because I may have a graph,
+
+245
+00:18:56,890 --> 00:19:00,390
+say it has a whole bunch of vertices and no edges,
+
+246
+00:19:00,460 --> 00:19:03,510
+that's still going to cost me order V, OK?
+
+247
+00:19:03,590 --> 00:19:10,330
+So, it uses theta of V plus E storage.
+
+248
+00:19:11,450 --> 00:19:15,320
+And, it's basically the same thing asymptotically.
+
+249
+00:19:16,080 --> 00:19:21,180
+In fact, it's easier to see in some sense for digraphs
+
+250
+00:19:23,660 --> 00:19:28,130
+because for digraphs, what I do is I just add up the out degrees,
+
+251
+00:19:28,210 --> 00:19:32,320
+and that equal to E, OK,
+
+252
+00:19:32,720 --> 00:19:35,290
+if I add up the out degrees as equally.
+
+253
+00:19:35,400 --> 00:19:40,020
+In fact, this is kind of like it amortized analysis,
+
+254
+00:19:40,060 --> 00:19:42,560
+if you will, a book keeping analysis,
+
+255
+00:19:42,620 --> 00:19:45,190
+that if I'm adding up the total number of edges,
+
+256
+00:19:45,260 --> 00:19:49,020
+one way of doing it is accounting for a vertex by vertex.
+
+257
+00:19:50,000 --> 00:19:54,970
+OK, so for each vertex, I basically can take each degree,
+
+258
+00:19:55,040 --> 00:19:58,200
+and basically each vertex, look at the degree,
+
+259
+00:19:58,270 --> 00:20:01,980
+and that allocating of account per edge,
+
+260
+00:20:02,050 --> 00:20:04,100
+and then ending up with twice the number of edges,
+
+261
+00:20:04,170 --> 00:20:07,040
+that's exactly accounting type of analysis
+
+262
+00:20:07,080 --> 00:20:09,900
+that we might do for amortized analysis.
+
+263
+00:20:10,430 --> 00:20:12,520
+OK, so we'll see that.
+
+264
+00:20:12,820 --> 00:20:15,870
+So, this is a sparse representation,
+
+265
+00:20:20,020 --> 00:20:28,610
+and it's often better than an adjacency matrix.
+
+266
+00:20:28,760 --> 00:20:32,990
+For example, you can imagine if the World Wide Web were done
+
+267
+00:20:33,050 --> 00:20:38,530
+with an adjacency matrix as opposed to, essentially,
+
+268
+00:20:38,600 --> 00:20:43,120
+with an adjacency list type of representation.
+
+269
+00:20:43,180 --> 00:20:46,720
+Every link on the World Wide Web, I had to say,
+
+270
+00:20:46,790 --> 00:20:48,360
+here are the ones that I'm connected to,
+
+271
+00:20:48,430 --> 00:20:51,910
+and here are all the ones I'm not connected to.
+
+272
+00:20:52,010 --> 00:20:54,800
+OK, that list of things you're not connected to
+
+273
+00:20:54,860 --> 00:20:58,880
+for a given page would be pretty dramatically,
+
+274
+00:20:59,660 --> 00:21:03,550
+show you that there is an advantage to sparse representation.
+
+275
+00:21:03,620 --> 00:21:04,840
+On the other hand,
+
+276
+00:21:04,870 --> 00:21:10,210
+one of the nice things about an adjacency matrix representation
+
+277
+00:21:10,280 --> 00:21:14,750
+is that each edge can be represented with a single bit,
+
+278
+00:21:15,630 --> 00:21:21,070
+whereas typical when I'm representing
+
+279
+00:21:21,140 --> 00:21:23,570
+thing with an adjacency list representation,
+
+280
+00:21:23,650 --> 00:21:33,100
+how many bits am I going to need to represent each adjacency?
+
+281
+00:21:33,400 --> 00:21:36,690
+You'll need order log of V
+
+282
+00:21:36,730 --> 00:21:40,390
+to be able to name each different vertex.
+
+283
+00:21:40,510 --> 00:21:43,100
+OK, the log of the number is the number of bits that I need.
+
+284
+00:21:43,200 --> 00:21:45,060
+So, there are places where this is actually
+
+285
+00:21:45,100 --> 00:21:47,210
+a far more efficient representation.
+
+286
+00:21:47,280 --> 00:21:49,710
+In particular, if you have a very dense graph,
+
+287
+00:21:50,270 --> 00:21:53,680
+OK, this may be a better way of representing it.
+
+288
+00:21:53,750 --> 00:21:55,460
+OK, the other thing I want you to get,
+
+289
+00:21:55,530 --> 00:21:58,510
+and we're going to see more of this in particular next week,
+
+290
+00:21:58,580 --> 00:22:04,960
+is that a matrix and a graph,
+
+291
+00:22:05,070 --> 00:22:08,740
+they are two ways of looking at the same thing.
+
+292
+00:22:10,230 --> 00:22:13,700
+and in fact, there's a lot of graph theory that
+
+293
+00:22:13,770 --> 00:22:18,990
+when you do things like multiply the adjacency matrix,
+
+294
+00:22:19,250 --> 00:22:20,290
+OK, and so forth.
+
+295
+00:22:20,360 --> 00:22:24,140
+So, there's a lot of commonality between graphs and matrices,
+
+296
+00:22:24,190 --> 00:22:26,030
+a lot of mathematics that if it applies for one,
+
+297
+00:22:26,070 --> 00:22:29,070
+it applies to the other. Do you have a question,
+
+298
+00:22:29,180 --> 00:22:31,490
+or just holding your finger in the air?
+
+299
+00:22:31,560 --> 00:22:33,400
+OK, good.
+
+300
+00:22:33,470 --> 00:22:36,260
+OK, so that's all just review.
+
+301
+00:22:36,330 --> 00:22:38,910
+Now I want to get onto today's lecture.
+
+302
+00:22:39,450 --> 00:22:41,310
+OK, so any questions about graphs?
+
+303
+00:22:41,360 --> 00:22:43,570
+So, this is a good time to review appendix B.
+
+304
+00:22:43,600 --> 00:22:45,200
+there are a lot of great properties in there,
+
+305
+00:22:45,230 --> 00:22:48,460
+and in particular, there is a theorem that
+
+306
+00:22:48,500 --> 00:22:54,860
+we're going to cover today that we're going to talk about today,
+
+307
+00:22:54,940 --> 00:22:57,190
+which is properties of trees.
+
+308
+00:22:57,300 --> 00:22:59,990
+Trees are very special kinds of graphs,
+
+309
+00:23:00,060 --> 00:23:01,930
+so I really want you to go and look
+
+310
+00:23:02,000 --> 00:23:03,280
+to see what the properties are.
+
+311
+00:23:03,350 --> 00:23:06,320
+There is, I think, something like six different
+
+312
+00:23:06,390 --> 00:23:09,770
+definitions of trees that are all equivalent,
+
+313
+00:23:09,840 --> 00:23:11,880
+OK, and so, I think a very good idea
+
+314
+00:23:11,950 --> 00:23:14,600
+to go through and read through that theorem.
+
+315
+00:23:14,670 --> 00:23:17,260
+We're not going to prove it in class, but really,
+
+316
+00:23:17,310 --> 00:23:19,430
+provides a very good basis for the thinking that
+
+317
+00:23:19,500 --> 00:23:21,420
+we're going to be doing today.
+
+318
+00:23:21,490 --> 00:23:24,790
+And we'll see more of that in the future.
+
+319
+00:23:25,120 --> 00:23:29,020
+OK, so today, we're going to talk about minimum spanning trees.
+
+320
+00:23:34,820 --> 00:23:38,890
+OK, this is one of the world's most important algorithms.
+
+321
+00:23:39,560 --> 00:23:42,390
+OK, it is important in distributed systems.
+
+322
+00:23:42,460 --> 00:23:43,670
+It's one of the first things that
+
+323
+00:23:43,710 --> 00:23:46,670
+almost any distributed system tries to find
+
+324
+00:23:46,820 --> 00:23:52,140
+is a minimum spanning tree of the nodes
+
+325
+00:23:52,250 --> 00:23:55,530
+that happened to be alive at any point, OK?
+
+326
+00:23:55,640 --> 00:24:00,600
+And one of the people who developed an algorithm for this,
+
+327
+00:24:00,680 --> 00:24:04,830
+we'll talk about this a little bit later, OK,
+
+328
+00:24:05,330 --> 00:24:08,430
+it was the basis of the billing system for AT＆T
+
+329
+00:24:08,500 --> 00:24:11,740
+for many years while it was a monopoly.
+
+330
+00:24:12,100 --> 00:24:15,240
+OK, so very important kind of thing.
+
+331
+00:24:15,310 --> 00:24:17,810
+It's got a huge number of applications.
+
+332
+00:24:17,920 --> 00:24:20,020
+So the problem is the following.
+
+333
+00:24:21,120 --> 00:24:34,920
+You have a connected undirected graph, G equals (V,E),
+
+334
+00:24:35,840 --> 00:24:44,850
+with an edge weight function, w,
+
+335
+00:24:44,920 --> 00:24:51,080
+which maps the edges into weights that are real numbers.
+
+336
+00:24:53,130 --> 00:24:54,810
+And for today's lecture,
+
+337
+00:24:54,880 --> 00:24:57,410
+we're going to make an important assumption,
+
+338
+00:24:57,480 --> 00:25:00,000
+OK, for simplicity.
+
+339
+00:25:00,250 --> 00:25:02,980
+The book does not make this assumption.
+
+340
+00:25:03,760 --> 00:25:08,150
+And so, I encourage you to look at the alternative presentation,
+
+341
+00:25:08,220 --> 00:25:13,920
+because what they do in the book is much more general,
+
+342
+00:25:13,990 --> 00:25:17,620
+but for simplicity and intuition,
+
+343
+00:25:17,690 --> 00:25:21,340
+I'm going to make this a little bit easier.
+
+344
+00:25:21,390 --> 00:25:32,960
+We're going to assume that all edge weights are distinct.
+
+345
+00:25:35,900 --> 00:25:38,320
+OK, all edge weights are distinct.
+
+346
+00:25:38,390 --> 00:25:39,650
+So what does that mean?
+
+347
+00:25:39,760 --> 00:25:42,550
+What does that mean that this function, w,
+
+348
+00:25:42,590 --> 00:25:44,280
+what property does the function, w, have
+
+349
+00:25:44,350 --> 00:25:46,950
+if all edge weights are distinct?
+
+350
+00:25:47,610 --> 00:25:50,790
+Who remembers their discrete math?
+
+351
+00:25:51,130 --> 00:25:52,870
+It's injective.
+
+352
+00:25:52,940 --> 00:25:55,020
+OK, it's one to one.
+
+353
+00:25:55,510 --> 00:25:57,810
+OK, it's not one to one and onto necessarily.
+
+354
+00:25:57,880 --> 00:25:59,560
+In fact, it would be kind of hard to do that
+
+355
+00:25:59,630 --> 00:26:01,000
+because that's a pretty big set.
+
+356
+00:26:01,110 --> 00:26:02,670
+OK, but it's one to one.
+
+357
+00:26:02,740 --> 00:26:04,460
+It's injective.
+
+358
+00:26:04,820 --> 00:26:07,540
+OK, so that's what we're going to assume for simplicity.
+
+359
+00:26:07,610 --> 00:26:09,920
+OK, and the book, they don't assume that.
+
+360
+00:26:09,990 --> 00:26:16,290
+It just means that the way you have to state things is
+
+361
+00:26:16,330 --> 00:26:18,100
+just a little more precise.
+
+362
+00:26:18,210 --> 00:26:20,490
+It has to be more technically precise.
+
+363
+00:26:21,160 --> 00:26:28,080
+So, that's the input. The output is a
+
+364
+00:26:31,400 --> 00:26:40,480
+The output is a spanning tree, T,
+
+365
+00:26:40,550 --> 00:26:48,160
+and by spanning tree, we mean it connects all the vertices.
+
+366
+00:26:50,990 --> 00:26:53,820
+OK, and it's got to have minimum weight.
+
+367
+00:27:00,210 --> 00:27:05,880
+OK, so we can write the weight of the tree is going to be,
+
+368
+00:27:06,490 --> 00:27:11,050
+by that, we mean the sum over all edges that are in the tree
+
+369
+00:27:11,850 --> 00:27:15,150
+of the weight of the individual edges.
+
+370
+00:27:23,240 --> 00:27:27,180
+so here I've done a little bit of abusive notation,
+
+371
+00:27:27,880 --> 00:27:34,000
+which is that what I should be writing is w of the edge (u,v)
+
+372
+00:27:34,060 --> 00:27:36,370
+because this is a mapping from edges,
+
+373
+00:27:36,440 --> 00:27:39,730
+which would give me a double parentheses.
+
+374
+00:27:39,800 --> 00:27:43,770
+And, you know, as you know, I love to abuse notation.
+
+375
+00:27:43,840 --> 00:27:45,700
+So, I'm going to drop that extra parentheses,
+
+376
+00:27:45,770 --> 00:27:48,740
+because we understand that it's really the weight of the edge,
+
+377
+00:27:48,800 --> 00:27:51,430
+OK, not the weight of the ordered pair.
+
+378
+00:27:53,850 --> 00:28:00,000
+So, that's just a little notational convenience.
+
+379
+00:28:01,050 --> 00:28:04,420
+So one of the things, when we do the take-home exam,
+
+380
+00:28:04,480 --> 00:28:07,090
+notational convenience can make the difference between
+
+381
+00:28:07,160 --> 00:28:11,410
+having a horrible time writing up a problem, and an easy time
+
+382
+00:28:11,440 --> 00:28:14,530
+So, it's worth thinking about what kinds of notation you'll use
+
+383
+00:28:14,600 --> 00:28:19,630
+in writing up solutions to problems, and so forth.
+
+384
+00:28:19,920 --> 00:28:22,380
+OK, and just in general, a technical communication,
+
+385
+00:28:22,420 --> 00:28:24,810
+you adopt good notation people understand you.
+
+386
+00:28:24,880 --> 00:28:27,520
+You adopt a poor notation:
+
+387
+00:28:27,840 --> 00:28:30,430
+nobody pays attention to what you're doing because
+
+388
+00:28:30,490 --> 00:28:32,790
+they don't understand what you're saying.
+
+389
+00:28:34,000 --> 00:28:36,970
+so let's do an example.
+
+390
+00:28:44,100 --> 00:28:48,180
+OK, so here's a graph.
+
+391
+00:29:00,190 --> 00:29:03,290
+I think for this, somebody asked once
+
+392
+00:29:03,360 --> 00:29:06,960
+if I was inspired by biochemistry or something,
+
+393
+00:29:07,210 --> 00:29:11,570
+OK, but I wasn't. I was just writing these things down,
+
+394
+00:29:11,610 --> 00:29:15,240
+So, here's a graph. And let's give us some edge weights.
+
+395
+00:29:31,020 --> 00:29:33,050
+OK, so there are some edge weights.
+
+396
+00:29:33,130 --> 00:29:37,290
+And now, what we want is we want to find a tree.
+
+397
+00:29:37,610 --> 00:29:40,460
+So a connected acyclic graph
+
+398
+00:29:42,660 --> 00:29:45,980
+such that every vertex is part of the tree.
+
+399
+00:29:46,500 --> 00:29:49,960
+But it's got to have the minimum weight possible.
+
+400
+00:29:53,030 --> 00:29:55,190
+OK, so can somebody suggest to me
+
+401
+00:29:55,260 --> 00:30:00,560
+some edges that have to be in this minimum spanning tree?
+
+402
+00:30:02,240 --> 00:30:04,250
+Yeah, so nine, good.
+
+403
+00:30:04,320 --> 00:30:07,510
+Nine has to be in there because, why?
+
+404
+00:30:07,620 --> 00:30:11,010
+It's the only one connecting it to this vertex, OK?
+
+405
+00:30:11,080 --> 00:30:13,200
+And likewise, 15 has to be in there.
+
+406
+00:30:13,270 --> 00:30:14,240
+So those both have to be in.
+
+407
+00:30:14,340 --> 00:30:17,100
+What other edges have to be in?
+
+408
+00:30:21,590 --> 00:30:25,010
+Which one? 14 has to be in.
+
+409
+00:30:25,080 --> 00:30:27,380
+Why does 14 have to be in?
+
+410
+00:30:27,450 --> 00:30:31,590
+[Student]:Inaudible.
+
+411
+00:30:31,660 --> 00:30:35,080
+[Prof]:Well, one of 14 and three has to be in there.
+
+412
+00:30:42,560 --> 00:30:44,620
+I want the minimum weight.
+
+413
+00:30:44,690 --> 00:30:48,260
+The one that has the overall smallest weight.
+
+414
+00:30:52,630 --> 00:30:56,210
+So, can somebody argue to me that three has to be in there?
+
+415
+00:31:02,020 --> 00:31:02,820
+Yeah?
+
+416
+00:31:02,900 --> 00:31:06,390
+[Student]:Inaudible.
+
+417
+00:31:06,430 --> 00:31:09,530
+[Prof]:That's the minimum of two, which means that if I had a,
+
+418
+00:31:09,550 --> 00:31:12,560
+if you add something you said was a minimum spanning tree
+
+419
+00:31:12,630 --> 00:31:16,750
+that didn't include three, right,
+
+420
+00:31:16,820 --> 00:31:19,570
+and so therefore it had to include 14,
+
+421
+00:31:20,480 --> 00:31:23,210
+then I could just delete this edge, 14,
+
+422
+00:31:23,280 --> 00:31:25,100
+and put in edge three.
+
+423
+00:31:25,170 --> 00:31:29,600
+And, I have something of lower weight, right?
+
+424
+00:31:29,670 --> 00:31:32,120
+So, three has to be in there.
+
+425
+00:31:34,110 --> 00:31:36,320
+What other edges have to be in there?
+
+426
+00:31:36,470 --> 00:31:40,050
+Do a little puzzle logic.
+
+427
+00:31:41,900 --> 00:31:44,210
+Six and five have to be in there.
+
+428
+00:31:44,250 --> 00:31:46,620
+Why do they have to be in there?
+
+429
+00:31:46,620 --> 00:31:59,930
+[Student]:Inaudible.
+
+430
+00:31:59,990 --> 00:32:02,840
+[Prof]:Yeah, well, I mean, it could be connected
+
+431
+00:32:02,910 --> 00:32:06,100
+like through this or something.
+
+432
+00:32:06,730 --> 00:32:09,000
+It doesn't necessarily have to go this way.
+
+433
+00:32:09,150 --> 00:32:10,900
+Six definitely has to be in there
+
+434
+00:32:10,970 --> 00:32:13,120
+for the same reason that three had to be, right?
+
+435
+00:32:13,480 --> 00:32:17,120
+Because we got two choices to connect up this guy.
+
+436
+00:32:17,190 --> 00:32:21,400
+And so, if everything were connected but it weren't, 12,
+
+437
+00:32:21,470 --> 00:32:22,540
+I mean, and 12 was in there.
+
+438
+00:32:22,610 --> 00:32:24,110
+I could always, then, say, well,
+
+439
+00:32:24,170 --> 00:32:26,770
+let's connect them up this way instead.
+
+440
+00:32:27,170 --> 00:32:29,540
+OK, so definitely that's in there.
+
+441
+00:32:33,110 --> 00:32:35,570
+I still don't have everything connected up.
+
+442
+00:32:47,990 --> 00:32:51,680
+What else has to be in there for minimum spanning tree?
+
+443
+00:32:56,230 --> 00:33:00,580
+Seven, five, and eight, why seven, five, and eight?
+
+444
+00:33:01,340 --> 00:33:07,230
+[Student]:Inaudible.
+
+445
+00:33:07,300 --> 00:33:10,320
+[Prof]：OK, so can we argue those one at a time?
+
+446
+00:33:12,370 --> 00:33:15,440
+Why does five have to be in there?
+
+447
+00:33:28,020 --> 00:33:35,490
+[Student]:Inaudible.
+
+448
+00:33:35,560 --> 00:33:37,470
+[Prof]：OK, so we have four connected components
+
+449
+00:33:37,540 --> 00:33:40,470
+because we have this one, this one,
+
+450
+00:33:40,540 --> 00:33:42,870
+we actually have, yeah, this one here,
+
+451
+00:33:42,940 --> 00:33:44,170
+and this one, good.
+
+452
+00:33:44,240 --> 00:33:46,940
+[Student]:Inaudible.
+
+453
+00:33:47,000 --> 00:33:48,660
+[Prof]：We need at least three edges to connect them
+
+454
+00:33:48,740 --> 00:33:53,190
+because each edge is going to reduce the connected components by one.
+
+455
+00:33:53,300 --> 00:33:56,110
+OK, so we need three edges,
+
+456
+00:33:56,180 --> 00:34:00,080
+and those are the three cheapest ones.
+
+457
+00:34:00,190 --> 00:34:01,690
+And they work.
+
+458
+00:34:02,660 --> 00:34:04,350
+That works, right?
+
+459
+00:34:04,420 --> 00:34:08,480
+Any other edges are going to be bigger, so that works. Good
+
+460
+00:34:11,020 --> 00:34:13,830
+OK, and so, now do we have a spanning tree?
+
+461
+00:34:13,890 --> 00:34:19,900
+Everything is, we have one big connected graph here, right?
+
+462
+00:34:20,870 --> 00:34:22,260
+Is that what I got?
+
+463
+00:34:22,330 --> 00:34:25,330
+Hey, that's the same as what I got.
+
+464
+00:34:30,960 --> 00:34:32,990
+Life is predictable.
+
+465
+00:34:38,500 --> 00:34:44,350
+OK, so everybody had the idea of what a minimum spanning tree is,
+
+466
+00:34:44,410 --> 00:34:47,430
+out of this, OK, what's going on there?
+
+467
+00:34:47,640 --> 00:34:53,130
+So, let's first of all make some observations about this puzzle.
+
+468
+00:34:53,200 --> 00:34:55,340
+And what I want to do is remind you
+
+469
+00:34:55,420 --> 00:34:58,500
+about the optimal substructure property
+
+470
+00:35:02,470 --> 00:35:04,410
+because it turns out minimum spanning tree
+
+471
+00:35:04,480 --> 00:35:07,480
+has a great optimal substructure property.
+
+472
+00:35:10,510 --> 00:35:13,580
+OK, so the setup is going to be,
+
+473
+00:35:13,620 --> 00:35:15,710
+we're going to have some minimum spanning tree.
+
+474
+00:35:15,750 --> 00:35:17,420
+Let's call it T.
+
+475
+00:35:18,380 --> 00:35:22,500
+And, I'm going to show that with the other edges in the graph,
+
+476
+00:35:25,710 --> 00:35:28,140
+are not going to be shown.
+
+477
+00:35:30,410 --> 00:35:37,330
+OK, so here's a graph.
+
+478
+00:35:52,710 --> 00:35:55,040
+OK, so here's a graph.
+
+479
+00:35:56,730 --> 00:35:59,420
+It looks like the one I have my piece of paper here.
+
+480
+00:35:59,490 --> 00:36:04,200
+OK, so the idea is, this is some minimum spanning tree.
+
+481
+00:36:04,880 --> 00:36:09,740
+Now, we want to look at a property of optimal substructure.
+
+482
+00:36:09,790 --> 00:36:10,670
+And the way I'm going to get that, is,
+
+483
+00:36:10,730 --> 00:36:14,720
+I'm going to remove some edge, (u,v),
+
+484
+00:36:15,780 --> 00:36:20,800
+move an arbitrary edge, (u,v), in the minimum spanning tree.
+
+485
+00:36:20,870 --> 00:36:24,460
+So, let's call this u and this V.
+
+486
+00:36:24,530 --> 00:36:27,340
+And so, we're removing this edge.
+
+487
+00:36:28,730 --> 00:36:32,530
+OK, so when I remove an edge in a tree,
+
+488
+00:36:32,630 --> 00:36:37,910
+what happens to the tree? What's left?
+
+489
+00:36:38,540 --> 00:36:42,080
+I have two trees left, OK?
+
+490
+00:36:42,110 --> 00:36:46,600
+I have two trees left. Now, proving that,
+
+491
+00:36:46,670 --> 00:36:51,220
+that's basically one of the properties in that appendix,
+
+492
+00:36:51,290 --> 00:36:54,090
+and the properties of trees that I want you to read,
+
+493
+00:36:54,160 --> 00:36:55,920
+OK, because you can actually prove that kind of thing
+
+494
+00:36:55,990 --> 00:37:01,040
+rather than it just being obvious, which is, OK?
+
+495
+00:37:01,370 --> 00:37:02,910
+OK, so we remove that.
+
+496
+00:37:03,010 --> 00:37:17,420
+Then, T is partitioned into two subtrees.
+
+497
+00:37:19,400 --> 00:37:24,260
+And, we'll call them T_1 and T_2.
+
+498
+00:37:24,360 --> 00:37:29,890
+So, here's one subtree, and here's another subtree.
+
+499
+00:37:29,940 --> 00:37:31,830
+We've partitioned it.
+
+500
+00:37:31,940 --> 00:37:33,440
+No matter what edge I picked,
+
+501
+00:37:33,510 --> 00:37:36,300
+there would be two subtrees that it's partitioned into.
+
+502
+00:37:36,370 --> 00:37:39,060
+Even if the sub tree is a trivial subtree,
+
+503
+00:37:39,130 --> 00:37:42,290
+for example, it just has a single node in it and no edges.
+
+504
+00:37:56,120 --> 00:37:58,430
+So, the theorem that we'll prove
+
+505
+00:37:58,700 --> 00:38:05,060
+that demonstrates a property of optimal substructure.
+
+506
+00:38:11,610 --> 00:38:24,890
+T_1 is a minimum spanning tree for the graph, G_1
+
+507
+00:38:29,360 --> 00:38:49,170
+a subgraph of G induced by the vertices in T_1.
+
+508
+00:38:50,500 --> 00:38:55,900
+OK, that is, V_1 is just the vertices in T_1
+
+509
+00:38:57,130 --> 00:39:00,230
+is what it means to be induced.
+
+510
+00:39:00,910 --> 00:39:06,300
+OK, so V_1 is the vertices in T_1.
+
+511
+00:39:06,420 --> 00:39:10,300
+So, in this picture, I didn't label it.
+
+512
+00:39:10,410 --> 00:39:14,740
+This is T_1. This is T_2. In this picture,
+
+513
+00:39:16,090 --> 00:39:17,960
+these are the vertices of T_1.
+
+514
+00:39:18,030 --> 00:39:21,350
+So, that's V_1, OK?
+
+515
+00:39:22,710 --> 00:39:31,960
+And, E_1 is the set of pairs of vertices, x and y,
+
+516
+00:39:32,350 --> 00:39:35,920
+that are the edges that are in E_1
+
+517
+00:39:35,980 --> 00:39:41,830
+such that both x and y belong to V_1.
+
+518
+00:39:45,260 --> 00:39:48,430
+OK, so I haven't shown the edges of G here.
+
+519
+00:39:48,530 --> 00:39:51,890
+But basically, if an edge went from here to here,
+
+520
+00:39:51,960 --> 00:39:54,110
+that would be in the E_1.
+
+521
+00:39:54,170 --> 00:39:56,800
+If it went from here to here, it would not.
+
+522
+00:39:56,870 --> 00:39:59,560
+And if it went from here to here, it would not.
+
+523
+00:40:00,930 --> 00:40:03,780
+So the vertices, the graph...
+
+524
+00:40:03,850 --> 00:40:06,290
+the subgraph induced by the vertices of T_1
+
+525
+00:40:06,360 --> 00:40:12,020
+are just those that connect up things in T_1,
+
+526
+00:40:13,550 --> 00:40:15,680
+and similarly for T_2.
+
+527
+00:40:25,680 --> 00:40:27,680
+So, the theorem says that
+
+528
+00:40:27,740 --> 00:40:37,400
+if I look at just the edges within the graph here, G_1,
+
+529
+00:40:37,550 --> 00:40:39,730
+those that are induced by these vertices,
+
+530
+00:40:39,800 --> 00:40:45,150
+T_1 is, in fact, a minimum spanning tree for that subgraph.
+
+531
+00:40:46,230 --> 00:40:48,030
+That's what the theorem says.
+
+532
+00:40:50,610 --> 00:40:56,000
+OK, if I look over here conversely, or correspondingly,
+
+533
+00:40:58,330 --> 00:41:01,730
+if I look at the set of edges that are induced
+
+534
+00:41:01,760 --> 00:41:05,640
+by this set of vertices, the vertices in T_2,
+
+535
+00:41:05,710 --> 00:41:09,720
+in fact, T_2 is a minimum spanning tree on that subgraph.
+
+536
+00:41:12,820 --> 00:41:16,010
+OK, we can even do it over here.
+
+537
+00:41:16,460 --> 00:41:20,150
+If I took a look, for example, at these,
+
+538
+00:41:21,790 --> 00:41:25,710
+let's see, if we cut out some edge like five,
+
+539
+00:41:25,780 --> 00:41:30,890
+Let's say we cut out five and if I cut out edge five,
+
+540
+00:41:30,960 --> 00:41:36,180
+that T_1 would be these four vertices here.
+
+541
+00:41:36,400 --> 00:41:37,240
+And, the point is that
+
+542
+00:41:37,290 --> 00:41:41,900
+if I look at the subgraph induced on that these edges here.
+
+543
+00:41:41,940 --> 00:41:45,770
+In fact, the six, eight, and three are all
+
+544
+00:41:45,840 --> 00:41:51,150
+edges in a minimum spanning tree for that subgraph.
+
+545
+00:41:52,140 --> 00:41:54,700
+OK, so that's what the theorem says.
+
+546
+00:41:54,770 --> 00:41:56,270
+So let's prove it.
+
+547
+00:42:06,780 --> 00:42:10,360
+OK, and so what technique are we going to use to prove it?
+
+548
+00:42:16,250 --> 00:42:18,650
+OK, we learned this technique last time:
+
+549
+00:42:19,220 --> 00:42:21,290
+hint, hint.
+
+550
+00:42:28,780 --> 00:42:31,850
+It's something you do it in your text editor all the time:
+
+551
+00:42:32,380 --> 00:42:36,220
+cut and paste, good, cut and paste.
+
+552
+00:42:38,390 --> 00:42:42,840
+OK, so the weight of T I can express as
+
+553
+00:42:42,910 --> 00:42:46,120
+the weight of the edge I removed,
+
+554
+00:42:46,190 --> 00:42:51,990
+plus the weight of T_1, plus the weight of T_2.
+
+555
+00:42:58,590 --> 00:43:00,520
+OK, so that's the total weight.
+
+556
+00:43:01,390 --> 00:43:03,480
+So, the argument is pretty simple.
+
+557
+00:43:03,550 --> 00:43:07,790
+Suppose that there were some T_1 prime
+
+558
+00:43:07,830 --> 00:43:22,000
+that was better than T_1 for G_1.
+
+559
+00:43:22,070 --> 00:43:26,530
+Suppose I had some better way of forming a spanning tree.
+
+560
+00:43:33,180 --> 00:43:37,620
+then I would make up a T prime,
+
+561
+00:43:37,680 --> 00:43:45,980
+which just contained the edges, (u,v),
+
+562
+00:43:46,050 --> 00:43:52,820
+and T_1 prime, union T_2.
+
+563
+00:43:53,390 --> 00:43:57,420
+So, I would take, if I had a better spanning tree,
+
+564
+00:43:59,940 --> 00:44:05,870
+a spanning tree of lower weight for T_1.
+
+565
+00:44:06,190 --> 00:44:07,980
+And I call that T_1 prime.
+
+566
+00:44:08,050 --> 00:44:11,490
+I just substitute that and make up a spanning tree
+
+567
+00:44:11,530 --> 00:44:14,680
+that consisted of my edge, (u,v),
+
+568
+00:44:14,730 --> 00:44:19,550
+whatever works well for T_1 prime and whatever works well for T.
+
+569
+00:44:19,620 --> 00:44:25,680
+And, that would be a spanning tree.
+
+570
+00:44:25,740 --> 00:44:39,240
+And it would be better than T itself was for G,
+
+571
+00:44:41,100 --> 00:44:45,490
+OK, because the weight of these is just as the weight for this,
+
+572
+00:44:45,570 --> 00:44:47,990
+I now just get to use the weight of T_1 prime,
+
+573
+00:44:48,020 --> 00:44:51,310
+and that's less.
+
+574
+00:44:53,110 --> 00:44:58,230
+And so, therefore, the assumption that
+
+575
+00:44:58,300 --> 00:45:00,840
+T was a minimum spanning tree would be violated
+
+576
+00:45:00,920 --> 00:45:03,770
+if I could find a better one for the subpiece.
+
+577
+00:45:08,410 --> 00:45:15,170
+So, we have this nice property of optimal substructure.
+
+578
+00:45:15,210 --> 00:45:20,870
+OK, I have subproblems that exhibit optimal,
+
+579
+00:45:20,940 --> 00:45:24,060
+if I have a globally optimal solution
+
+580
+00:45:24,130 --> 00:45:26,320
+to the whole problem within it,
+
+581
+00:45:26,390 --> 00:45:29,970
+I can find optimal solutions to subproblems.
+
+582
+00:45:30,340 --> 00:45:33,680
+So, now the question is, that's one hallmark.
+
+583
+00:45:33,750 --> 00:45:35,920
+That's one hallmark of dynamic programming.
+
+584
+00:45:35,990 --> 00:45:38,270
+What about overlapping subproblems?
+
+585
+00:45:38,340 --> 00:45:40,810
+Do I have that property?
+
+586
+00:45:51,570 --> 00:45:54,380
+Do I have overlapping subproblems over here
+
+587
+00:45:54,860 --> 00:45:57,000
+for this type of problem?
+
+588
+00:46:16,550 --> 00:46:22,080
+So, imagine, for example, that I'm removing different edges.
+
+589
+00:46:22,790 --> 00:46:25,830
+I look at the space of taking a given edge, and removing it.
+
+590
+00:46:25,890 --> 00:46:27,510
+It partitions it into two pieces,
+
+591
+00:46:27,580 --> 00:46:30,190
+and now I have another piece. And I remove it, etc.
+
+592
+00:46:30,220 --> 00:46:32,890
+Am I going to end up getting a bunch of
+
+593
+00:46:32,940 --> 00:46:34,510
+subproblems that are similar in there?
+
+594
+00:46:34,580 --> 00:46:36,790
+Yeah, I am.
+
+595
+00:46:36,950 --> 00:46:39,950
+OK, if I take out this one, then I take out,
+
+596
+00:46:40,020 --> 00:46:45,080
+say, this one here, and then I'll have another tree here and here.
+
+597
+00:46:45,160 --> 00:46:48,500
+OK, that would be the same as
+
+598
+00:46:48,530 --> 00:46:52,160
+if I had originally taken this out, and then taken that one out.
+
+599
+00:46:52,330 --> 00:46:55,910
+If I look at simple ordering of taking out the edges,
+
+600
+00:46:55,980 --> 00:46:59,440
+I'm going to end up with a whole bunch of overlapping subproblems.
+
+601
+00:46:59,560 --> 00:47:06,710
+Yeah, OK. So what does that suggest we use as an approach?
+
+602
+00:47:09,230 --> 00:47:11,820
+Dynamic programming, good.
+
+603
+00:47:11,970 --> 00:47:14,360
+What a surprise!
+
+604
+00:47:18,340 --> 00:47:22,300
+Yes, OK, but
+
+605
+00:47:25,420 --> 00:47:27,880
+yes, you could use dynamic programming.
+
+606
+00:47:27,950 --> 00:47:31,150
+But it turns out that minimum spanning tree
+
+607
+00:47:31,230 --> 00:47:39,530
+exhibits an even more powerful property.
+
+608
+00:47:48,780 --> 00:47:52,930
+OK, so we've got all the clues for dynamic programming,
+
+609
+00:47:53,000 --> 00:47:55,200
+but it turns out that there's an even bigger clue
+
+610
+00:47:55,270 --> 00:48:00,610
+that's going to help us to use an even more powerful technique.
+
+611
+00:48:04,960 --> 00:48:12,710
+And that, we call, the hallmark for greedy algorithms.
+
+612
+00:48:30,770 --> 00:48:40,040
+And that is, we have a thing called the greedy choice property,
+
+613
+00:48:42,830 --> 00:48:56,550
+which says that a locally optimal choice is globally optimal.
+
+614
+00:49:01,610 --> 00:49:04,870
+And, of course, as all these hallmarks
+
+615
+00:49:04,940 --> 00:49:08,290
+is the kind of thing you want to box, OK,
+
+616
+00:49:08,360 --> 00:49:10,360
+because these are the clues that you're going to be able to do that.
+
+617
+00:49:10,460 --> 00:49:12,690
+So, we have this property
+
+618
+00:49:12,760 --> 00:49:15,570
+that we call the greedy choice property.
+
+619
+00:49:15,650 --> 00:49:17,970
+I'm going to show you how it works in this case.
+
+620
+00:49:18,080 --> 00:49:19,720
+And when you have a greedy choice property,
+
+621
+00:49:19,790 --> 00:49:24,430
+it turns out you can do even better that dynamic programming.
+
+622
+00:49:26,800 --> 00:49:30,970
+so when you see the two dynamic programming properties,
+
+623
+00:49:32,010 --> 00:49:35,820
+there is a clue that says dynamic programming, yes,
+
+624
+00:49:35,890 --> 00:49:37,250
+but also it says,
+
+625
+00:49:37,280 --> 00:49:40,510
+let me see whether it also has this greedy property
+
+626
+00:49:40,580 --> 00:49:42,330
+because if it does, you're going to come up with
+
+627
+00:49:42,400 --> 00:49:46,360
+something that's even better than dynamic programming,
+
+628
+00:49:47,670 --> 00:49:49,020
+So, if you just have the two,
+
+629
+00:49:49,090 --> 00:49:51,050
+you can usually do dynamic programming,
+
+630
+00:49:51,120 --> 00:49:53,560
+but if you have this third one,
+
+631
+00:49:53,630 --> 00:49:56,280
+it's like, whoa! Jackpot!
+
+632
+00:49:58,560 --> 00:50:04,800
+So here's the theorem we'll prove to illustrate this idea.
+
+633
+00:50:04,880 --> 00:50:06,820
+Once again, these are not,
+
+634
+00:50:06,890 --> 00:50:10,300
+all these hallmarks are not things that are heuristics.
+
+635
+00:50:10,860 --> 00:50:13,120
+I can't give you an algorithm to say,
+
+636
+00:50:13,190 --> 00:50:14,840
+here's where dynamic programming works,
+
+637
+00:50:14,910 --> 00:50:17,140
+or here's where greedy algorithms work.
+
+638
+00:50:17,330 --> 00:50:19,710
+But I can sort of indicate when they work,
+
+639
+00:50:19,780 --> 00:50:21,700
+the kind of structure they have.
+
+640
+00:50:23,210 --> 00:50:25,030
+OK, so here's the theorem.
+
+641
+00:50:25,100 --> 00:50:33,180
+So let's let T be the MST of our graph.
+
+642
+00:50:36,550 --> 00:50:42,440
+And, let's let A be any subset of V,
+
+643
+00:50:43,250 --> 00:50:45,240
+so, some subset of vertices.
+
+644
+00:50:47,120 --> 00:51:01,900
+And now, let's suppose that edge (u,v) is the least weight edge
+
+645
+00:51:08,390 --> 00:51:20,100
+connecting our set A to A complement, that is, V minus A.
+
+646
+00:51:25,090 --> 00:51:34,260
+Then the theorem says that (u,v) is in the minimum spanning tree.
+
+647
+00:51:36,870 --> 00:51:39,970
+So let's just take a look at our graph over here
+
+648
+00:51:40,040 --> 00:51:42,420
+and see if that's, in fact, the case.
+
+649
+00:51:43,230 --> 00:51:45,340
+OK, so let's take,
+
+650
+00:51:45,740 --> 00:51:49,810
+so one thing I could do for A is just take a singleton node.
+
+651
+00:51:50,940 --> 00:51:52,430
+So, I take a singleton node,
+
+652
+00:51:52,500 --> 00:51:55,930
+let's say this guy here, that can be my A,
+
+653
+00:51:56,000 --> 00:51:58,240
+and everything else is V minus A.
+
+654
+00:51:58,340 --> 00:52:01,070
+And I look at the least weight edge
+
+655
+00:52:01,130 --> 00:52:03,530
+connecting this to everything else.
+
+656
+00:52:03,640 --> 00:52:06,880
+Well, there are only two edges that connect it to everything else.
+
+657
+00:52:06,960 --> 00:52:07,800
+And the theorem says that
+
+658
+00:52:07,870 --> 00:52:10,970
+the lighter one is in the minimum spanning tree.
+
+659
+00:52:11,830 --> 00:52:13,270
+Hey, I win.
+
+660
+00:52:13,340 --> 00:52:16,320
+OK, if you take a look, every vertex that I pick,
+
+661
+00:52:16,360 --> 00:52:19,100
+the lightest edge coming out of that vertex
+
+662
+00:52:19,170 --> 00:52:21,540
+is in the minimum spanning tree.
+
+663
+00:52:23,770 --> 00:52:28,200
+OK, the lightest weight edge coming out,
+
+664
+00:52:28,270 --> 00:52:30,830
+but that's not all the edges that are in here.
+
+665
+00:52:33,770 --> 00:52:36,400
+OK, or let's just imagine,
+
+666
+00:52:36,470 --> 00:52:39,220
+let's take a look at these three vertices
+
+667
+00:52:39,290 --> 00:52:44,160
+connected to this set of vertices.
+
+668
+00:52:44,230 --> 00:52:45,850
+I have three edges is going across.
+
+669
+00:52:45,910 --> 00:52:47,150
+The least weight one is five.
+
+670
+00:52:47,220 --> 00:52:49,160
+That's the minimum spanning tree.
+
+671
+00:52:50,400 --> 00:52:52,870
+Or, I can cut it this way.
+
+672
+00:52:53,140 --> 00:52:56,390
+OK, the ones above,
+
+673
+00:52:56,520 --> 00:52:58,870
+the edges going down are seven, eight, and 14.
+
+674
+00:52:58,980 --> 00:53:02,110
+Seven is the least weight.
+
+675
+00:53:02,220 --> 00:53:04,780
+It's in the minimum spanning tree.
+
+676
+00:53:07,010 --> 00:53:09,020
+So, no matter how I choose,
+
+677
+00:53:09,090 --> 00:53:14,610
+I could make this one in, this one out....
+
+678
+00:53:14,680 --> 00:53:16,660
+take a look at what all the edges are.
+
+679
+00:53:16,730 --> 00:53:18,260
+Which ever one to the least weight:
+
+680
+00:53:18,330 --> 00:53:20,310
+it's in the minimum spanning tree.
+
+681
+00:53:23,400 --> 00:53:29,070
+So, in some sense, that's a local property
+
+682
+00:53:29,320 --> 00:53:31,510
+because I don't have to look at what the rest of the tree is.
+
+683
+00:53:31,610 --> 00:53:36,380
+I'm just looking at some small set of vertices if I wish,
+
+684
+00:53:36,450 --> 00:53:39,100
+and I say, well, if I wanted to connect that set of vertices
+
+685
+00:53:39,180 --> 00:53:41,620
+to the rest of the world, what would I pick?
+
+686
+00:53:41,690 --> 00:53:46,410
+I'd pick the cheapest one. That's the greedy approach.
+
+687
+00:53:46,440 --> 00:53:50,200
+It turns out, that wins, OK,
+
+688
+00:53:50,260 --> 00:53:55,930
+that picking that thing that's locally good for that subset, A,
+
+689
+00:53:56,240 --> 00:53:59,340
+OK, is also globally good.
+
+690
+00:53:59,810 --> 00:54:01,700
+OK, it optimizes the overall function.
+
+691
+00:54:01,780 --> 00:54:04,670
+That's what the theorem says,
+
+692
+00:54:05,980 --> 00:54:07,140
+So, let's prove this theorem.
+
+693
+00:54:07,210 --> 00:54:09,600
+Any questions about this?
+
+694
+00:54:12,000 --> 00:54:13,620
+let's prove this theorem.
+
+695
+00:54:21,670 --> 00:54:27,410
+So, we have (u,v) is the least weight edge connecting A to V minus A.
+
+696
+00:54:27,520 --> 00:54:31,820
+So, let's suppose that this edge, (u,v),
+
+697
+00:54:31,890 --> 00:54:34,870
+is not in the minimum spanning tree.
+
+698
+00:54:38,690 --> 00:54:42,760
+let's suppose that somehow there is a minimum spanning tree
+
+699
+00:54:43,010 --> 00:54:50,770
+that doesn't include this least weight edge.
+
+700
+00:54:50,880 --> 00:54:52,590
+OK, so what technique you think will use
+
+701
+00:54:52,660 --> 00:54:55,790
+to prove to get a contradiction here?
+
+702
+00:54:56,820 --> 00:54:58,870
+Cut and paste, good.
+
+703
+00:54:58,970 --> 00:55:02,720
+Yeah, we're going to cut paste.
+
+704
+00:55:04,580 --> 00:55:05,820
+OK, we're going to cut and paste.
+
+705
+00:55:05,890 --> 00:55:12,360
+So here, I did an example. OK, so --
+
+706
+00:55:25,860 --> 00:55:28,630
+ChuChuChuChuChu
+
+707
+00:55:38,870 --> 00:55:41,330
+OK, and so I'm going to use the notation.
+
+708
+00:55:41,410 --> 00:55:43,980
+I'm going to color some of these in.
+
+709
+00:56:03,710 --> 00:56:08,900
+OK, and so my notation here is this is an element of A,
+
+710
+00:56:08,970 --> 00:56:10,680
+and color it in.
+
+711
+00:56:10,790 --> 00:56:13,330
+It's an element of V minus A.
+
+712
+00:56:14,530 --> 00:56:17,110
+OK, so if it's not colored it, that's an A.
+
+713
+00:56:17,220 --> 00:56:18,680
+This is my minimum spanning tree. Once again,
+
+714
+00:56:18,750 --> 00:56:21,700
+I'm not showing the overall edges of all the graphs,
+
+715
+00:56:21,770 --> 00:56:24,820
+but they're there, OK?
+
+716
+00:56:26,400 --> 00:56:33,530
+So, my edge, (u,v), which is not my minimum spanning tree I say,
+
+717
+00:56:33,530 --> 00:56:35,110
+let's say is this edge here.
+
+718
+00:56:35,180 --> 00:56:40,410
+It's an edge from u, u as in A, v as in V minus A.
+
+719
+00:56:45,060 --> 00:56:47,420
+OK, so everybody see the setup?
+
+720
+00:56:47,460 --> 00:56:50,460
+So, I want to prove that
+
+721
+00:56:50,570 --> 00:56:53,230
+this edge should have been in the minimum spanning tree,
+
+722
+00:56:53,270 --> 00:56:55,710
+OK, that the contention that this is a minimum spanning tree,
+
+723
+00:56:55,820 --> 00:56:59,330
+and doesn't include (u,v) is wrong.
+
+724
+00:57:00,330 --> 00:57:02,560
+So, what I want to do, that, is
+
+725
+00:57:02,630 --> 00:57:05,360
+I have a tree here, T,
+
+726
+00:57:05,430 --> 00:57:08,600
+and I have two vertices, u and v, and in a tree,
+
+727
+00:57:08,670 --> 00:57:12,430
+between any two vertices there is a unique, simple path:
+
+728
+00:57:12,500 --> 00:57:14,010
+simple path meaning it doesn't go back
+
+729
+00:57:14,080 --> 00:57:17,180
+and forth and repeat edges or vertices.
+
+730
+00:57:17,250 --> 00:57:20,120
+OK, there's a unique, simple path from u to v.
+
+731
+00:57:20,190 --> 00:57:22,380
+So, let's consider that path.
+
+732
+00:57:40,860 --> 00:57:44,280
+OK, and the way that I know that that path exists is because
+
+733
+00:57:44,350 --> 00:57:51,300
+I've read appendix B of the textbook, section B.5.1,
+
+734
+00:57:51,380 --> 00:57:55,630
+OK, which has this nice theorem about properties of trees.
+
+735
+00:57:56,150 --> 00:58:01,180
+So that's how I know that there exists a unique, simple path.
+
+736
+00:58:01,790 --> 00:58:07,830
+So now we're going to do is take a look at that path.
+
+737
+00:58:07,860 --> 00:58:11,820
+So in this case, it goes from here, to here x3
+
+738
+00:58:11,890 --> 00:58:15,750
+And along that path, there must be a point
+
+739
+00:58:15,820 --> 00:58:24,130
+where I connect from a vertex in A to a vertex in V minus A.
+
+740
+00:58:24,600 --> 00:58:30,240
+Why? Well, because this is in A. This is in V minus A.
+
+741
+00:58:30,310 --> 00:58:35,330
+So, along the path somewhere, there must be a transition.
+
+742
+00:58:35,570 --> 00:58:39,290
+OK, they are not all in A, OK,
+
+743
+00:58:39,370 --> 00:58:41,430
+because in particular, v isn't.
+
+744
+00:58:41,500 --> 00:58:49,430
+OK, so we're going to do is swap (u,v)
+
+745
+00:58:49,500 --> 00:58:57,100
+with the first edge on this path
+
+746
+00:59:00,710 --> 00:59:16,370
+that connects a vertex in A to a vertex in V minus A.
+
+747
+00:59:16,440 --> 00:59:19,200
+So in this case, it's this edge here.
+
+748
+00:59:19,310 --> 00:59:20,860
+I go from A to V minus A.
+
+749
+00:59:20,930 --> 00:59:23,590
+In general, I might be alternating many times,
+
+750
+00:59:23,660 --> 00:59:27,270
+OK, and I just picked the first one that I encounter.
+
+751
+00:59:27,370 --> 00:59:32,210
+that this guy here. And what I do is I put this edge in.
+
+752
+00:59:39,700 --> 00:59:41,530
+So then, what happens?
+
+753
+00:59:41,560 --> 00:59:47,310
+Well, the edge, (u,v), is the lightest thing connecting
+
+754
+00:59:47,330 --> 00:59:49,590
+something in A to something in V minus A.
+
+755
+00:59:49,660 --> 00:59:50,810
+So that means, in particular,
+
+756
+00:59:50,880 --> 00:59:55,540
+it's lighter than this edge, has lower weight.
+
+757
+00:59:55,910 --> 00:59:57,880
+So, by swapping this,
+
+758
+00:59:57,950 --> 01:00:03,090
+I''ve created a tree with lower overall weight,
+
+759
+01:00:03,170 --> 01:00:04,410
+contradicting the assumption that
+
+760
+01:00:04,480 --> 01:00:07,150
+this other thing was a minimum spanning tree.
+
+761
+01:00:07,250 --> 01:00:25,950
+OK: so, a lower weight spanning tree than T results,
+
+762
+01:00:26,580 --> 01:00:29,710
+and that's a contradiction,
+
+763
+01:00:38,540 --> 01:00:40,160
+How are we doing? Everybody with me?
+
+764
+01:00:42,900 --> 01:00:49,160
+OK, now we get to do some algorithms. Yea!
+
+765
+01:00:49,230 --> 01:00:54,960
+So, we are going to do an algorithm called Prim's algorithm.
+
+766
+01:00:56,990 --> 01:01:03,860
+Prim eventually became a very high-up at AT＆T
+
+767
+01:01:03,930 --> 01:01:09,460
+because he invented this algorithm for minimum spanning trees,
+
+768
+01:01:11,160 --> 01:01:20,920
+and it was used in all of the billing code for AT&T for many years.
+
+769
+01:01:20,990 --> 01:01:23,420
+He was very high up at Bell Labs
+
+770
+01:01:23,660 --> 01:01:26,630
+back in the heyday of Bell Laboratories.
+
+771
+01:01:26,710 --> 01:01:29,590
+OK, so it just shows, all you have to do is invent an algorithm.
+
+772
+01:01:29,660 --> 01:01:33,570
+You too can be a president of a corporate monopoly.
+
+773
+01:01:34,280 --> 01:01:37,830
+Of course, the government can do things to monopolies,
+
+774
+01:01:37,900 --> 01:01:43,580
+but anyway, if that's your mission in life,
+
+775
+01:01:43,950 --> 01:01:46,230
+invent an algorithm.
+
+776
+01:01:46,580 --> 01:01:49,700
+OK, so here's the idea.
+
+777
+01:01:49,810 --> 01:01:53,510
+What we're going to do is we're going to maintain
+
+778
+01:01:55,750 --> 01:02:01,020
+V minus A as a priority queue.
+
+779
+01:02:05,960 --> 01:02:08,110
+We'll call it Q.
+
+780
+01:02:08,490 --> 01:02:18,890
+And each vertex, we're going to key each vertex in Q
+
+781
+01:02:19,930 --> 01:02:28,700
+with the weight of the least weight edge,
+
+782
+01:02:33,310 --> 01:02:46,040
+connecting it to a vertex in A.
+
+783
+01:02:48,650 --> 01:02:51,630
+So here's the code.
+
+784
+01:02:51,740 --> 01:02:58,260
+So, we're going to start out with Q being all vertices.
+
+785
+01:02:59,170 --> 01:03:05,100
+So, we start out with A being, if you will, the empty set.
+
+786
+01:03:05,760 --> 01:03:09,820
+OK, and what we're going to do it is the least weight edge,
+
+787
+01:03:09,860 --> 01:03:15,680
+therefore, for everything in the priority queue
+
+788
+01:03:15,750 --> 01:03:19,620
+is basically going to be infinity
+
+789
+01:03:20,490 --> 01:03:22,970
+because none of them have any edges.
+
+790
+01:03:23,040 --> 01:03:27,360
+The least weight edge to the empty set is going to be empty.
+
+791
+01:03:27,470 --> 01:03:30,700
+And then, we're going to start out with one guy.
+
+792
+01:03:30,810 --> 01:03:33,300
+We'll call him S,
+
+793
+01:03:34,040 --> 01:03:42,860
+which will set to zero for some arbitrary S in V.
+
+794
+01:03:42,970 --> 01:03:47,380
+And then, the main part of the algorithm kicks in.
+
+795
+01:03:47,910 --> 01:03:50,420
+So that's our initialization.
+
+796
+01:03:53,450 --> 01:03:55,360
+OK, when we do the analysis,
+
+797
+01:03:55,430 --> 01:03:57,980
+I'm going to write some stuff on the left hand side of the board.
+
+798
+01:03:58,050 --> 01:04:01,030
+So if you're taking notes, you may want to also leave
+
+799
+01:04:01,100 --> 01:04:04,590
+a little bit of space on the left hand side of your notes.
+
+800
+01:04:07,360 --> 01:04:12,480
+So, while Q is not empty,
+
+801
+01:04:18,270 --> 01:04:30,450
+we get the smallest element out of it.
+
+802
+01:04:39,130 --> 01:04:42,170
+And then we do some stuff.
+
+803
+01:05:17,630 --> 01:05:19,950
+That's it.
+
+804
+01:05:20,150 --> 01:05:23,210
+And the only thing I should mention here is,
+
+805
+01:05:23,280 --> 01:05:24,930
+OK, so let's just see what's going on here.
+
+806
+01:05:25,000 --> 01:05:28,210
+And then we'll run it on the example.
+
+807
+01:05:28,870 --> 01:05:32,290
+OK, so what we do is we take out the smallest element
+
+808
+01:05:32,330 --> 01:05:34,430
+out of the queue at each step.
+
+809
+01:05:34,500 --> 01:05:37,220
+And then for each step in the adjacency list, in other words,
+
+810
+01:05:37,300 --> 01:05:43,070
+everything for which I have an edge going from v to u,
+
+811
+01:05:43,140 --> 01:05:52,150
+we take a look, and if v is still in our set V minus A,
+
+812
+01:05:52,220 --> 01:05:55,880
+so things we've taken out are going to be part of A.
+
+813
+01:05:55,990 --> 01:05:57,590
+OK, every time we take something out,
+
+814
+01:05:57,660 --> 01:06:00,110
+that's going to be a new A that we construct.
+
+815
+01:06:00,180 --> 01:06:01,500
+At every step, we want to find,
+
+816
+01:06:01,580 --> 01:06:05,870
+what's the cheapest edge connecting that A to everything else?
+
+817
+01:06:05,940 --> 01:06:10,860
+We basically are going to take whatever that cheapest thing is,
+
+818
+01:06:10,930 --> 01:06:12,810
+OK, add that edge in,
+
+819
+01:06:12,880 --> 01:06:16,900
+and now bring that into A and find the next cheapest one.
+
+820
+01:06:17,170 --> 01:06:19,780
+And we just keep repeating the process.
+
+821
+01:06:19,840 --> 01:06:21,940
+OK, we'll do it on the example.
+
+822
+01:06:22,050 --> 01:06:25,950
+And what we do, is every time we bring it in, I keep track of,
+
+823
+01:06:26,010 --> 01:06:33,890
+what was the vertex responsible for bringing me in.
+
+824
+01:06:33,960 --> 01:06:37,440
+And what I claim is that at the end,
+
+825
+01:06:38,510 --> 01:06:42,960
+if I look at the set of these pairs that I've made here,
+
+826
+01:06:43,030 --> 01:06:53,290
+V and pi of V, that forms the minimum spanning tree.
+
+827
+01:06:55,510 --> 01:06:57,890
+So let's just do this.
+
+828
+01:07:00,880 --> 01:07:04,580
+And, what's that? We're all set up.
+
+829
+01:07:04,660 --> 01:07:11,690
+So let's get rid of these guys here
+
+830
+01:07:11,830 --> 01:07:15,860
+because we are going to recompute them from scratch.
+
+831
+01:07:19,750 --> 01:07:24,980
+So you may want to copy a new thing over in here,
+
+832
+01:07:25,050 --> 01:07:28,090
+copy the graph over again in your notes.
+
+833
+01:07:28,160 --> 01:07:29,410
+I was going to do it, but it turned out,
+
+834
+01:07:29,480 --> 01:07:33,560
+this is exactly the board is going to erase this.
+
+835
+01:07:33,630 --> 01:07:35,710
+OK, well let me just modify it.
+
+836
+01:07:35,780 --> 01:07:40,520
+OK, so we start out. We make everything be infinity.
+
+837
+01:07:46,260 --> 01:07:51,820
+OK, so that's where I'm going to keep the key value.
+
+838
+01:07:52,160 --> 01:08:03,690
+OK, and then what I'm going to do is find one vertex.
+
+839
+01:08:03,760 --> 01:08:05,390
+And I'm going to call him S.
+
+840
+01:08:05,460 --> 01:08:07,530
+And I'm going to do this vertex here.
+
+841
+01:08:07,600 --> 01:08:08,700
+We'll call that S.
+
+842
+01:08:08,780 --> 01:08:11,490
+So basically, I now make him be zero.
+
+843
+01:08:16,360 --> 01:08:20,270
+And now, what I do, is I execute extract min.
+
+844
+01:08:20,850 --> 01:08:25,740
+So basically, what I'll do is I'll just shade him like this,
+
+845
+01:08:25,850 --> 01:08:32,730
+indicating that he has now joined the set A.
+
+846
+01:08:33,150 --> 01:08:37,150
+So, this is going to be A.
+
+847
+01:08:38,810 --> 01:08:42,340
+And this is element of V minus A.
+
+848
+01:08:47,000 --> 01:08:52,110
+So then what we do is we take a look at...
+
+849
+01:08:53,470 --> 01:08:59,450
+We extract him, and then for each edge in the adjacency list,
+
+850
+01:08:59,510 --> 01:09:01,760
+OK, so for each vertex in the adjacency lists,
+
+851
+01:09:01,830 --> 01:09:05,130
+that these guys here, OK,
+
+852
+01:09:05,210 --> 01:09:07,860
+we're going to look to see if it's still in Q,
+
+853
+01:09:07,930 --> 01:09:09,930
+that is, in V minus A.
+
+854
+01:09:11,100 --> 01:09:13,600
+And if so, we are going to,
+
+855
+01:09:14,220 --> 01:09:19,320
+and its key value is less than what the value is at the edge there
+
+856
+01:09:19,390 --> 01:09:21,670
+we're going to replace it by the edge value.
+
+857
+01:09:21,770 --> 01:09:24,480
+So, in this case, we're going to replace this by seven.
+
+858
+01:09:24,560 --> 01:09:26,850
+We're going to replace this by 15,
+
+859
+01:09:27,400 --> 01:09:29,880
+and we're going to replace this by ten,
+
+859
+01:09:32,490 --> 01:09:36,150
+because what we're interested in is, what is the cheapest?
+
+860
+01:09:36,230 --> 01:09:40,590
+Now, notice that everything in V minus A,
+
+861
+01:09:40,730 --> 01:09:43,770
+that is, what's in the priority queue, everything in there,
+
+862
+01:09:43,800 --> 01:09:49,470
+OK, now has its cheapest way of connecting it
+
+863
+01:09:49,500 --> 01:09:51,220
+to the things that I've already removed,
+
+864
+01:09:51,260 --> 01:09:53,180
+the things that are in A.
+
+865
+01:09:54,100 --> 01:09:59,650
+OK, and so now I just, when I actually do that update,
+
+866
+01:10:01,630 --> 01:10:05,270
+there's actually something implicit going on in this priority queue.
+
+867
+01:10:05,400 --> 01:10:08,470
+And that is that I have to do a decreased key.
+
+868
+01:10:08,540 --> 01:10:14,170
+So, there's an implicit decrease of the key.
+
+869
+01:10:14,310 --> 01:10:17,500
+So, decreased key is a priority queue operation
+
+870
+01:10:17,570 --> 01:10:22,510
+that lowers the value of the key in the priority queue.
+
+871
+01:10:23,940 --> 01:10:25,560
+And so, that's implicitly going on
+
+872
+01:10:25,630 --> 01:10:27,910
+when I look at what data structure I'm going to use
+
+873
+01:10:27,970 --> 01:10:30,420
+to implement that priority queue.
+
+874
+01:10:30,600 --> 01:10:33,870
+So common data structures for implementing a priority queue are
+
+875
+01:10:35,280 --> 01:10:37,540
+A heap, a min heap.
+
+876
+01:10:37,610 --> 01:10:41,710
+So I have to make sure that I'm actually doing this operation.
+
+877
+01:10:41,770 --> 01:10:43,970
+I can't just change it and not affect my heap.
+
+878
+01:10:44,010 --> 01:10:47,660
+So, there is an implicit operation going on there.
+
+879
+01:10:47,770 --> 01:10:49,500
+OK, now I repeat.
+
+880
+01:10:49,610 --> 01:10:51,810
+I find the cheapest thing,
+
+881
+01:10:51,880 --> 01:10:54,220
+oh, and I also have to set, now,
+
+882
+01:10:54,290 --> 01:10:58,830
+a pointer from each of these guys back to u.
+
+883
+01:10:58,900 --> 01:11:03,390
+So here, this guy sets a pointer going this way.
+
+884
+01:11:04,030 --> 01:11:06,820
+This guy sets a pointer going this way,
+
+885
+01:11:06,930 --> 01:11:08,440
+and this guy sets a pointer going this way.
+
+886
+01:11:08,520 --> 01:11:11,350
+That's my pi thing that's going to keep track of
+
+887
+01:11:11,420 --> 01:11:17,190
+who caused me to set my value to what it is.
+
+888
+01:11:18,560 --> 01:11:21,960
+So now, we go in and we find the cheapest thing, again.
+
+889
+01:11:23,520 --> 01:11:25,930
+And we're going to do it fast, too.
+
+890
+01:11:26,350 --> 01:11:27,610
+OK, this is a fast algorithm.
+
+891
+01:11:27,680 --> 01:11:31,410
+OK, so now we're going to go do this again.
+
+892
+01:11:31,510 --> 01:11:34,760
+So now, what's the cheapest thing to extract?
+
+893
+01:11:35,170 --> 01:11:40,050
+This guy here, right? So, we'll take him out,
+
+894
+01:11:41,220 --> 01:11:43,880
+OK, and now we update all of his neighbors.
+
+895
+01:11:43,950 --> 01:11:46,180
+So this guy gets five.
+
+896
+01:11:46,830 --> 01:11:50,230
+This guy gets 12.
+
+897
+01:11:50,560 --> 01:11:52,960
+This guy gets nine.
+
+898
+01:11:53,250 --> 01:11:58,530
+This guy we don't update. We don't update him
+
+899
+01:11:58,600 --> 01:12:03,150
+because he's no longer in the priority queue.
+
+900
+01:12:03,220 --> 01:12:04,420
+And all of these guys now,
+
+901
+01:12:04,490 --> 01:12:09,600
+we make pointer where they're supposed to point to.
+
+902
+01:12:09,670 --> 01:12:11,730
+And, we're done with that step.
+
+903
+01:12:11,840 --> 01:12:13,170
+Now we find the cheapest one.
+
+904
+01:12:13,240 --> 01:12:15,770
+What's the cheapest one now?
+
+905
+01:12:16,160 --> 01:12:20,490
+The five over here. Good. So, we take him out.
+
+906
+01:12:20,860 --> 01:12:24,320
+OK, we update the neighbors.
+
+907
+01:12:24,470 --> 01:12:28,880
+Here, yep, that goes to six now.
+
+908
+01:12:28,980 --> 01:12:32,220
+And, we have that pointer.
+
+909
+01:12:32,290 --> 01:12:35,000
+And, this guy we don't do, because he's not in there.
+
+910
+01:12:35,070 --> 01:12:43,270
+This guy becomes 14, and this guy here becomes eight.
+
+911
+01:12:43,660 --> 01:12:50,410
+So, we update that guy, make him be eight.
+
+912
+01:12:50,490 --> 01:12:53,780
+Did I do this the right way?
+
+913
+01:12:54,420 --> 01:12:57,010
+[Student]:Inaudible.
+
+914
+01:12:57,080 --> 01:13:00,320
+[Prof]:Yeah, because pi is a function of this guy.
+
+915
+01:13:00,390 --> 01:13:03,930
+So basically, this thing, then, disappears. Yeah,
+
+916
+01:13:03,940 --> 01:13:06,320
+did I have another one that I missed?
+
+917
+01:13:06,950 --> 01:13:11,390
+12, yes, good, it's removed,
+
+918
+01:13:11,550 --> 01:13:14,670
+OK, because pi is just a function.
+
+919
+01:13:15,160 --> 01:13:20,760
+And now I'm OK. OK, so now what do I do?
+
+920
+01:13:20,900 --> 01:13:25,080
+OK, so now my set, A, consists of these three things,
+
+921
+01:13:25,150 --> 01:13:26,590
+and now I want the cheapest edge.
+
+922
+01:13:26,660 --> 01:13:28,310
+I know it's in the minimum spanning tree.
+
+923
+01:13:28,380 --> 01:13:31,300
+So let me just greedily pick it.
+
+924
+01:13:31,410 --> 01:13:33,630
+So what's the cheapest thing now?
+
+925
+01:13:34,620 --> 01:13:39,190
+This guy u here? Yeah, six.
+
+926
+01:13:39,260 --> 01:13:42,750
+So we take it. We go to update these things,
+
+927
+01:13:42,910 --> 01:13:45,680
+and nothing matters here.
+
+928
+01:13:45,970 --> 01:13:49,360
+OK, nothing changes because these guys are already in A.
+
+929
+01:13:49,540 --> 01:13:54,640
+OK, so now the cheapest one is eight here.
+
+930
+01:13:54,710 --> 01:13:57,400
+Good. So, we take eight out.
+
+931
+01:13:57,470 --> 01:14:00,470
+OK, we update this. Nothing to be done.
+
+932
+01:14:00,540 --> 01:14:02,080
+This: nothing to be done.
+
+933
+01:14:02,150 --> 01:14:07,640
+This: oh, no, this one, instead of 14 we can make this be three.
+
+934
+01:14:07,710 --> 01:14:12,280
+So, we get rid of that pointer and make it point that way.
+
+935
+01:14:13,160 --> 01:14:15,860
+Now three is the cheapest thing.
+
+936
+01:14:16,050 --> 01:14:17,620
+So, we take it out,
+
+937
+01:14:17,690 --> 01:14:20,170
+and of course there's nothing to be done over there.
+
+938
+01:14:20,230 --> 01:14:24,920
+And now, last, I take nine. And it's done.
+
+939
+01:14:24,990 --> 01:14:29,710
+And 15: it's done. And the algorithm terminates.
+
+940
+01:14:30,800 --> 01:14:35,160
+OK, and as I look at, now, all the edges that I picked,
+
+941
+01:14:35,260 --> 01:14:40,780
+those are exactly all the edges that we had at the beginning.
+
+942
+01:14:43,130 --> 01:14:45,490
+Let's do an analysis here.
+
+943
+01:14:56,550 --> 01:15:06,620
+OK, so let's see, this part here costs me order V, right?
+
+944
+01:15:11,430 --> 01:15:13,600
+OK, and this part,
+
+945
+01:15:13,670 --> 01:15:17,910
+let's see what we are doing here. We gonna do this part...
+
+946
+01:15:19,090 --> 01:15:24,040
+Well, we're going to go through this loop how many times?
+
+947
+01:15:27,800 --> 01:15:29,300
+V times.
+
+948
+01:15:29,370 --> 01:15:30,900
+It's V elements we put into the queue.
+
+949
+01:15:30,970 --> 01:15:33,820
+We are not inserting anything. We're just taking them out.
+
+950
+01:15:33,930 --> 01:15:36,420
+This goes V times,
+
+951
+01:15:37,420 --> 01:15:45,870
+OK, and we do a certain number of extract Mins.
+
+952
+01:15:45,950 --> 01:15:48,630
+So, we're going to do order V extract Mins.
+
+953
+01:15:48,700 --> 01:15:51,100
+And then we go to the adjacency list,
+
+954
+01:15:51,170 --> 01:15:52,440
+and we have some constant things.
+
+955
+01:15:52,510 --> 01:15:57,360
+But we have these implicit decreased keys for this stuff here.
+
+956
+01:15:57,400 --> 01:15:59,850
+That's this thing here.
+
+957
+01:16:01,310 --> 01:16:06,370
+OK, and so how many implicit decreased keys do we have?
+
+958
+01:16:06,600 --> 01:16:09,310
+That's going to be the expensive thing.
+
+959
+01:16:09,360 --> 01:16:16,410
+OK, we have, in this case, the degree of u of those.
+
+960
+01:16:24,540 --> 01:16:35,790
+so overall, how many implicit decreased keys do we have?
+
+961
+01:16:37,680 --> 01:16:40,090
+Well, we have V times through.
+
+962
+01:16:40,160 --> 01:16:42,820
+How big could the degree of u be?
+
+963
+01:16:47,470 --> 01:16:51,840
+OK, it could be as big as V, order V.
+
+964
+01:16:51,880 --> 01:16:54,460
+So, that's V^2 decreased use.
+
+965
+01:16:55,440 --> 01:16:57,740
+But we can do a better bound than that.
+
+966
+01:16:57,770 --> 01:17:00,140
+How many do we really have?
+
+967
+01:17:12,880 --> 01:17:15,720
+Yeah, at most order E,
+
+968
+01:17:17,300 --> 01:17:19,290
+OK, because what am I doing?
+
+969
+01:17:19,340 --> 01:17:22,840
+I'm summing up the degrees of all the vertices.
+
+970
+01:17:22,880 --> 01:17:25,770
+That's how many times I actually execute that.
+
+971
+01:17:25,820 --> 01:17:33,000
+So, I have order E, implicit decreased keys.
+
+972
+01:17:37,070 --> 01:17:44,310
+So the time overall is order V times
+
+973
+01:17:44,360 --> 01:17:48,200
+time for whatever the extract Min is
+
+974
+01:17:49,600 --> 01:17:54,050
+plus E times the time for decreased key.
+
+975
+01:18:00,520 --> 01:18:02,580
+So now, let's look at data structures,
+
+976
+01:18:02,640 --> 01:18:05,490
+and we can evaluate for different data structures
+
+977
+01:18:05,560 --> 01:18:12,730
+what this formula gives us.
+
+978
+01:18:12,790 --> 01:18:15,260
+So, we have different ways of implementing a data structure.
+
+979
+01:18:15,630 --> 01:18:18,860
+We have the cost of extract Min,
+
+980
+01:18:21,140 --> 01:18:28,020
+and of decreased key, and total.
+
+981
+01:18:30,050 --> 01:18:33,190
+So, the simplest way of implementing a data structure
+
+982
+01:18:33,250 --> 01:18:36,140
+is an unsorted array.
+
+983
+01:18:36,690 --> 01:18:38,370
+If I have an unsorted array,
+
+984
+01:18:38,430 --> 01:18:42,840
+how much time does it take me to extract the minimum element?
+
+985
+01:18:45,780 --> 01:18:48,200
+If I have an unsorted array?
+
+986
+01:18:48,700 --> 01:18:53,500
+order V in this case because it's an array of size V.
+
+987
+01:18:53,550 --> 01:18:55,910
+And, to do a decreased key,
+
+988
+01:19:00,220 --> 01:19:03,460
+OK, I can do it in order one.
+
+989
+01:19:03,890 --> 01:19:13,690
+So, the total is V^2, good,
+
+990
+01:19:14,820 --> 01:19:16,690
+order V^2 algorithm.
+
+991
+01:19:17,410 --> 01:19:21,340
+Or, as people suggested, how about a binary heap?
+
+992
+01:19:24,060 --> 01:19:28,490
+to do an extract Min in a binary heap will cost me what?
+
+993
+01:19:29,250 --> 01:19:36,660
+O of log V. Decreased key will cost me,
+
+994
+01:19:41,340 --> 01:19:43,500
+yeah, it turns out you can do that in order log V
+
+995
+01:19:43,570 --> 01:19:47,610
+because basically you just have to shuffle the value,
+
+996
+01:19:47,640 --> 01:19:51,280
+actually shuffle it up towards the root, OK?
+
+997
+01:19:51,390 --> 01:19:56,350
+O of log V. And, the total cost therefore is?
+
+998
+01:19:59,110 --> 01:20:01,260
+E log V, good.
+
+999
+01:20:03,240 --> 01:20:05,560
+Which of these is better?
+
+1000
+01:20:11,130 --> 01:20:12,670
+It depends, good.
+
+1001
+01:20:13,380 --> 01:20:15,840
+When is one better, and when is the other better?
+
+1002
+01:20:17,030 --> 01:20:17,860
+Yeah?
+
+1003
+01:20:17,920 --> 01:20:21,150
+[Student]:Inaudible.
+
+1004
+01:20:21,200 --> 01:20:23,130
+[Prof]:if it's a dense graph,
+
+1005
+01:20:23,160 --> 01:20:26,300
+E is close to V^2, the array is better.
+
+1006
+01:20:26,360 --> 01:20:27,790
+But if it's a sparse graph,
+
+1007
+01:20:27,940 --> 01:20:30,300
+and E is much smaller than V^2,
+
+1008
+01:20:30,400 --> 01:20:32,350
+then the binary heap is better.
+
+1009
+01:20:33,100 --> 01:20:38,330
+So that motivated the invention of a data structure,
+
+1010
+01:20:39,120 --> 01:20:41,810
+OK, called a Fibonacci Heap.
+
+1011
+01:20:44,440 --> 01:20:48,300
+So, Fibonacci Heap is covered in Chapter 20 of CLRS.
+
+1012
+01:20:48,420 --> 01:20:50,630
+We're not going to hold you responsible for the content,
+
+1013
+01:20:50,740 --> 01:20:51,980
+but it's an interesting data structure
+
+1014
+01:20:52,090 --> 01:20:54,410
+because it's an amortized data structure.
+
+1015
+01:20:54,500 --> 01:20:56,220
+And it turns out that it is data structure,
+
+1016
+01:20:56,310 --> 01:21:04,550
+you can do extract Min in order log V amortized time.
+
+1017
+01:21:07,020 --> 01:21:12,530
+And remarkably, you can do decreased key in order one amortized.
+
+1018
+01:21:16,810 --> 01:21:20,080
+So, when I plug those in, what do I get over here?
+
+1019
+01:21:32,140 --> 01:21:35,910
+What's that going to be? Plug that it here.
+
+1020
+01:21:36,000 --> 01:21:48,890
+It's going to be V times log V plus E: E plus V log V.
+
+1021
+01:21:51,530 --> 01:21:53,820
+These are amortized, so what's this?
+
+1022
+01:21:58,190 --> 01:22:03,280
+Trick question. It's worst-case.
+
+1023
+01:22:03,390 --> 01:22:05,990
+It's not amortized over here.
+
+1024
+01:22:06,110 --> 01:22:10,160
+These are amortized, but that's the beauty of amortization.
+
+1025
+01:22:10,260 --> 01:22:13,830
+I can say it's going to be worst case: E plus V log V over here,
+
+1026
+01:22:13,870 --> 01:22:18,030
+because when I add up the amortized cost of my operations,
+
+1027
+01:22:18,130 --> 01:22:21,220
+it's an upper bound on the true costs.
+
+1028
+01:22:22,090 --> 01:22:24,900
+OK, so as I say,
+
+1029
+01:22:24,960 --> 01:22:27,390
+one of the beauties of this amortized analysis,
+
+1030
+01:22:27,430 --> 01:22:29,130
+and in particular, being able to assign
+
+1031
+01:22:29,180 --> 01:22:32,040
+different costs to different operations is
+
+1032
+01:22:32,070 --> 01:22:35,050
+I can just add them up and I get my worst-case costs.
+
+1033
+01:22:35,080 --> 01:22:37,520
+So this is already V log V.
+
+1034
+01:22:37,560 --> 01:22:40,310
+There are a couple other algorithms just before I let you go.
+
+1035
+01:22:40,350 --> 01:22:43,040
+Kruskal's Algorithm in the book
+
+1036
+01:22:43,160 --> 01:22:45,820
+uses another amortized data structure
+
+1037
+01:22:45,920 --> 01:22:48,800
+called a disjoint set data structure,
+
+1038
+01:22:48,930 --> 01:22:53,340
+which also runs in E log V, that is, this time:
+
+1039
+01:22:53,460 --> 01:22:56,700
+runs in this time, the same as using a binary heap.
+
+1040
+01:22:56,810 --> 01:22:58,080
+So, I'll refer you to the book.
+
+1041
+01:22:58,190 --> 01:23:01,610
+The best algorithm to date with this problem is
+
+1042
+01:23:01,650 --> 01:23:05,600
+done by our own David Karger on the faculty here
+
+1043
+01:23:05,680 --> 01:23:10,510
+with one of our former graduates, Phil Kline,
+
+1044
+01:23:10,580 --> 01:23:13,630
+who is now a professor at Brown, and Robert Tarjan,
+
+1045
+01:23:13,670 --> 01:23:18,360
+who is sort of like the master of all data structures
+
+1046
+01:23:18,420 --> 01:23:21,590
+who was a professor at Princeton in 1993.
+
+1047
+01:23:21,690 --> 01:23:23,240
+it's a randomized algorithm,
+
+1048
+01:23:23,340 --> 01:23:27,330
+and it gives you order V plus E expected time.
+
+1049
+01:23:27,400 --> 01:23:29,480
+OK, so that's the best to date.
+
+1050
+01:23:29,540 --> 01:23:32,890
+It's still open as to whether there is a deterministic,
+
+1051
+01:23:32,980 --> 01:23:35,950
+there is worst-case bound,
+
+1052
+01:23:36,930 --> 01:23:40,490
+whether there is a worst-case bound that is linear time.
+
+1053
+01:23:40,590 --> 01:23:42,660
+OK, but there is a randomized linear time,
+
+1054
+01:23:42,780 --> 01:23:46,830
+and otherwise, this is essentially the best bound
+
+1055
+01:23:46,870 --> 01:23:48,710
+without additional assumptions.
+
+1056
+01:23:49,480 --> 01:23:50,570
+OK, very cool stuff.
+
+1057
+01:23:50,620 --> 01:23:54,070
+Next, we're going to see a lot of these ideas of
+
+1058
+01:23:57,570 --> 01:24:01,770
+greedy and dynamic programming in practice.
+

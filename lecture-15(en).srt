@@ -1,0 +1,3188 @@
+﻿1
+00:00:06,330 --> 00:00:12,610
+So, the topic today is dynamic programming.
+
+2
+00:00:19,800 --> 00:00:28,500
+The term programming in the name of this term
+
+3
+00:00:28,500 --> 00:00:32,540
+doesn't refer to computer programming.
+
+4
+00:00:32,540 --> 00:00:34,640
+OK, programming is an old word that means
+
+5
+00:00:34,640 --> 00:00:39,120
+any tabular method for accomplishing something.
+
+6
+00:00:39,120 --> 00:00:41,270
+So, you'll hear about linear programming
+
+7
+00:00:41,270 --> 00:00:43,530
+and dynamic programming.
+
+8
+00:00:43,530 --> 00:00:47,240
+Either of those, even though we now incorporate
+
+9
+00:00:47,240 --> 00:00:49,970
+those algorithms in computer programs,
+
+10
+00:00:49,970 --> 00:00:52,100
+originally computer programming,
+
+11
+00:00:52,100 --> 00:00:54,930
+you were given a datasheet and you put
+
+12
+00:00:54,930 --> 00:00:59,490
+one line per line of code as a tabular method
+
+13
+00:00:59,490 --> 00:01:02,970
+for giving the machine instructions as to what to do.
+
+14
+00:01:02,970 --> 00:01:05,550
+OK, so the term programming is older.
+
+15
+00:01:05,550 --> 00:01:07,520
+Of course, and now conventionally when you see programming
+
+16
+00:01:07,520 --> 00:01:09,940
+you mean software, computer programming.
+
+17
+00:01:09,940 --> 00:01:11,500
+But that wasn't always the case.
+
+18
+00:01:11,500 --> 00:01:14,510
+And these terms continue in the literature.
+
+19
+00:01:14,510 --> 00:01:26,750
+So, dynamic programming is a design technique like other
+
+20
+00:01:26,750 --> 00:01:31,600
+design techniques we've seen such as divided and conquer.
+
+21
+00:01:31,600 --> 00:01:35,420
+OK, so it's a way of solving a class of problems
+
+22
+00:01:35,420 --> 00:01:40,450
+rather than a particular algorithm or something.
+
+23
+00:01:40,450 --> 00:01:47,690
+So, we're going to work through this for the example of
+
+24
+00:01:47,690 --> 00:01:58,390
+so-called longest common subsequence problem
+
+25
+00:01:58,390 --> 00:02:02,680
+sometimes called LCS, OK,
+
+26
+00:02:02,680 --> 00:02:05,600
+which is a problem that comes up in a variety of contexts.
+
+27
+00:02:05,600 --> 00:02:08,950
+And it's particularly important in computational biology
+
+28
+00:02:08,950 --> 00:02:11,220
+where you have long DNA strains and you're trying to
+
+29
+00:02:11,220 --> 00:02:14,650
+find commonalities between two strings
+
+30
+00:02:14,650 --> 00:02:22,520
+OK, one which may be a genome and one may be various
+
+31
+00:02:22,520 --> 00:02:25,100
+when people do, what is that thing called
+
+32
+00:02:25,100 --> 00:02:28,900
+when they do the evolutionary comparisons?
+
+33
+00:02:28,900 --> 00:02:33,520
+The evolutionary trees, yeah, right, yeah, exactly,
+
+34
+00:02:33,520 --> 00:02:37,200
+phylogenetic trees, there you go, OK, phylogenetic trees.
+
+35
+00:02:37,200 --> 00:02:40,680
+Good, so here's the problem.
+
+36
+00:02:40,680 --> 00:02:49,420
+So, you're given two sequences, x going from one to m
+
+37
+00:02:49,420 --> 00:02:55,430
+and y running from one to n
+
+38
+00:02:55,440 --> 00:03:08,570
+You want to find a longest sequence common to both.
+
+39
+00:03:08,580 --> 00:03:19,850
+OK, and here I say a, not the, although it's common to
+
+40
+00:03:19,850 --> 00:03:23,840
+talk about the longest common subsequence.
+
+41
+00:03:23,840 --> 00:03:28,680
+Usually the longest common subsequence isn't unique.
+
+42
+00:03:28,690 --> 00:03:30,490
+There could be several different subsequences
+
+43
+00:03:30,500 --> 00:03:33,140
+that tie for that.
+
+44
+00:03:33,150 --> 00:03:35,900
+However, people tend to, it's one of the sloppinesses
+
+45
+00:03:35,900 --> 00:03:37,900
+that people will say.
+
+46
+00:03:37,900 --> 00:03:42,230
+I will try to say a, unless it's unique.
+
+47
+00:03:42,230 --> 00:03:44,240
+But I may slip as well because
+
+48
+00:03:44,240 --> 00:03:48,330
+it's just such a common thing to just talk about the,
+
+49
+00:03:48,340 --> 00:03:52,160
+even though there might be multiple.
+
+50
+00:03:52,160 --> 00:03:53,890
+So, here's an example.
+
+51
+00:03:53,890 --> 00:04:10,280
+Suppose x is this sequence, and y is this sequence.
+
+52
+00:04:10,280 --> 00:04:14,870
+So, what is a longest common subsequence
+
+53
+00:04:14,870 --> 00:04:16,750
+of those two sequences?
+
+54
+00:04:16,750 --> 00:04:33,330
+See if you can just eyeball it.
+
+55
+00:04:33,330 --> 00:04:34,520
+AB, length two?
+
+56
+00:04:34,530 --> 00:04:39,910
+Anybody have one longer? Excuse me?
+
+57
+00:04:39,910 --> 00:04:59,010
+BDB, BDB. BDAB, BDAB, BDAB, anything longer?
+
+58
+00:04:59,020 --> 00:05:04,870
+So, BDAB, that's the longest one.
+
+59
+00:05:04,890 --> 00:05:15,530
+Is there another one that's the same length?
+
+60
+00:05:15,540 --> 00:05:21,040
+Is there another one that ties?
+
+61
+00:05:21,050 --> 00:05:33,450
+BCAB, BCAB, another one?
+
+62
+00:05:33,460 --> 00:05:38,560
+BCBA, yeah, there are a bunch of them all of length four.
+
+63
+00:05:38,570 --> 00:05:40,760
+There isn't one of length five.
+
+64
+00:05:40,770 --> 00:05:43,920
+OK, we are actually going to come up with an algorithm that,
+
+65
+00:05:43,920 --> 00:05:46,460
+if it's correct, we're going to show it's correct
+
+66
+00:05:46,470 --> 00:05:49,970
+guarantees that there isn't one of length five.
+
+67
+00:05:49,980 --> 00:05:53,820
+So all those are, we can say, any one of these
+
+68
+00:05:53,830 --> 00:05:57,450
+is the longest common subsequence of x and y.
+
+69
+00:05:57,450 --> 00:06:05,040
+We tend to use it this way using functional notation
+
+70
+00:06:05,050 --> 00:06:13,130
+but it's not a function that's really a relation.
+
+71
+00:06:13,200 --> 00:06:15,790
+So, we'll say something is an LCS
+
+72
+00:06:15,800 --> 00:06:17,160
+when really we only mean it's an element
+
+73
+00:06:17,160 --> 00:06:22,750
+if you will, of the set of longest common subsequences.
+
+74
+00:06:22,760 --> 00:06:24,980
+Once again, it's classic abusive notation.
+
+75
+00:06:24,990 --> 00:06:28,950
+As long as we know what we mean, it's OK to abuse notation.
+
+76
+00:06:28,960 --> 00:06:34,760
+What we can't do is misuse it. But abuse, yeah!
+
+77
+00:06:34,770 --> 00:06:37,310
+Make it so it's easy to deal with.
+
+78
+00:06:37,320 --> 00:06:42,430
+But you have to know what's going on underneath.
+
+79
+00:06:42,440 --> 00:06:48,920
+OK, so let's see, so there's a fairly simple
+
+80
+00:06:48,940 --> 00:06:55,670
+brute force algorithm for solving this problem.
+
+81
+00:06:55,680 --> 00:07:01,470
+And that is, let's just check every, maybe some of
+
+82
+00:07:01,480 --> 00:07:10,690
+you did this in your heads, subsequence of x from one to m
+
+83
+00:07:10,700 --> 00:07:29,320
+to see if it's also a subsequence of y of one to n.
+
+84
+00:07:29,330 --> 00:07:34,660
+So, just take every subsequence that you can get here
+
+85
+00:07:34,670 --> 00:07:39,660
+check it to see if it's in there.
+
+86
+00:07:39,670 --> 00:07:50,550
+So let's analyze that.
+
+87
+00:07:50,560 --> 00:07:59,300
+So, to check, so if I give you a subsequence of x,
+
+88
+00:07:59,310 --> 00:08:03,140
+how long does it take you to check whether it is
+
+89
+00:08:03,150 --> 00:08:06,420
+in fact, a subsequence of y?
+
+90
+00:08:06,430 --> 00:08:11,770
+So, I give you something like BCAB.
+
+91
+00:08:11,780 --> 00:08:15,000
+How long does it take me to check to see
+
+92
+00:08:15,010 --> 00:08:20,350
+if it's a subsequence of y?
+
+93
+00:08:20,360 --> 00:08:31,230
+Length of y, which is order n. And how do you do it?
+
+94
+00:08:31,240 --> 00:08:33,220
+Yeah, you just scan.
+
+95
+00:08:33,230 --> 00:08:37,080
+So as you hit the first character that matches, great.
+
+96
+00:08:37,090 --> 00:08:39,650
+Now, if you will, recursively see whether
+
+97
+00:08:39,670 --> 00:08:46,600
+the suffix of your string matches the suffix of x.
+
+98
+00:08:46,610 --> 00:08:53,360
+OK, and so, you are just simply walking down the tree
+
+99
+00:08:53,370 --> 00:08:54,330
+to see if it matches.
+
+100
+00:08:54,330 --> 00:08:56,500
+You're walking down the string to see if it matches.
+
+101
+00:08:56,510 --> 00:08:59,720
+OK, then the second thing is
+
+102
+00:08:59,730 --> 00:09:05,570
+then how many subsequences of x are there?
+
+103
+00:09:05,580 --> 00:09:08,780
+Two to the n?
+
+104
+00:09:08,790 --> 00:09:16,310
+x just goes from one to m, two to the m subsequences of x
+
+105
+00:09:16,320 --> 00:09:18,110
+OK, two to the m.
+
+106
+00:09:18,120 --> 00:09:24,280
+Two to the m subsequences of x,
+
+107
+00:09:24,290 --> 00:09:27,620
+OK, one way to see that, you say, well,
+
+108
+00:09:27,630 --> 00:09:29,950
+how many subsequences are there of something there?
+
+109
+00:09:29,960 --> 00:09:34,700
+If I consider a bit vector of length m,
+
+110
+00:09:34,710 --> 00:09:36,190
+OK, that's one or zero,
+
+111
+00:09:36,200 --> 00:09:39,710
+just every position where there's a one, I take out,
+
+112
+00:09:39,730 --> 00:09:44,210
+that identifies an element that I'm going to take out.
+
+113
+00:09:44,220 --> 00:09:53,920
+OK, then that gives me a mapping from each subsequence of x
+
+114
+00:09:53,940 --> 00:09:57,630
+from each bit vector to a different subsequence of x.
+
+115
+00:09:57,640 --> 00:10:00,030
+Now, of course, you could have matching characters there,
+
+116
+00:10:00,040 --> 00:10:04,010
+but in the worst case, all of the characters are different.
+
+117
+00:10:04,020 --> 00:10:09,440
+OK, and so every one of those will be a unique subsequence.
+
+118
+00:10:09,450 --> 00:10:25,470
+So, each bit vector of length m corresponds to a subsequence.
+
+119
+00:10:25,490 --> 00:10:28,010
+That's a generally good trick to know.
+
+120
+00:10:28,020 --> 00:10:34,870
+So, the worst-case running time of this method
+
+121
+00:10:34,880 --> 00:10:41,220
+is order n times two to the m, which is,
+
+122
+00:10:41,230 --> 00:10:49,270
+since m is in the exponent, is exponential time.
+
+123
+00:10:49,280 --> 00:10:51,120
+And there's a technical term that we use
+
+124
+00:10:51,130 --> 00:10:55,240
+when something is exponential time.
+
+125
+00:10:55,250 --> 00:11:02,200
+Slow, good. OK, very good.
+
+126
+00:11:02,210 --> 00:11:09,970
+OK, slow, OK, so this is really bad.
+
+127
+00:11:09,970 --> 00:11:12,860
+This is taking a long time to crank out
+
+128
+00:11:12,860 --> 00:11:16,740
+how long the longest common subsequence is
+
+129
+00:11:16,740 --> 00:11:20,140
+because there's so many subsequences.
+
+130
+00:11:20,140 --> 00:11:24,040
+OK, so we're going to now go through a process of
+
+131
+00:11:24,040 --> 00:11:28,710
+developing a far more efficient algorithm for this problem.
+
+132
+00:11:28,710 --> 00:11:32,720
+OK, and we're actually going to go through several stages.
+
+133
+00:11:32,720 --> 00:11:40,370
+The first one is to go through simplification stage.
+
+134
+00:11:40,370 --> 00:11:47,650
+OK, and what we're going to do is look at simply
+
+135
+00:11:47,650 --> 00:11:57,900
+the length of the longest common sequence of x and y.
+
+136
+00:11:57,910 --> 00:12:05,900
+And then what we'll do is extend the algorithm
+
+137
+00:12:05,910 --> 00:12:13,690
+to find the longest common subsequence itself.
+
+138
+00:12:13,700 --> 00:12:15,880
+OK, so we're going to look at the length.
+
+139
+00:12:15,900 --> 00:12:17,910
+So, simplify the problem, if you will,
+
+140
+00:12:17,920 --> 00:12:19,340
+to just try to compute the length.
+
+141
+00:12:19,350 --> 00:12:23,220
+What's nice is the length is unique.
+
+142
+00:12:23,230 --> 00:12:26,160
+OK, there's only going to be one length
+
+143
+00:12:26,180 --> 00:12:28,440
+that's going to be the longest.
+
+144
+00:12:28,450 --> 00:12:30,900
+OK, and what we'll do is just focus on
+
+145
+00:12:30,910 --> 00:12:33,210
+the problem of computing the length.
+
+146
+00:12:33,220 --> 00:12:36,430
+And then we'll do is we can back up from that and figure out
+
+147
+00:12:36,430 --> 00:12:40,920
+what actually is the subsequence that realizes that length.
+
+148
+00:12:40,920 --> 00:12:44,450
+OK, and that will be a big simplification because we don't
+
+149
+00:12:44,450 --> 00:12:46,690
+have to keep track of a lot of different possibilities
+
+150
+00:12:46,690 --> 00:12:48,900
+at every stage. We just have to keep track of
+
+151
+00:12:48,900 --> 00:12:51,130
+the one number, which is the length.
+
+152
+00:12:51,130 --> 00:12:54,440
+So, it's sort of reduces it to a numerical problem.
+
+153
+00:12:54,440 --> 00:12:58,000
+We'll adopt the following notation.
+
+154
+00:12:58,000 --> 00:12:59,870
+It's pretty standard notation, but I just want,
+
+155
+00:12:59,870 --> 00:13:07,100
+if I put absolute values around the string or a sequence,
+
+156
+00:13:07,100 --> 00:13:13,880
+it denotes the length of the sequence, S.
+
+157
+00:13:13,880 --> 00:13:21,050
+OK, so that's the first thing. The second thing we're going to
+
+158
+00:13:21,050 --> 00:13:23,610
+do is, actually, we're going to,
+
+159
+00:13:23,610 --> 00:13:26,380
+which takes a lot more insight when you come up with
+
+160
+00:13:26,380 --> 00:13:30,180
+a problem like this, and in some sense,
+
+161
+00:13:30,180 --> 00:13:40,180
+ends up being the hardest part of designing a good dynamic
+
+162
+00:13:40,220 --> 00:13:45,210
+programming algorithm from any problem, which is we're going to
+
+163
+00:13:45,240 --> 00:13:52,280
+actually look not at all subsequences of x and y,
+
+164
+00:13:52,320 --> 00:14:04,390
+but just prefixes.
+
+165
+00:14:04,420 --> 00:14:07,070
+OK, we're just going to look at prefixes and we're going to
+
+166
+00:14:07,070 --> 00:14:12,240
+show how we can express the length of the longest common
+
+167
+00:14:12,240 --> 00:14:18,560
+subsequence of prefixes in terms of each other.
+
+168
+00:14:18,590 --> 00:14:26,580
+In particular, we're going to define c of ij
+
+169
+00:14:26,610 --> 00:14:30,700
+to be the length, the longest common subsequence
+
+170
+00:14:30,740 --> 00:14:36,390
+of the prefix of x going from one to i,
+
+171
+00:14:36,460 --> 00:14:41,790
+and y of going to one to j.
+
+172
+00:14:41,790 --> 00:14:44,820
+And what we are going to do is
+
+173
+00:14:44,860 --> 00:14:52,570
+we're going to calculate c[i,j] for all ij.
+
+174
+00:14:52,600 --> 00:15:01,700
+And if we do that, how then do we solve the
+
+175
+00:15:01,730 --> 00:15:13,670
+problem of the longest common of sequence of x and y?
+
+176
+00:15:13,700 --> 00:15:16,130
+How do we solve the longest common subsequence?
+
+177
+00:15:16,170 --> 00:15:22,280
+Suppose we've solved this for all i and j.
+
+178
+00:15:22,310 --> 00:15:25,590
+How then do we compute the length of the longest common
+
+179
+00:15:25,620 --> 00:15:31,240
+subsequence of x and y? Yeah, c[m,n],
+
+180
+00:15:31,270 --> 00:15:36,650
+that's all, OK? So then, c[i,j] of m,n
+
+181
+00:15:36,680 --> 00:15:43,090
+is just equal to the longest common subsequence of x and y,
+
+182
+00:15:43,120 --> 00:15:52,850
+because if I go from one to n, I'm done, OK?
+
+183
+00:15:52,880 --> 00:15:57,130
+And so, it's going to turn out that what we want to do is
+
+184
+00:15:57,160 --> 00:16:03,930
+figure out how to express to c[m,n], in general,
+
+185
+00:16:03,960 --> 00:16:06,700
+c[i,j], in terms of other c[i,j].
+
+186
+00:16:06,730 --> 00:16:16,120
+So, let's see how we do that.
+
+187
+00:16:16,150 --> 00:17:03,460
+OK, so our theorem is going to say that c[i,j] is just --
+
+188
+00:17:03,490 --> 00:17:07,400
+OK, it says that if the i'th character matches the j'th
+
+189
+00:17:07,430 --> 00:17:11,760
+character, then i'th character of x matches the j'th
+
+190
+00:17:11,790 --> 00:17:14,650
+character of y, then c[i,j] of ij is just
+
+191
+00:17:14,650 --> 00:17:18,570
+c of i minus one, j minus one plus one.
+
+192
+00:17:18,580 --> 00:17:20,070
+And if they don't match,
+
+193
+00:17:20,100 --> 00:17:23,210
+then it's either going to be the longer
+
+194
+00:17:23,210 --> 00:17:33,580
+of c[i,j-1] and c[i-1,j] , OK?
+
+195
+00:17:33,620 --> 00:17:35,420
+So that's what we're going to prove.
+
+196
+00:17:35,450 --> 00:17:39,480
+And that's going to give us a way of relating the calculation
+
+197
+00:17:39,560 --> 00:17:49,320
+of a given cji to values that are strictly smaller,
+
+198
+00:17:49,360 --> 00:17:55,560
+OK, that is at least one of the arguments is smaller of the two
+
+199
+00:17:55,560 --> 00:17:56,500
+arguments. OK, and that's going to give us
+
+200
+00:17:56,530 --> 00:18:06,500
+a way of being able, then, to understand how to calculate c[i,j].
+
+201
+00:18:06,500 --> 00:18:12,070
+So, let's prove this theorem.
+
+202
+00:18:12,070 --> 00:18:19,570
+So, we'll start with a case x equals y of j.
+
+203
+00:18:19,600 --> 00:18:23,280
+And so, let's draw a picture here.
+
+204
+00:18:23,320 --> 00:18:48,530
+So, we have x here.
+
+205
+00:18:48,560 --> 00:19:14,550
+And here is y.
+
+206
+00:19:14,580 --> 00:19:17,780
+OK, so here's my sequence, x, which I'm sort of drawing as
+
+207
+00:19:17,810 --> 00:19:22,310
+this elongated box, sequence y
+
+208
+00:19:22,310 --> 00:19:39,280
+and I'm saying that x[i] and y[j], those are equal.
+
+209
+00:19:39,280 --> 00:19:46,230
+OK, so let's see what that means.
+
+210
+00:19:46,260 --> 00:19:57,840
+OK, so let's let z of one to k be, in fact, the longest common
+
+211
+00:19:57,880 --> 00:20:10,710
+subsequence of x of one to i, y of one to j,
+
+212
+00:20:10,740 --> 00:20:21,170
+where c of ij is equal to k. OK, so the longest common
+
+213
+00:20:21,200 --> 00:20:29,050
+subsequence of x and y of one to i and y of one to j has some
+
+214
+00:20:29,090 --> 00:20:31,670
+value. Let's call it k.
+
+215
+00:20:31,710 --> 00:20:36,070
+And so, let's say that we have some sequence which realizes
+
+216
+00:20:36,100 --> 00:20:44,160
+that. OK, we'll call it z.
+
+217
+00:20:44,190 --> 00:21:02,470
+OK, so then, can somebody tell me what z of k is?
+
+218
+00:21:02,500 --> 00:21:12,380
+What is z of k here?
+
+219
+00:21:12,420 --> 00:21:16,120
+Yeah, it's actually equal to x of i, which is also equal to
+
+220
+00:21:16,150 --> 00:21:19,620
+y of j? Why is that?
+
+221
+00:21:19,650 --> 00:21:39,430
+Why couldn't it be some other value?
+
+222
+00:21:39,460 --> 00:21:42,600
+Yeah, so you got the right idea.
+
+223
+00:21:42,630 --> 00:21:47,440
+So, the idea is, suppose that the sequence
+
+224
+00:21:47,480 --> 00:21:51,860
+didn't include this element here at the last element,
+
+225
+00:21:51,870 --> 00:21:55,880
+the longest common subsequence. OK, so then it includes a
+
+226
+00:21:55,890 --> 00:21:58,050
+bunch of values in here, and a bunch of values in here,
+
+227
+00:21:58,080 --> 00:22:02,720
+same values. It doesn't include this or this.
+
+228
+00:22:02,720 --> 00:22:07,990
+Well, then I could just tack on this extra character
+
+229
+00:22:07,990 --> 00:22:11,610
+and make it be longer, make it k plus one
+
+230
+00:22:11,650 --> 00:22:15,540
+because these two match.
+
+231
+00:22:15,540 --> 00:22:32,630
+OK, so if the sequence ended bofore
+
+232
+00:22:32,660 --> 00:22:39,630
+-- just extend it by tacking on x[i].
+
+233
+00:22:39,660 --> 00:22:47,930
+OK, it would be fairly simple to just tack on x[i].
+
+234
+00:22:47,960 --> 00:22:53,020
+OK, so if that's the case,
+
+235
+00:22:53,020 --> 00:23:02,020
+then if I look at z going one up to k minus one,
+
+236
+00:23:02,020 --> 00:23:05,160
+that's certainly a common
+
+237
+00:23:05,180 --> 00:23:13,050
+sequence of x of 1 up to, excuse me, of up to i minus
+
+238
+00:23:13,090 --> 00:23:25,270
+one. And, y of one up to j minus one.
+
+239
+00:23:25,310 --> 00:23:28,940
+OK, because this is a longest common sequence.
+
+240
+00:23:28,940 --> 00:23:31,350
+z is a longest common sequence is,
+
+241
+00:23:31,350 --> 00:23:35,390
+from x of one to i,y of one to j.
+
+242
+00:23:35,390 --> 00:23:37,580
+And, we know what the last character is.
+
+243
+00:23:37,580 --> 00:23:41,030
+It's just x[i],or equivalently, y[j].
+
+244
+00:23:41,030 --> 00:23:44,530
+So therefore, everything except the last
+
+245
+00:23:44,530 --> 00:23:49,280
+character must at least be a common sequence of
+
+246
+00:23:49,280 --> 00:23:56,000
+x of one to i minus one, y of one to j minus one.
+
+247
+00:23:56,000 --> 00:23:59,410
+Everybody with me? It must be a common sequence.
+
+248
+00:23:59,410 --> 00:24:09,550
+OK, now, what you also suspect?
+
+249
+00:24:09,550 --> 00:24:15,210
+What do you also suspect about z of one to k-1?
+
+250
+00:24:15,210 --> 00:24:19,940
+It's a common sequence of these two. Yeah?
+
+251
+00:24:19,940 --> 00:24:24,490
+Yeah, it's a longest common sequence.
+
+252
+00:24:24,490 --> 00:24:33,950
+So that's what we claim, z of one up to k minus one is
+
+253
+00:24:33,950 --> 00:24:42,250
+in fact a longest common subsequence of x of 1 to i-1
+
+254
+00:24:42,250 --> 00:24:54,450
+and y of one to j minus one, OK?
+
+255
+00:24:54,450 --> 00:24:57,360
+So, let's prove that claim.
+
+256
+00:24:57,360 --> 00:25:02,260
+So, we'll just have a little diversion to prove the claim.
+
+257
+00:25:02,260 --> 00:25:17,010
+OK, so suppose that w is a longer common sequence,
+
+258
+00:25:17,160 --> 00:25:29,560
+that is, that the length, the w, is bigger than k minus one.
+
+259
+00:25:29,590 --> 00:25:33,830
+OK, so suppose we have a longer common sequence than
+
+260
+00:25:33,860 --> 00:25:35,930
+z of one to k minus one.
+
+261
+00:25:35,930 --> 00:25:37,000
+So, it's got to have length
+
+262
+00:25:37,020 --> 00:25:40,140
+that's bigger than k minus one if it's longer.
+
+263
+00:25:40,170 --> 00:25:44,240
+OK, and now what we do is we use a classic argument you're
+
+264
+00:25:44,270 --> 00:25:47,920
+going to see multiple times, not just this week,
+
+265
+00:25:47,950 --> 00:25:49,570
+which it will be important for this week,
+
+266
+00:25:49,600 --> 00:25:53,000
+but through several lectures
+
+267
+00:25:53,030 --> 00:26:00,040
+Hence, it's called a cut and paste argument.
+
+268
+00:26:00,070 --> 00:26:05,070
+So, the idea is let's take a look at w,
+
+269
+00:26:05,100 --> 00:26:12,440
+concatenate it with that last character, z of k.
+
+270
+00:26:12,440 --> 00:26:25,410
+So, this is string, concatenation.
+
+271
+00:26:25,410 --> 00:26:27,700
+OK, so that's just my terminology for string
+
+272
+00:26:29,170 --> 00:26:31,840
+OK, so I take whatever I claimed was
+
+273
+00:26:31,870 --> 00:26:34,900
+a longer common subsequence,
+
+274
+00:26:34,930 --> 00:26:42,480
+and I concatenate z of k to it.
+
+275
+00:26:42,510 --> 00:26:50,000
+OK, so that is certainly a common sequence of
+
+276
+00:26:50,020 --> 00:27:09,690
+x of one to i , and y of one to j.
+
+277
+00:27:09,690 --> 00:27:20,960
+And it has length bigger than k because it's basically,
+
+278
+00:27:20,960 --> 00:27:23,870
+what is its length?
+
+279
+00:27:23,870 --> 00:27:27,390
+The length of w is bigger than k minus one.
+
+280
+00:27:27,420 --> 00:27:29,240
+I add one character.
+
+281
+00:27:29,270 --> 00:27:34,980
+So, this combination here, now, has length bigger that k.
+
+282
+00:27:35,010 --> 00:27:47,980
+OK, and that's a contradiction, thereby proving the claim.
+
+283
+00:27:48,010 --> 00:27:51,560
+So, I'm simply saying, I claim this.
+
+284
+00:27:51,590 --> 00:27:54,790
+Suppose you have a longer one. Well, let me show,
+
+285
+00:27:54,820 --> 00:28:01,120
+if I had a longer common sequence for the prefixes
+
+286
+00:28:01,150 --> 00:28:03,900
+where we dropped the character from
+
+287
+00:28:03,930 --> 00:28:06,550
+both strings if it was longer there,
+
+288
+00:28:06,580 --> 00:28:09,820
+but we would have made the whole thing longer.
+
+289
+00:28:09,840 --> 00:28:12,080
+So that can't be.
+
+290
+00:28:12,080 --> 00:28:20,490
+So, therefore, this must be a longest common subsequence,OK?
+
+291
+00:28:20,520 --> 00:28:28,520
+Questions? Because you are going to need
+
+292
+00:28:28,550 --> 00:28:34,600
+to be able to do this kind of proof ad nauseam,almost.
+
+293
+00:28:34,630 --> 00:28:43,080
+So, if there any questions,let them at me, people.
+
+294
+00:28:43,110 --> 00:28:49,420
+OK, so now what we have established is that z one
+
+295
+00:28:49,440 --> 00:28:56,560
+through k is a longest common subsequence of the two prefixes
+
+296
+00:28:56,590 --> 00:28:59,420
+when we drop the last character.
+
+297
+00:28:59,450 --> 00:29:04,560
+So, thus, we have c[i,j] of i minus one
+
+298
+00:29:04,590 --> 00:29:14,130
+one, j minus one is equal to what?
+
+299
+00:29:14,160 --> 00:29:28,230
+What's c[i,j] of i minus one, j minus one?
+
+300
+00:29:28,260 --> 00:29:29,800
+k minus one. thank you.
+
+301
+00:29:29,830 --> 00:29:31,900
+Let's move on with the class,
+
+302
+00:29:31,930 --> 00:29:43,800
+OK, which implies that c[i,j] of ij is just equal to
+
+303
+00:29:43,990 --> 00:29:55,750
+c of i minus one, j minus one plus one.
+
+304
+00:29:55,780 --> 00:29:58,180
+So, it's fairly straightforward if you think about
+
+305
+00:29:58,210 --> 00:29:59,500
+what's going on there.
+
+306
+00:29:59,530 --> 00:30:02,660
+It's not always as straightforward in some problems
+
+307
+00:30:02,690 --> 00:30:05,110
+as it is for longest common subsequence.
+
+308
+00:30:05,140 --> 00:30:11,970
+The idea is, so I'm not going to go through the other cases.
+
+309
+00:30:12,000 --> 00:30:20,490
+They are similar.
+
+310
+00:30:20,520 --> 00:30:22,910
+But, in fact, we've hit on one of
+
+311
+00:30:22,940 --> 00:30:26,750
+the two hallmarks of dynamic programming.
+
+312
+00:30:26,780 --> 00:30:27,580
+So, by hallmarks,
+
+313
+00:30:27,610 --> 00:30:32,610
+I mean when you see this kind of structure in a problem,
+
+314
+00:30:32,640 --> 00:30:34,970
+there's a good chance that dynamic programming
+
+315
+00:30:35,000 --> 00:30:38,960
+is going to work as a strategy.
+
+316
+00:30:38,990 --> 00:30:55,640
+The dynamic programming hallmark is the following.
+
+317
+00:30:55,670 --> 00:30:59,600
+This is number one.
+
+318
+00:30:59,630 --> 00:31:13,050
+And that is the property of optimal substructure.
+
+319
+00:31:13,080 --> 00:31:23,840
+OK, what that says is an optimal solution to a problem,
+
+320
+00:31:23,870 --> 00:31:25,880
+and by this, we really mean problem instance.
+
+321
+00:31:25,910 --> 00:31:29,610
+But it's tedious to keep saying problem instance.
+
+322
+00:31:29,640 --> 00:31:32,160
+A problem is generally, in computer science,
+
+323
+00:31:32,200 --> 00:31:38,800
+viewed as having an infinite number of instances typically,
+
+324
+00:31:38,830 --> 00:31:42,890
+OK, so sorting is a problem.
+
+325
+00:31:42,920 --> 00:31:46,130
+A sorting instance is a particular input.
+
+326
+00:31:46,160 --> 00:31:48,540
+OK, so we're really talking about problem instances,
+
+327
+00:31:48,570 --> 00:31:52,470
+but I'm just going to say problem, OK?
+
+328
+00:31:52,500 --> 00:31:56,700
+So, when you have an optimal solution to a problem,
+
+329
+00:31:56,730 --> 00:32:11,120
+contains optimal solutions to subproblems.
+
+330
+00:32:11,150 --> 00:32:15,170
+OK, and that's worth drawing a box around
+
+331
+00:32:15,200 --> 00:32:19,250
+because it's so important.
+
+332
+00:32:19,280 --> 00:32:21,870
+OK, so here, for example,
+
+333
+00:32:21,900 --> 00:32:30,970
+if z is a longest common subsequence of x and y,
+
+334
+00:32:31,000 --> 00:32:48,860
+OK, then any prefix of z is a longest common subsequence
+
+335
+00:32:48,890 --> 00:33:07,720
+of a prefix of x, and a prefix of y, OK?
+
+336
+00:33:07,750 --> 00:33:09,130
+So, this is basically what it says.
+
+337
+00:33:09,160 --> 00:33:12,250
+I look at the problem, and I can see that there is
+
+338
+00:33:12,280 --> 00:33:17,780
+optimal substructure going on.
+
+339
+00:33:17,810 --> 00:33:22,450
+OK, in this case, and the idea is that almost always,
+
+340
+00:33:22,490 --> 00:33:24,190
+it means that there's a cut and
+
+341
+00:33:24,220 --> 00:33:27,750
+paste argument you could do to demonstrate that,
+
+342
+00:33:27,780 --> 00:33:33,150
+OK, that if the substructure were not optimal,
+
+343
+00:33:33,180 --> 00:33:39,260
+then you'd be able to find a better solution to the overall
+
+344
+00:33:39,290 --> 00:33:49,800
+problem using cut and paste.
+
+345
+00:33:49,830 --> 00:33:56,950
+OK, so this theorem, now, gives us a strategy
+
+346
+00:33:56,980 --> 00:34:21,900
+for being able to compute longest common subsequence.
+
+347
+00:34:21,930 --> 00:34:37,000
+Here's the code; oh wait.
+
+348
+00:34:37,030 --> 00:34:40,150
+OK, so going to ignore base cases in this,
+
+349
+00:35:42,400 --> 00:35:53,200
+And we will return the value of the longest common subsequence.
+
+350
+00:35:53,230 --> 00:35:59,090
+It's basically just implementing this theorem.
+
+351
+00:35:59,120 --> 00:36:04,380
+OK, so it's either the longest common subsequence
+
+352
+00:36:04,410 --> 00:36:07,160
+if they match.
+
+353
+00:36:07,190 --> 00:36:09,700
+It's the longest common subsequence of one of the
+
+354
+00:36:09,730 --> 00:36:13,840
+prefixes where you drop that character  for both strengths
+
+355
+00:36:13,870 --> 00:36:17,630
+and add one because that's the matching one.
+
+356
+00:36:17,660 --> 00:36:20,960
+Or, you drop a character from x,
+
+357
+00:36:20,990 --> 00:36:23,960
+and it's the longest common subsequence of that.
+
+358
+00:36:23,990 --> 00:36:26,410
+Or you drop a character from y,
+
+359
+00:36:26,440 --> 00:36:29,000
+whichever one of those is longer.
+
+360
+00:36:29,030 --> 00:36:36,850
+That ends up being the longest common subsequence.
+
+361
+00:36:36,880 --> 00:36:51,060
+OK, so what's the worst case for this program?
+
+362
+00:36:51,090 --> 00:36:52,970
+What's going to happen in the worst case?
+
+363
+00:36:53,000 --> 00:37:06,480
+Which of these two clauses is going to cause us more headache?
+
+364
+00:37:06,510 --> 00:37:11,560
+The second clause: why the second clause?
+
+365
+00:37:11,590 --> 00:37:14,640
+Yeah, you're doing two LCS sub-calculations here.
+
+366
+00:37:14,670 --> 00:37:15,310
+Here, you're only doing one.
+
+367
+00:37:15,340 --> 00:37:19,760
+Not only that, but you get to decrement both indices,
+
+368
+00:37:19,780 --> 00:37:23,530
+whereas here you've basically got to,
+
+369
+00:37:23,560 --> 00:37:25,410
+you only get to decrement one index,
+
+370
+00:37:25,440 --> 00:37:27,150
+and you've got to calculate two of them.
+
+371
+00:37:27,180 --> 00:37:29,440
+So that's going to generate the tree.
+
+372
+00:37:29,470 --> 00:37:32,280
+So, and the worst case,
+
+373
+00:37:32,310 --> 00:37:42,440
+x of i is not equal to x of j for all i and j.
+
+374
+00:37:42,470 --> 00:37:48,500
+So, let's draw a recursion tree for this program to sort of
+
+375
+00:37:48,530 --> 00:38:00,310
+get an understanding as to what is going on to help us.
+
+376
+00:38:00,340 --> 00:38:03,700
+And, I'm going to do it with m equals seven,
+
+377
+00:38:03,730 --> 00:38:07,850
+and n equals six.
+
+378
+00:38:07,880 --> 00:38:10,450
+OK, so we start up the top with
+
+379
+00:38:10,480 --> 00:38:14,430
+my two indices being seven and six.
+
+380
+00:38:14,460 --> 00:38:18,180
+And then, in the worst case, we had to execute these.
+
+381
+00:38:18,210 --> 00:38:23,470
+So, this is going to end up being six, six, and seven,
+
+382
+00:38:23,500 --> 00:38:31,290
+five for indices after the first call.
+
+383
+00:38:31,350 --> 00:38:33,510
+And then, this guy is going to split.
+
+384
+00:38:33,540 --> 00:38:37,650
+And he's going to produce five, six here,
+
+385
+00:38:37,680 --> 00:38:40,710
+decrement the first index, i.
+
+386
+00:38:40,740 --> 00:38:42,700
+And then, if I keep going down here,
+
+387
+00:38:42,730 --> 00:38:47,570
+we're going to get four, six and five, five.
+
+388
+00:38:47,600 --> 00:38:50,790
+And these guys keep extending here.
+
+389
+00:38:50,810 --> 00:39:01,260
+I get six five, five five, six four, OK?
+
+390
+00:39:01,290 --> 00:39:07,960
+Over here, I'm going to get decrement the first index,
+
+391
+00:39:07,990 --> 00:39:15,230
+six five, and I get five five, six four,
+
+392
+00:39:15,260 --> 00:39:18,000
+and these guys keep going down. And over here,
+
+393
+00:39:18,030 --> 00:39:24,610
+I get seven four. And then we get six four,
+
+394
+00:39:24,640 --> 00:39:28,650
+seven three, and those keep going down.
+
+395
+00:39:28,670 --> 00:39:31,950
+So, we keep just building this tree out.
+
+396
+00:39:31,980 --> 00:39:39,930
+OK, so what's the height of this tree?
+
+397
+00:39:39,960 --> 00:39:42,800
+Not of this one for the particular value of m and n,
+
+398
+00:39:42,820 --> 00:39:46,630
+but in terms of m and n.
+
+399
+00:39:46,660 --> 00:39:49,790
+What's the height of this tree?
+
+400
+00:39:49,820 --> 00:39:54,620
+It's the max of m and n. You've got the right,
+
+401
+00:39:54,620 --> 00:40:06,920
+it's theta of the max. It's not the max.
+
+402
+00:40:06,950 --> 00:40:08,630
+Max would be, in this case,
+
+403
+00:40:08,660 --> 00:40:16,370
+you're saying it has height seven.
+
+404
+00:40:16,400 --> 00:40:18,520
+But, I think you can sort of see, for example,
+
+405
+00:40:18,550 --> 00:40:23,560
+along a path like this that, in fact, I've only,
+
+406
+00:40:23,590 --> 00:40:28,160
+after going three levels, reduced m plus n,
+
+407
+00:40:28,180 --> 00:40:30,580
+good, very good, m plus n.
+
+408
+00:40:30,600 --> 00:40:34,330
+So, height here is m plus n.
+
+409
+00:40:34,360 --> 00:40:39,080
+OK, and its binary.
+
+410
+00:40:39,120 --> 00:40:48,330
+So, the height: that implies the work is
+
+411
+00:40:48,360 --> 00:40:55,170
+exponential in m and n. All that work,
+
+412
+00:40:55,200 --> 00:40:59,380
+and are we any better off than the brute force algorithm?
+
+413
+00:40:59,400 --> 00:41:00,540
+Not really.
+
+414
+00:41:00,570 --> 00:41:05,960
+And, our technical term for this is slow.
+
+415
+00:41:05,990 --> 00:41:09,530
+OK, and we like speed.
+
+416
+00:41:09,560 --> 00:41:13,780
+OK, we like fast.
+
+417
+00:41:13,780 --> 00:41:16,780
+OK, but I'm sure that some of you have observed
+
+418
+00:41:16,810 --> 00:41:21,710
+something interesting about this tree.
+
+419
+00:41:21,760 --> 00:41:28,010
+Yeah, there's a lot of repeated work here.
+
+420
+00:41:28,040 --> 00:41:29,760
+Right, there's a lot of repeated work.
+
+421
+00:41:29,790 --> 00:41:33,010
+In particular, this whole subtree,
+
+422
+00:41:33,040 --> 00:41:38,760
+and this whole subtree, OK, they are the same.
+
+423
+00:41:38,790 --> 00:41:40,620
+That's the same subtree,
+
+424
+00:41:40,620 --> 00:41:49,600
+the same subproblem that you are solving.
+
+425
+00:41:49,620 --> 00:41:51,600
+OK, you can even see over here,
+
+426
+00:41:51,630 --> 00:41:55,140
+there is even similarity between this whole subtree
+
+427
+00:41:55,160 --> 00:41:57,500
+and this whole subtree.
+
+428
+00:41:57,530 --> 00:42:04,860
+OK, so there's lots of repeated work.
+
+429
+00:42:04,890 --> 00:42:09,050
+OK, and one thing is, if you want to do things fast,
+
+430
+00:42:09,080 --> 00:42:13,410
+don't keep doing the same thing.
+
+431
+00:42:13,440 --> 00:42:16,820
+OK, don't keep doing the same thing.
+
+432
+00:42:16,850 --> 00:42:18,940
+When you find you are repeating something,
+
+433
+00:42:18,970 --> 00:42:23,500
+figure out a way of not doing it.
+
+434
+00:42:23,530 --> 00:42:47,940
+So, that brings up our second hallmark for dynamic programming
+
+435
+00:42:47,970 --> 00:43:03,260
+And that's a property called overlapping subproblems,
+
+436
+00:43:03,300 --> 00:43:16,720
+OK? OK, recursive solution contains
+
+437
+00:43:16,740 --> 00:43:32,410
+many, excuse me, contains a small number of
+
+438
+00:43:32,440 --> 00:43:48,610
+distinct subproblems repeated many times.
+
+439
+00:43:48,640 --> 00:43:54,650
+And once again, this is important enough to put a box around
+
+440
+00:43:54,680 --> 00:43:56,890
+I don't put boxes around too many things.
+
+441
+00:43:56,920 --> 00:43:59,100
+Maybe I should put more boxes around things.
+
+442
+00:43:59,130 --> 00:44:01,780
+This is definitely one to put a box around,
+
+443
+00:44:01,810 --> 00:44:08,180
+OK? So, for example, so here we have a recursive solution.
+
+444
+00:44:08,210 --> 00:44:12,150
+This tree is exponential in size.
+
+445
+00:44:12,170 --> 00:44:18,000
+It's two to the m plus n in height, in size,
+
+446
+00:44:18,030 --> 00:44:21,830
+in the total number of problems
+
+447
+00:44:21,850 --> 00:44:23,540
+I actually implemented like that.
+
+448
+00:44:23,570 --> 00:44:32,280
+But how many distinct subproblems are there? m times n, OK?
+
+449
+00:44:32,310 --> 00:44:44,580
+So, the longest common subsequence, the subproblem space
+
+450
+00:44:44,610 --> 00:44:58,120
+contains m times n, distinct subproblems.
+
+451
+00:44:58,150 --> 00:45:04,750
+OK, and then this is a small number compared with
+
+452
+00:45:04,790 --> 00:45:08,940
+two to the m plus n, or two to the n,
+
+453
+00:45:08,970 --> 00:45:10,360
+or two to the m, or whatever.
+
+454
+00:45:10,390 --> 00:45:14,520
+OK, this is small,
+
+455
+00:45:14,550 --> 00:45:19,000
+OK, because for each subproblem,
+
+456
+00:45:19,030 --> 00:45:22,160
+it's characterized by an i and a j.
+
+457
+00:45:22,190 --> 00:45:24,880
+An i goes from one to m,
+
+458
+00:45:24,910 --> 00:45:29,630
+and j goes from one to n, OK?
+
+459
+00:45:29,660 --> 00:45:32,190
+There aren't that many different subproblems.
+
+460
+00:45:32,210 --> 00:45:34,690
+It's just the product of the two.
+
+461
+00:45:34,720 --> 00:45:37,620
+So, here's an improved algorithm,
+
+462
+00:45:37,650 --> 00:45:41,080
+which is often a good way to solve it.
+
+463
+00:45:41,110 --> 00:45:54,360
+It's an algorithm called a memo-ization algorithm.
+
+464
+00:45:54,390 --> 00:46:04,940
+And, this is memo-ization, not memorization because
+
+465
+00:46:04,970 --> 00:46:08,270
+what you're going to do is make a little memo
+
+466
+00:46:08,300 --> 00:46:11,090
+whenever you solve a subproblem.
+
+467
+00:46:11,120 --> 00:46:14,180
+Make a little memo that says I solved this already.
+
+468
+00:46:14,210 --> 00:46:17,360
+And if ever you are asked for it rather than recalculating it
+
+469
+00:46:17,400 --> 00:46:18,850
+say, oh, I see that.
+
+470
+00:46:18,880 --> 00:46:22,510
+I did that before. Here's the answer,
+
+471
+00:46:22,540 --> 00:46:25,850
+OK? So, here's the code.
+
+472
+00:46:25,880 --> 00:46:36,380
+It's very similar to that code.
+
+473
+00:46:36,410 --> 00:46:39,440
+So, it basically keeps a table around of c[i,j].
+
+474
+00:46:39,460 --> 00:46:44,650
+It says, what we do is we check.
+
+475
+00:46:44,650 --> 00:46:48,590
+If the entry for c[i,j] is nil,
+
+476
+00:46:48,610 --> 00:46:52,400
+we haven't computed it, then we compute it.
+
+477
+00:46:52,420 --> 00:46:53,530
+And, how do we compute it?
+
+478
+00:46:53,560 --> 00:47:32,820
+Just the same way we did before.
+
+479
+00:47:32,850 --> 00:47:36,390
+OK, so this whole part here, OK,
+
+480
+00:47:36,420 --> 00:47:40,480
+is exactly what we have had before.
+
+481
+00:47:40,510 --> 00:47:46,240
+It's the same as before.
+
+482
+00:47:46,260 --> 00:47:58,030
+And then, we just return c[i,j].
+
+483
+00:47:58,050 --> 00:48:02,050
+If we don't bother to keep recalculating,
+
+484
+00:48:02,070 --> 00:48:05,040
+OK, so if it's nil, we calculate it.
+
+485
+00:48:05,070 --> 00:48:09,600
+Otherwise, we just return it.
+
+486
+00:48:09,620 --> 00:48:11,820
+It's not calculated, calculate and return it.
+
+487
+00:48:11,990 --> 00:48:16,790
+Otherwise, just return it
+
+488
+00:48:16,820 --> 00:48:20,510
+OK, pretty straightforward code.
+
+489
+00:48:20,540 --> 00:48:31,830
+Ok.
+
+490
+00:48:31,860 --> 00:48:36,110
+OK, now the tricky thing is how much time
+
+491
+00:48:36,110 --> 00:48:56,260
+does it take to execute this?
+
+492
+00:48:56,290 --> 00:49:02,820
+This takes a little bit of thinking.
+
+493
+00:49:02,850 --> 00:49:11,840
+Yeah? Yeah, it takes order MN.
+
+494
+00:49:11,870 --> 00:49:23,340
+OK, why is that?
+
+495
+00:49:23,340 --> 00:49:25,360
+Yeah, but I have to look up c[i,j].
+
+496
+00:49:25,390 --> 00:49:27,840
+I might call c[i,j] a bunch of times.
+
+497
+00:49:27,870 --> 00:49:28,810
+When I'm doing this,
+
+498
+00:49:28,840 --> 00:49:37,170
+I'm still calling it recursively.
+
+499
+00:49:37,190 --> 00:49:43,250
+Yeah, so you have to, so each recursive call
+
+500
+00:49:43,280 --> 00:49:45,920
+is going to look at, and the worst-case, say,
+
+501
+00:49:45,940 --> 00:49:54,160
+is going to look at the max of these two things.
+
+502
+00:49:54,190 --> 00:49:55,120
+Well, this is going to involve
+
+503
+00:49:55,150 --> 00:49:58,290
+a recursive call, and a lookup.
+
+504
+00:49:58,320 --> 00:50:08,050
+So, this might take a fair amount of effort to calculate.
+
+505
+00:50:08,080 --> 00:50:10,350
+I mean, you're right, and your intuition is right.
+
+506
+00:50:10,380 --> 00:50:12,620
+Let's see if we can get a more precise argument,
+
+507
+00:50:12,650 --> 00:50:18,610
+why this is taking order m times n.
+
+508
+00:50:18,630 --> 00:50:19,920
+What's going on here?
+
+509
+00:50:19,920 --> 00:50:21,840
+Because not every time I call
+
+510
+00:50:21,870 --> 00:50:23,160
+this is it going to just take me
+
+511
+00:50:23,190 --> 00:50:24,890
+a constant amount of work to do this.
+
+512
+00:50:24,920 --> 00:50:26,350
+Sometimes it's going to take me a lot of work.
+
+513
+00:50:26,380 --> 00:50:35,360
+Sometimes I get lucky, and I return it.
+
+514
+00:50:35,390 --> 00:50:37,730
+So, your intuition is dead on.
+
+515
+00:50:37,750 --> 00:50:39,700
+It's dead on. We just need a little bit more
+
+516
+00:50:39,770 --> 00:50:47,100
+articulate explanation, so that everybody is on board.
+
+517
+00:50:47,130 --> 00:51:01,460
+Try again? Good, at most three times, yeah.
+
+518
+00:51:01,460 --> 00:51:04,010
+OK, so that's one way to look at it. Yeah.
+
+519
+00:51:04,050 --> 00:51:05,630
+There is another way to look at it that's kind of
+
+520
+00:51:05,660 --> 00:51:08,660
+what you are expressing there is an amortized,
+
+521
+00:51:08,680 --> 00:51:14,070
+a bookkeeping, way of looking at this.
+
+522
+00:51:14,100 --> 00:51:15,920
+What's the amortized cost?
+
+523
+00:51:15,950 --> 00:51:18,350
+You could say what the amortized cost of calculating
+
+524
+00:51:18,380 --> 00:51:21,660
+one of these, where basically whenever I call it
+
+525
+00:51:21,700 --> 00:51:25,150
+I'm going to charge a constant amount for looking up.
+
+526
+00:51:25,170 --> 00:51:28,020
+And so, I could get to look up whatever is in here
+
+527
+00:51:28,050 --> 00:51:29,770
+to call the things.
+
+528
+00:51:29,800 --> 00:51:33,950
+But if it, in fact, so in some sense, this charge here,
+
+529
+00:51:33,980 --> 00:51:35,610
+of calling it and returning it, etc
+
+530
+00:51:35,640 --> 00:51:41,070
+I charge that to my caller.
+
+531
+00:51:41,100 --> 00:51:46,550
+OK, so I charged these lines and this line to the caller.
+
+532
+00:51:46,580 --> 00:51:54,310
+And I charge the rest of these lines to the c[i,j] element.
+
+533
+00:51:54,340 --> 00:51:58,350
+And then, the point is that every caller basically only
+
+534
+00:51:58,380 --> 00:52:03,610
+ends up being charged for a constant amount of stuff.
+
+535
+00:52:03,640 --> 00:52:07,220
+OK, to calculate one c[i,j],it's only an amortized
+
+536
+00:52:07,250 --> 00:52:11,100
+constant amount of stuff that I'm charging to that
+
+537
+00:52:11,130 --> 00:52:15,680
+calculation of i and j, that calculation of i and j.
+
+538
+00:52:15,710 --> 00:52:18,230
+OK, so you can view it in terms of
+
+539
+00:52:18,230 --> 00:52:22,340
+amortized analysis doing a bookkeeping argument that just says,
+
+540
+00:52:22,370 --> 00:52:27,570
+let me charge enough to calculate my own,
+
+541
+00:52:27,600 --> 00:52:30,340
+do all my own local things plus enough to
+
+542
+00:52:30,360 --> 00:52:35,590
+look up the value in the next level and get it returned.
+
+543
+00:52:35,620 --> 00:52:37,650
+OK, and then if it has to go off and calculate,
+
+544
+00:52:37,680 --> 00:52:39,350
+well, that's OK because that's all been
+
+545
+00:52:39,380 --> 00:52:43,000
+charged to a different ij at that point.
+
+546
+00:52:43,030 --> 00:52:46,940
+So, every cell only costs me a constant amount of time
+
+547
+00:52:46,970 --> 00:52:57,180
+that order MN cells total of order constant work per entry.
+
+548
+00:52:57,210 --> 00:52:58,960
+OK, and you can sort of use
+
+549
+00:52:58,980 --> 00:53:01,270
+an amortized analysis to argue that.
+
+550
+00:53:01,300 --> 00:53:03,830
+How much space does it take?
+
+551
+00:53:03,860 --> 00:53:05,560
+We haven't usually looked at space,
+
+552
+00:53:05,590 --> 00:53:08,030
+but here we are going to start looking at space.
+
+553
+00:53:08,070 --> 00:53:09,900
+That turns out, for some of these algorithms,
+
+554
+00:53:09,900 --> 00:53:11,580
+to be really important.
+
+555
+00:53:11,600 --> 00:53:20,570
+How much space do I need, storage space?
+
+556
+00:53:20,600 --> 00:53:26,950
+Yeah, also m times n, OK, to store the c[i,j] table.
+
+557
+00:53:26,980 --> 00:53:29,130
+OK, the rest, storing x and y,
+
+558
+00:53:29,150 --> 00:53:31,680
+OK, that's just m plus n.
+
+559
+00:53:31,710 --> 00:53:33,670
+So, that's negligible,
+
+560
+00:53:33,700 --> 00:53:37,440
+but mostly I need the space m times n.
+
+561
+00:53:37,470 --> 00:53:40,900
+So, this memo-ization type algorithm is a really good
+
+562
+00:53:40,920 --> 00:53:45,000
+strategy in programming for many things where,
+
+563
+00:53:45,030 --> 00:53:47,260
+when you have the same parameters,
+
+564
+00:53:47,280 --> 00:53:48,830
+you're going to get the same results.
+
+565
+00:53:48,860 --> 00:53:51,210
+It doesn't work in programs where you have
+
+566
+00:53:51,240 --> 00:53:53,640
+a side effect, necessarily, that is,
+
+567
+00:53:53,670 --> 00:53:57,790
+when the calculation for a given set of parameters
+
+568
+00:53:57,820 --> 00:53:59,760
+might be different on each call.
+
+569
+00:53:59,790 --> 00:54:02,720
+But for something which isessentially like a
+
+570
+00:54:02,750 --> 00:54:06,040
+functional programming type of environment,
+
+571
+00:54:06,070 --> 00:54:09,720
+then if you've calculated it once, you can look it up.
+
+572
+00:54:09,750 --> 00:54:14,150
+And, so this is very helpful.
+
+573
+00:54:14,180 --> 00:54:16,830
+But, it takes a fair amount of space,
+
+574
+00:54:16,860 --> 00:54:20,290
+and it also doesn't proceed in a very orderly way.
+
+575
+00:54:20,320 --> 00:54:21,970
+So, there is another strategy for doing
+
+576
+00:54:22,000 --> 00:54:27,110
+exactly the same calculation in a bottom-up way.
+
+577
+00:54:27,140 --> 00:54:35,930
+And that's what we call dynamic programming.
+
+578
+00:54:35,960 --> 00:54:50,060
+OK, the idea is to compute the table bottom-up.
+
+579
+00:54:50,090 --> 00:54:53,100
+I think I'm going to get rid of,
+
+580
+00:54:53,130 --> 00:55:00,680
+I think what we'll do is we'll just use,
+
+581
+00:55:00,710 --> 00:55:32,310
+actually I think what I'm going to do is use this board.
+
+582
+00:55:32,340 --> 00:55:33,220
+OK, so here's the idea.
+
+583
+00:55:33,250 --> 00:55:36,810
+What we're going to do is look at the c[i,j] table and
+
+584
+00:55:36,840 --> 00:55:38,760
+realize that there's actually an orderly
+
+585
+00:55:38,780 --> 00:55:40,960
+way of filling in the table.
+
+586
+00:55:40,990 --> 00:55:45,000
+This is sort of a top-down with memo-ization.
+
+587
+00:55:45,030 --> 00:55:46,850
+OK, but there's actually a way
+
+588
+00:55:46,880 --> 00:55:49,730
+we can do it bottom up.
+
+589
+00:55:49,760 --> 00:55:53,830
+So, here's the idea.
+
+590
+00:55:53,870 --> 00:56:02,600
+So, let's make our table.
+
+591
+00:56:02,630 --> 00:56:05,670
+OK, so there's x.
+
+592
+00:56:05,700 --> 00:56:20,900
+And then, there's y.
+
+593
+00:56:20,920 --> 00:56:27,410
+And, I'm going to initialize the empty string.
+
+594
+00:56:27,440 --> 00:56:36,580
+I didn't cover the base cases for c[i,j],
+
+595
+00:56:36,610 --> 00:56:41,350
+but c of zero meaning a prefix with no elements in it.
+
+596
+00:56:41,380 --> 00:56:45,610
+The prefix of that without anything else, the length is zero.
+
+597
+00:56:45,640 --> 00:56:52,500
+OK, so that's basically how I'm going to bound the borders here.
+
+598
+00:56:52,530 --> 00:56:55,030
+And now, what I can do is just use my formula,
+
+599
+00:56:55,060 --> 00:56:58,620
+which I've conveniently erased up there, OK,
+
+600
+00:56:58,650 --> 00:57:02,320
+to compute what is the longest common subsequence,
+
+601
+00:57:02,350 --> 00:57:04,940
+length of the longest common subsequence
+
+602
+00:57:04,970 --> 00:57:12,030
+from this character in y,
+
+603
+00:57:12,030 --> 00:57:14,170
+and this character in x up to this character.
+
+604
+00:57:14,200 --> 00:57:16,810
+So here, for example, they don't match.
+
+605
+00:57:16,840 --> 00:57:20,360
+So, it's the maximum of these two values.
+
+606
+00:57:20,390 --> 00:57:24,460
+Here, they do match.
+
+607
+00:57:24,480 --> 00:57:30,160
+OK, so it says it's one plus the value here.
+
+608
+00:57:30,190 --> 00:57:31,890
+And, I'm going to draw a line.
+
+609
+00:57:31,930 --> 00:57:32,840
+Whenever I'm going to get a match,
+
+610
+00:57:32,870 --> 00:57:33,850
+I'm going to draw a line like that,
+
+611
+00:57:33,880 --> 00:57:35,780
+indicating that I had that first case,
+
+612
+00:57:35,810 --> 00:57:40,490
+the case where they had a good match.
+
+613
+00:57:40,520 --> 00:57:43,300
+And so, all I'm doing is applying that recursive formula
+
+614
+00:57:43,330 --> 00:57:45,350
+from the theorem that we proved.
+
+615
+00:57:45,380 --> 00:57:48,370
+So here, it's basically they don't match.
+
+616
+00:57:48,400 --> 00:57:51,150
+So, it's the maximum of those two.
+
+617
+00:57:51,170 --> 00:57:52,670
+Here, they match.
+
+618
+00:57:52,700 --> 00:57:59,140
+So, it's one plus that guy. Here, they don't match.
+
+619
+00:57:59,160 --> 00:58:03,030
+So, it's basically the maximum of these two.
+
+620
+00:58:03,060 --> 00:58:07,210
+Here, they don't match. So it's the maximum.
+
+621
+00:58:07,240 --> 00:58:10,330
+So, it's one plus that guy.
+
+622
+00:58:10,360 --> 00:58:16,930
+So, everybody understand how I filled out that first row?
+
+623
+00:58:16,950 --> 00:58:18,870
+OK, well that you guys can help.
+
+624
+00:58:18,900 --> 00:58:24,440
+OK, so this one is what?
+
+625
+00:58:24,440 --> 00:58:30,250
+Just call it out. Zero, good.
+
+626
+00:58:30,270 --> 00:58:39,310
+One, because it's the maximum, one, two, right.
+
+627
+00:58:39,340 --> 00:58:45,040
+This one, now, gets from there,
+
+628
+00:58:45,070 --> 00:58:56,830
+two, two. OK, here, zero,
+
+629
+00:58:56,860 --> 00:59:01,000
+one, because it's the maximum of those two.
+
+630
+00:59:01,030 --> 00:59:15,290
+Two, two, two, good.
+
+631
+00:59:15,320 --> 00:59:32,920
+One, one, two, two, two, three,
+
+632
+00:59:32,950 --> 00:59:49,300
+three. One, two, three,
+
+633
+00:59:49,330 --> 00:59:59,740
+get that line, three, four,
+
+634
+00:59:59,770 --> 01:00:11,890
+OK. One there, three,
+
+635
+01:00:11,910 --> 01:00:21,930
+three, four, good, four.
+
+636
+01:00:21,960 --> 01:00:29,110
+OK, and our answer: four.
+
+637
+01:00:29,140 --> 01:00:33,310
+So this is blindingly fast code if you code this up,
+
+638
+01:00:33,340 --> 01:00:37,670
+OK, because it gets to use the fact that modern machines in
+
+639
+01:00:37,700 --> 01:00:43,420
+particular do very well on regular strides through memory.
+
+640
+01:00:43,450 --> 01:00:48,160
+So, if you're just plowing through memory across like this,
+
+641
+01:00:48,190 --> 01:00:51,500
+OK, and your two-dimensional array is stored in that order,
+
+642
+01:00:51,530 --> 01:00:54,830
+which it is, otherwise you go this way,
+
+643
+01:00:54,860 --> 01:00:56,420
+stored in that order.
+
+644
+01:00:56,450 --> 01:01:04,790
+This can really fly in terms of the speed of the calculation.
+
+645
+01:01:04,820 --> 01:01:13,680
+So, how much time did it take us to do this?
+
+646
+01:01:13,710 --> 01:01:26,160
+Yeah, order MN, theta MN. Yeah?
+
+647
+01:01:26,190 --> 01:01:30,020
+We'll talk about space in just a minute.
+
+648
+01:01:30,050 --> 01:01:31,550
+OK, so hold that question. Good question,
+
+649
+01:01:31,580 --> 01:01:34,060
+good question, already, wow,
+
+650
+01:01:34,090 --> 01:01:42,200
+good, OK, how do I now figure out, remember,
+
+651
+01:01:42,230 --> 01:01:43,610
+we had the simplification.
+
+652
+01:01:43,640 --> 01:01:47,630
+We were going to just calculate the length.
+
+653
+01:01:47,660 --> 01:01:52,360
+OK, it turns out I can now figure out a
+
+654
+01:01:52,390 --> 01:01:55,180
+particular sequence that matches it.
+
+655
+01:01:55,210 --> 01:01:56,720
+And basically, I do that.
+
+656
+01:01:56,740 --> 01:02:04,020
+I can reconstruct the longest common subsequence
+
+657
+01:02:04,050 --> 01:02:11,130
+by tracing backwards.
+
+658
+01:02:11,160 --> 01:02:14,670
+So essentially I start here.
+
+659
+01:02:14,700 --> 01:02:19,070
+Here I have a choice because this one was dependent on,
+
+660
+01:02:19,100 --> 01:02:20,950
+since it doesn't have a bar here,
+
+661
+01:02:20,980 --> 01:02:23,040
+it was dependent on one of these two.
+
+662
+01:02:23,070 --> 01:02:27,550
+So, let me go this way.
+
+663
+01:02:27,570 --> 01:02:31,460
+OK, and now I have a diagonal element here.
+
+664
+01:02:31,490 --> 01:02:42,020
+So what I'll do is simply mark the character that
+
+665
+01:02:42,050 --> 01:02:46,920
+appeared in those positions as I go this way.
+
+666
+01:02:46,950 --> 01:02:48,790
+I have three here.
+
+667
+01:02:48,830 --> 01:02:51,830
+And now, let me keep going, three here,
+
+668
+01:02:51,850 --> 01:02:53,590
+and now I have another one.
+
+669
+01:02:53,620 --> 01:03:00,220
+So that means this character gets selected.
+
+670
+01:03:00,240 --> 01:03:08,030
+And then I go up to here, OK, and then up to here.
+
+671
+01:03:08,060 --> 01:03:10,310
+And now I go diagonally again,
+
+672
+01:03:10,340 --> 01:03:14,620
+which means that this character is selected.
+
+673
+01:03:14,650 --> 01:03:21,300
+And I go to here, and then I go here.
+
+674
+01:03:21,330 --> 01:03:27,120
+And then, I go up here and this character is selected.
+
+675
+01:03:27,140 --> 01:03:30,920
+So here is my longest common subsequence.
+
+676
+01:03:30,950 --> 01:03:32,770
+And this was just one path back.
+
+677
+01:03:32,800 --> 01:03:35,580
+I could have gone a path like this and
+
+678
+01:03:35,610 --> 01:03:41,660
+gotten a different longest common subsequence.
+
+679
+01:03:41,690 --> 01:03:45,200
+OK, so that simplification of just saying, look,
+
+680
+01:03:45,230 --> 01:03:48,770
+let me just run backwards and figure it out,
+
+681
+01:03:48,800 --> 01:03:51,640
+that's actually pretty good because it means
+
+682
+01:03:51,670 --> 01:03:56,910
+that by just calculating the value,
+
+683
+01:03:56,940 --> 01:03:59,070
+then figuring out these back pointers to
+
+684
+01:03:59,100 --> 01:04:03,540
+let me reconstruct it is a fairly simple process.
+
+685
+01:04:03,570 --> 01:04:05,640
+OK, if I had to think about that to begin with,
+
+686
+01:04:05,670 --> 01:04:08,520
+it would have been a much bigger mess.
+
+687
+01:04:08,560 --> 01:04:12,590
+OK, so the space, I just mentioned,
+
+688
+01:04:12,620 --> 01:04:16,270
+was order MN because we still need the table.
+
+689
+01:04:16,290 --> 01:04:30,800
+So, you can actually do the min of m and n.
+
+690
+01:04:30,830 --> 01:04:32,220
+OK, to get to your question,
+
+691
+01:04:32,250 --> 01:04:39,720
+how do you do the min of m and n?
+
+692
+01:04:39,750 --> 01:04:42,300
+Diagonal stripes won't give you min of m and n.
+
+693
+01:04:42,330 --> 01:04:49,070
+That'll give you the sum of m and n.
+
+694
+01:04:49,100 --> 01:04:51,530
+So, going in stripes,
+
+695
+01:04:51,560 --> 01:04:54,700
+maybe I'm not quite sure I know what you mean.
+
+696
+01:04:54,730 --> 01:04:58,630
+So, you're saying, so what's the order I would do here?
+
+697
+01:04:58,660 --> 01:04:59,440
+So, I would start.
+
+698
+01:04:59,470 --> 01:05:03,400
+I would do this one first. Then which one would I do?
+
+699
+01:05:03,430 --> 01:05:06,990
+This one and this one?
+
+700
+01:05:07,020 --> 01:05:09,980
+And then, this one,this one, this one, like this?
+
+701
+01:05:10,010 --> 01:05:12,860
+That's a perfectly good order.
+
+702
+01:05:12,890 --> 01:05:19,170
+OK, and so you're saying, then,
+
+703
+01:05:19,200 --> 01:05:24,530
+so I'm keeping the diagonal there all the time.
+
+704
+01:05:24,560 --> 01:05:26,030
+So, you're saying the length of the diagonal
+
+705
+01:05:26,060 --> 01:05:29,220
+is the min of m and n?
+
+706
+01:05:29,250 --> 01:05:30,480
+I think that's right.
+
+707
+01:05:30,530 --> 01:05:32,490
+OK, there is another way you can do it
+
+708
+01:05:32,530 --> 01:05:34,490
+that's a little bit more straightforward,
+
+709
+01:05:34,530 --> 01:05:35,930
+which is you compare m to n.
+
+710
+01:05:35,960 --> 01:05:38,040
+Whichever is smaller, well, first of all,
+
+711
+01:05:38,070 --> 01:05:42,750
+let's just do this existing algorithm.
+
+712
+01:05:42,780 --> 01:05:45,770
+If I just simply did row by row,
+
+713
+01:05:45,800 --> 01:05:51,020
+I don't need more than a previous row.
+
+714
+01:05:51,050 --> 01:05:53,880
+OK, I just need one row at a time.
+
+715
+01:05:53,910 --> 01:05:57,370
+So, I can go ahead and compute just one row
+
+716
+01:05:57,400 --> 01:06:00,470
+because once I computed the succeeding row,
+
+717
+01:06:00,500 --> 01:06:03,540
+the first row is unimportant.
+
+718
+01:06:03,570 --> 01:06:06,540
+And in fact, I don't even need the whole row.
+
+719
+01:06:06,580 --> 01:06:10,210
+All I need is just the current row that I'm on,
+
+720
+01:06:10,240 --> 01:06:14,150
+plus one or two elements of the previous row,
+
+721
+01:06:14,180 --> 01:06:16,700
+plus the end of the previous row.
+
+722
+01:06:16,730 --> 01:06:21,480
+So, I use a prefix of this row, and an extra two elements,
+
+723
+01:06:21,510 --> 01:06:23,150
+and the suffix of this row.
+
+724
+01:06:23,180 --> 01:06:26,200
+So, it's actually, you can do it with one row,
+
+725
+01:06:26,230 --> 01:06:28,940
+plus order one element.
+
+726
+01:06:28,970 --> 01:06:32,310
+And then, I could do it either running vertically or running
+
+727
+01:06:32,340 --> 01:06:36,870
+horizontally, whichever one gives me the smaller space.
+
+728
+01:06:36,900 --> 01:06:37,880
+OK, and it might be that your
+
+729
+01:06:37,920 --> 01:06:39,470
+diagonal trick would work there too.
+
+730
+01:06:39,510 --> 01:06:43,680
+I'd have to think about that. Yeah?
+
+731
+01:06:43,720 --> 01:06:45,120
+Ooh, that's a good question.
+
+732
+01:06:45,120 --> 01:06:48,910
+So, you can do the calculation of the length,
+
+733
+01:06:48,910 --> 01:06:52,910
+and run row plus order one elements.
+
+734
+01:06:52,940 --> 01:07:03,420
+OK, and our exercise, and this is a hard exercise,
+
+735
+01:07:03,450 --> 01:07:13,590
+OK, so that a good one to do is to do small space
+
+736
+01:07:13,620 --> 01:07:19,940
+and allow you to reconstruct the LCS because
+
+737
+01:07:19,970 --> 01:07:22,240
+the naive way that we were just doing it,
+
+738
+01:07:22,270 --> 01:07:24,950
+it's not clear how you would go backwards from that
+
+739
+01:07:24,980 --> 01:07:28,000
+because you've lost the information.
+
+740
+01:07:28,020 --> 01:07:32,910
+OK, so this is actually a very interesting and tricky problem.
+
+741
+01:07:32,940 --> 01:07:39,170
+And, it turns out it succumbs of all things to divide and conquer,
+
+742
+01:07:39,200 --> 01:07:46,380
+OK, rather than some more straightforward tabular thing.
+
+743
+01:07:46,410 --> 01:07:49,140
+so very good practice, for example,
+
+744
+01:07:49,180 --> 01:07:52,650
+for the upcoming take home quiz,
+
+745
+01:07:52,680 --> 01:07:58,850
+OK, which is all design and cleverness type quiz.
+
+746
+01:07:58,880 --> 01:08:03,980
+OK, so this is a good one for people to take on.
+
+747
+01:08:04,010 --> 01:08:09,290
+So, this is basically the tabular method
+
+748
+01:08:09,330 --> 01:08:11,960
+that's called dynamic programming.
+
+749
+01:08:11,990 --> 01:08:14,500
+OK, memo-ization is not dynamic programming,
+
+750
+01:08:14,530 --> 01:08:19,210
+even though it's related. It's memo-ization.
+
+751
+01:08:19,230 --> 01:08:22,280
+And, we're going to see a whole bunch of other problems that
+
+752
+01:08:22,310 --> 01:08:27,640
+succumb to dynamic programming approaches.
+
+753
+01:08:27,660 --> 01:08:32,350
+It's a very cool method, and on the homework,
+
+754
+01:08:32,380 --> 01:08:33,780
+so let me just mention the homework again.
+
+755
+01:08:33,810 --> 01:08:35,500
+On the homework, we're going to look at a
+
+756
+01:08:35,530 --> 01:08:38,390
+problem called the edit distance problem.
+
+757
+01:08:38,420 --> 01:08:40,440
+Edit distance is you are given two strings.
+
+758
+01:08:40,470 --> 01:08:42,610
+And you can imagine that you're typing in
+
+759
+01:08:42,650 --> 01:08:44,860
+a keyboard with one of the strings there.
+
+760
+01:08:44,890 --> 01:08:47,940
+And what you have to do is by doing inserts, and deletes,
+
+761
+01:08:47,970 --> 01:08:50,640
+and replaces, and moving the cursor around,
+
+762
+01:08:50,670 --> 01:08:53,260
+you've got to transform one string to the next.
+
+763
+01:08:53,290 --> 01:08:56,050
+And, each of those operations has a cost.
+
+764
+01:08:56,080 --> 01:08:59,820
+And your job is to minimize the cost of
+
+765
+01:08:59,820 --> 01:09:01,950
+transforming the one string into the other.
+
+766
+01:09:01,950 --> 01:09:02,840
+This actually turns out also to
+
+767
+01:09:02,840 --> 01:09:06,480
+be useful for computational biology applications.
+
+768
+01:09:06,510 --> 01:09:09,910
+And, in fact, there have been editors,
+
+769
+01:09:09,940 --> 01:09:12,740
+screen editors, text editors,
+
+770
+01:09:12,770 --> 01:09:17,470
+that implement algorithms of this nature in order to minimize
+
+771
+01:09:17,500 --> 01:09:20,020
+the number of characters that have to be sent
+
+772
+01:09:20,050 --> 01:09:25,860
+as IO in and out of the system.
+
+773
+01:09:25,890 --> 01:09:29,210
+So, the warning is, you better get going on your programming
+
+774
+01:09:29,240 --> 01:09:33,100
+on problem one on the homework today
+
+775
+01:09:33,130 --> 01:09:38,750
+if at all possible because whenever I assign programming,
+
+776
+01:09:38,780 --> 01:09:41,730
+since we don't do that as sort of a routine thing,
+
+777
+01:09:41,760 --> 01:09:44,520
+I'm just concerned for some people that there will not
+
+778
+01:09:44,550 --> 01:09:47,750
+be able to get things like the input and output to work,
+
+779
+01:09:47,780 --> 01:09:48,910
+and so forth.
+
+780
+01:09:48,940 --> 01:09:54,080
+We have example problems, and such, on the website.
+
+781
+01:09:54,110 --> 01:09:57,790
+And we also have, you can write it in any language you want,
+
+782
+01:09:57,820 --> 01:10:01,480
+including Matlab,
+
+783
+01:10:01,510 --> 01:10:05,900
+Python, whatever your favorite,
+
+784
+01:10:05,930 --> 01:10:10,030
+the solutions will be written in Java and Python.
+
+785
+01:10:10,060 --> 01:10:16,290
+OK, so the fastest solutions are likely to be written in c.
+
+786
+01:10:16,320 --> 01:10:20,090
+OK, you can also do it in assembly language if you care to.
+
+787
+01:10:20,110 --> 01:10:22,070
+You laugh. I used to be in assembly
+
+788
+01:10:22,100 --> 01:10:28,850
+language programmer back in the days of yore.
+
+789
+01:10:28,880 --> 01:10:34,290
+OK, so I do encourage people to get started on this because let
+
+790
+01:10:34,320 --> 01:10:37,640
+me mention, the other thing is that this particular problem on
+
+791
+01:10:37,670 --> 01:10:43,330
+this problem set is an absolutely mandatory problem.
+
+792
+01:10:43,360 --> 01:10:45,340
+OK, all the problems are mandatory,
+
+793
+01:10:45,370 --> 01:10:47,510
+but as you know you can skip them and it doesn't
+
+794
+01:10:47,540 --> 01:10:49,840
+hurt you too much if you only skip one or two.
+
+795
+01:10:49,870 --> 01:10:53,200
+This one, you skip, hurts big time: one letter grade.
+
+796
+01:10:53,230 --> 01:10:57,800
+It must be done.
+
+797
+01:17:59,790 --> 01:18:03,770
+OK, and charge twice as much for each insert.
+

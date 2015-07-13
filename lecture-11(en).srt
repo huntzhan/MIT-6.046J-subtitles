@@ -1,0 +1,3560 @@
+﻿1
+00:00:06,630 --> 00:00:12,290
+Good morning. Today we're going to
+
+2
+00:00:12,750 --> 00:00:15,610
+talk about augmenting data structures.
+
+3
+00:00:24,530 --> 00:00:28,620
+And this is a --
+
+4
+00:00:28,920 --> 00:00:34,040
+Normally, rather than designing data structures from scratch,
+
+5
+00:00:34,420 --> 00:00:37,520
+you tend to take existing data structures
+
+6
+00:00:37,700 --> 00:00:40,100
+and build your functionality into them.
+
+7
+00:00:40,410 --> 00:00:44,250
+And that is a process we call data-structure augmentation.
+
+8
+00:00:44,490 --> 00:00:48,470
+And this also today marks sort of the start
+
+9
+00:00:48,680 --> 00:00:50,180
+of the design phase of the class.
+
+10
+00:00:50,290 --> 00:00:53,050
+We spent a lot of time doing analysis up to this point.
+
+11
+00:00:53,240 --> 00:00:57,120
+And now we're still going to learn some new analytical techniques.
+
+12
+00:00:57,300 --> 00:00:59,750
+But we're going to start turning our focus more toward
+
+13
+00:01:00,000 --> 00:01:02,520
+how is it that you design efficient data structures,
+
+14
+00:01:02,740 --> 00:01:05,020
+efficient algorithms for various problems?
+
+15
+00:01:05,240 --> 00:01:08,860
+So this is a good example of the design phase.
+
+16
+00:01:09,050 --> 00:01:13,980
+It is a really good idea, at this point, if you have not done so,
+
+17
+00:01:14,170 --> 00:01:18,660
+to review the textbook Appendix B.
+
+18
+00:01:18,910 --> 00:01:23,470
+You should take that as additional reading
+
+19
+00:01:23,730 --> 00:01:24,950
+to make sure that you are familiar,
+
+20
+00:01:25,170 --> 00:01:27,680
+because over the next few weeks we're going to
+
+21
+00:01:27,880 --> 00:01:30,700
+hit almost every topic in Appendix B.
+
+22
+00:01:30,950 --> 00:01:32,650
+It is going to be brought to bear
+
+23
+00:01:32,840 --> 00:01:34,640
+on the subjects that we're talking about.
+
+24
+00:01:34,840 --> 00:01:37,460
+If you're going to go scramble to learn that
+
+25
+00:01:37,710 --> 00:01:39,300
+while you're also trying to learn the material,
+
+26
+00:01:39,400 --> 00:01:40,680
+it will be more onerous than
+
+27
+00:01:40,690 --> 00:01:42,750
+if you just simply review the material now.
+
+28
+00:01:44,070 --> 00:01:47,210
+We're going to start with an illustration
+
+29
+00:01:47,500 --> 00:01:52,730
+of the problem of dynamic order statistics.
+
+30
+00:01:58,410 --> 00:02:01,760
+We are familiar with finding things
+
+31
+00:02:01,950 --> 00:02:06,240
+like the median or the kth order statistic or whatever.
+
+32
+00:02:06,430 --> 00:02:08,120
+Now we want to do the same thing
+
+33
+00:02:08,350 --> 00:02:10,390
+but we want to do it with a dynamic set.
+
+34
+00:02:10,620 --> 00:02:12,810
+Rather than being given all the data upfront,
+
+35
+00:02:13,050 --> 00:02:15,010
+we're going to have a set.  And then at some point
+
+36
+00:02:15,020 --> 00:02:18,410
+somebody is going to be doing typically insert and delete.
+
+37
+00:02:18,610 --> 00:02:20,960
+And at some point somebody is going to say OK,
+
+38
+00:02:21,180 --> 00:02:29,050
+select for me the ith largest guy or the ith smallest guy
+
+39
+00:02:40,220 --> 00:02:53,180
+——in the dynamic set. Or, something like OS-Rank of x.
+
+40
+00:02:57,530 --> 00:03:07,420
+The rank of x in the sorted order of the set.
+
+41
+00:03:11,000 --> 00:03:17,230
+So either I want to just say, for example,  if I gave n over 2,
+
+42
+00:03:17,530 --> 00:03:19,690
+if I had n elements in the set and I said n over 2,
+
+43
+00:03:19,880 --> 00:03:21,010
+I am asking for the median.
+
+44
+00:03:21,190 --> 00:03:22,410
+I could be asking for the mean.
+
+45
+00:03:22,560 --> 00:03:23,960
+I could be asking for quartile.
+
+46
+00:03:24,120 --> 00:03:25,820
+Here I take an element and say,
+
+47
+00:03:25,960 --> 00:03:27,990
+OK, so where does that element fall
+
+48
+00:03:28,130 --> 00:03:30,890
+among all of the other elements in the set?
+
+49
+00:03:31,060 --> 00:03:34,000
+And, in addition, these are dynamic sets
+
+50
+00:03:34,170 --> 00:03:36,750
+so I want to be able to do insert and delete,
+
+51
+00:03:38,700 --> 00:03:41,870
+I want to be able to add and remove elements.
+
+52
+00:03:42,110 --> 00:03:45,100
+The solution we are going to look at for this one,
+
+53
+00:03:45,300 --> 00:03:53,350
+the basic idea is to keep the sizes of subtrees
+
+54
+00:03:56,430 --> 00:04:03,160
+in the nodes of a red-black tree.
+
+55
+00:04:06,640 --> 00:04:10,050
+Let me draw a picture as an example.
+
+56
+00:04:27,880 --> 00:04:38,060
+In this tree - I didn't draw the NILs for this.
+
+57
+00:04:38,220 --> 00:04:43,190
+I am going to keep two values. I am going to keep the key.
+
+58
+00:04:43,420 --> 00:04:45,320
+And so for the keys,
+
+59
+00:04:45,590 --> 00:04:48,620
+what I will do is just use letters of the alphabet.
+
+60
+00:05:05,690 --> 00:05:07,100
+And this is a red-black tree.
+
+61
+00:05:07,340 --> 00:05:10,900
+Just for practice, how can I label this tree
+
+62
+00:05:11,190 --> 00:05:12,530
+so it's a red-black tree?
+
+63
+00:05:12,700 --> 00:05:13,780
+I haven't shown the NILs.
+
+64
+00:05:13,940 --> 00:05:15,520
+Remember the NILs are all black.
+
+65
+00:05:18,000 --> 00:05:24,820
+How can I label this, red and black?
+
+66
+00:05:25,030 --> 00:05:28,060
+Make sure it is a red-black tree.
+
+67
+00:05:28,870 --> 00:05:32,260
+Not every tree can be labeled as a red-black tree, right?
+
+68
+00:05:35,870 --> 00:05:38,300
+This is good practice because
+
+69
+00:05:38,510 --> 00:05:40,430
+this sort of thing shows up on quizzes.
+
+70
+00:05:40,730 --> 00:05:48,620
+Make F red, good, and everything else black,
+
+71
+00:05:48,810 --> 00:05:51,360
+that is certainly a solution.
+
+72
+00:05:51,620 --> 00:05:56,850
+Because then that basically brings the level of this guy up to here.
+
+73
+00:05:57,120 --> 00:05:59,070
+Actually, I had a more complicated one
+
+74
+00:05:59,320 --> 00:06:00,660
+because it seemed like more fun.
+
+75
+00:06:00,860 --> 00:06:04,650
+What I did was I made this guy black
+
+76
+00:06:05,460 --> 00:06:10,880
+and then these two guys red and black and red,
+
+77
+00:06:11,130 --> 00:06:15,900
+black and red, black and black.
+
+78
+00:06:16,140 --> 00:06:20,730
+But your solution is perfectly good as well.
+
+79
+00:06:21,020 --> 00:06:25,840
+So we don't have any two reds in a row on any path.
+
+80
+00:06:26,070 --> 00:06:33,160
+And all the black height from any particular point going down
+
+81
+00:06:33,320 --> 00:06:36,490
+we get the same number of blacks whichever way we go.
+
+82
+00:06:38,580 --> 00:06:42,260
+Good. The idea here now is that,
+
+83
+00:06:42,410 --> 00:06:44,930
+we're going to keep the subtree sizes,
+
+84
+00:06:45,210 --> 00:06:49,080
+these are the keys that are stored in our dynamic set,
+
+85
+00:06:49,220 --> 00:06:52,490
+we're going to keep the subtree sizes in the red-black tree.
+
+86
+00:06:52,740 --> 00:06:55,550
+For example, this guy has size one.
+
+87
+00:06:55,800 --> 00:06:58,450
+These guys have size one because they're leaves.
+
+88
+00:06:58,640 --> 00:07:00,170
+And then we can just work up.
+
+89
+00:07:00,370 --> 00:07:02,420
+So this has size three,
+
+90
+00:07:02,650 --> 00:07:08,650
+this guy has size five, this guy has size three,
+
+91
+00:07:08,900 --> 00:07:12,570
+and this guy has five plus three plus one is nine.
+
+92
+00:07:13,540 --> 00:07:31,840
+In general, we will have size of x is equal to size of left of x
+
+93
+00:07:33,450 --> 00:07:43,760
+plus the size of the right child of x plus one.
+
+94
+00:07:44,050 --> 00:07:47,030
+That is how I compute it recursively.
+
+95
+00:07:47,290 --> 00:07:52,080
+A very simple formula for what the size is.
+
+96
+00:07:52,310 --> 00:07:54,740
+It turns out that for the code that we're going to
+
+97
+00:07:54,940 --> 00:07:59,200
+want to write to implement these operations,
+
+98
+00:08:03,150 --> 00:08:06,550
+it is going to be convenient to be talking about the size of NIL.
+
+99
+00:08:06,910 --> 00:08:09,260
+So what is the size of NIL?
+
+100
+00:08:12,030 --> 00:08:17,690
+Zero. Size of NIL, there are no elements there.
+
+101
+00:08:17,880 --> 00:08:20,090
+However, in most program languages,
+
+102
+00:08:20,240 --> 00:08:23,090
+if I take size of NIL, what will happen?
+
+103
+00:08:23,290 --> 00:08:28,790
+You get an error. That is kind of inconvenient.
+
+104
+00:08:28,910 --> 00:08:32,380
+What I have to do in my code is that everywhere that size of NIL
+
+105
+00:08:32,720 --> 00:08:35,630
+that I might want to take size of NIL, I have to say
+
+106
+00:08:35,890 --> 00:08:36,920
+or take the size of anything,
+
+107
+00:08:37,040 --> 00:08:43,500
+I have to say, well, if it's NIL then return zero,
+
+108
+00:08:43,670 --> 00:08:47,210
+otherwise return the size field, etc.
+
+109
+00:08:47,430 --> 00:08:49,150
+There is an implementation trick
+
+110
+00:08:49,150 --> 00:08:52,870
+that we're going to use to simplify that.
+
+111
+00:08:53,020 --> 00:08:54,350
+It's called using a sentinel.
+
+112
+00:09:00,440 --> 00:09:02,980
+A sentinel is nothing more than a dummy record.
+
+113
+00:09:06,730 --> 00:09:10,370
+Instead of using a NIL, we will actually use a NIL sentinel.
+
+114
+00:09:10,650 --> 00:09:14,000
+We will use a dummy record for NIL
+
+115
+00:09:14,310 --> 00:09:21,840
+such that size of NIL is equal to zero.
+
+116
+00:09:22,150 --> 00:09:25,190
+Instead of any place I would have used NIL in the tree,
+
+117
+00:09:25,400 --> 00:09:29,290
+instead I will have a special record that I will call NIL.
+
+118
+00:09:29,560 --> 00:09:32,130
+But it will be a whole record.
+
+119
+00:09:32,300 --> 00:09:35,690
+And that way I can set its size field to be zero,
+
+120
+00:09:35,880 --> 00:09:39,310
+and then I don't have to check that as a special case.
+
+121
+00:09:39,490 --> 00:09:42,810
+That is a very common type of programming trick to use,
+
+122
+00:09:42,990 --> 00:09:47,210
+is to use sentinels to simplify code
+
+123
+00:09:47,390 --> 00:09:49,400
+so you don't have all these boundary cases
+
+124
+00:09:49,570 --> 00:09:51,780
+or you don't have to write an extra function
+
+125
+00:09:51,950 --> 00:09:56,040
+when all I want to do is just index the size of something.
+
+126
+00:09:56,190 --> 00:09:57,670
+Everybody with me on that?
+
+127
+00:09:58,310 --> 00:10:06,900
+So let's write the code for OS-Select given this representation.
+
+128
+00:10:14,410 --> 00:10:17,690
+And this is going to basically give us
+
+129
+00:10:17,870 --> 00:10:32,160
+the ith smallest in the subtree rooted at x.
+
+130
+00:10:32,490 --> 00:10:37,980
+It's actually going to be a little bit more general.
+
+131
+00:10:38,200 --> 00:10:41,210
+If I want to implement the OS-Select i of up there,
+
+132
+00:10:41,370 --> 00:10:43,920
+I basically give it the root and i.
+
+133
+00:10:44,130 --> 00:10:46,870
+But we're going to build this recursively so it's going
+
+134
+00:10:47,080 --> 00:10:54,590
+to be helpful to have the node
+
+135
+00:10:54,770 --> 00:10:56,980
+in which we're trying to find the subtree.
+
+136
+00:10:58,200 --> 00:10:59,580
+Here is the code.
+
+137
+00:12:19,800 --> 00:12:22,340
+This is the code.
+
+138
+00:12:24,040 --> 00:12:27,760
+And let's just see how it works
+
+139
+00:12:27,940 --> 00:12:30,580
+and then we will argue why it works.
+
+140
+00:12:32,480 --> 00:12:45,800
+As an example, let's do OS-Select of the root and 5.
+
+141
+00:12:46,100 --> 00:12:48,970
+We're going to find the fifth largest in the set.
+
+142
+00:12:51,260 --> 00:12:57,470
+We have OS-Select of the root and 5. This is inconvenient.
+
+143
+00:12:59,500 --> 00:13:01,060
+We start out at the top,
+
+144
+00:13:01,260 --> 00:13:08,070
+well, let's just switch the boards. Here we go.
+
+145
+00:13:08,380 --> 00:13:14,660
+We start at the top, and i is the root.
+
+146
+00:13:18,220 --> 00:13:25,610
+Excuse me, i is 5, sorry, and the root. i=5.
+
+147
+00:13:27,950 --> 00:13:29,320
+We want to find the fifth largest.
+
+148
+00:13:29,510 --> 00:13:35,950
+We first compute this value k. k is the size of left of x plus 1.
+
+149
+00:13:36,130 --> 00:13:43,700
+What is that value? What is k anyway? What is it?
+
+150
+00:13:47,670 --> 00:13:53,730
+Well, in this case it is 6. Good. But what is the meaning of k?
+
+151
+00:13:54,050 --> 00:14:00,000
+[Student]Inaudible
+
+152
+00:14:00,770 --> 00:14:03,530
+[Professor]The order. The rank.
+
+153
+00:14:03,800 --> 00:14:06,210
+Good, the rank of the current node.
+
+154
+00:14:06,400 --> 00:14:09,260
+This is the rank of the current node.
+
+155
+00:14:09,460 --> 00:14:12,920
+k is always the size of the left subtree plus 1.
+
+156
+00:14:13,100 --> 00:14:15,040
+That is just the rank of the current node.
+
+157
+00:14:16,000 --> 00:14:21,180
+We look here and we say, well, the rank is k.
+
+158
+00:14:21,380 --> 00:14:25,430
+Now, if it is equal then we found the element we want.
+
+159
+00:14:28,080 --> 00:14:30,920
+But, otherwise, if i is less,
+
+160
+00:14:31,060 --> 00:14:32,750
+we know it's going to be in the left subtree.
+
+161
+00:14:32,970 --> 00:14:36,470
+All we're doing then is recursing in the left subtree.
+
+162
+00:14:36,640 --> 00:14:41,870
+And here we will recurse. We will want the fifth largest one.
+
+163
+00:14:42,250 --> 00:14:45,900
+And now this time k is going to be equal to what?
+
+164
+00:14:49,960 --> 00:14:57,210
+Two. Now here we say, OK, this is bigger,
+
+165
+00:14:57,370 --> 00:14:59,800
+so therefore the element we want
+
+166
+00:14:59,970 --> 00:15:01,470
+is going to be in the right subtree.
+
+167
+00:15:01,660 --> 00:15:05,160
+But we don't want the ith largest guy in the right subtree,
+
+168
+00:15:06,890 --> 00:15:10,240
+because we already know there are going to be two guys over here.
+
+169
+00:15:10,430 --> 00:15:15,910
+We want the third largest guy in this subtree.
+
+170
+00:15:16,150 --> 00:15:22,070
+We have i equals 3 as we recurse into this subtree.
+
+171
+00:15:22,330 --> 00:15:27,560
+And now we compute k for here. This plus 1 is 2.
+
+172
+00:15:29,500 --> 00:15:32,130
+And that says we recursed right here.
+
+173
+00:15:32,370 --> 00:15:36,100
+And then we have i=1, k=1,
+
+174
+00:15:36,340 --> 00:15:42,070
+and we return in this code a pointer to this node.
+
+175
+00:15:53,210 --> 00:16:03,730
+So this returns a pointer to the node containing H whose key is H.
+
+176
+00:16:04,030 --> 00:16:07,290
+Just to make a comment here,
+
+177
+00:16:07,440 --> 00:16:12,250
+we discovered k is equal to the rank of x.
+
+178
+00:16:13,910 --> 00:16:21,010
+Any questions about what is going on in this code?
+
+179
+00:16:22,420 --> 00:16:27,030
+OK. It's basically just finding its way down.
+
+180
+00:16:27,330 --> 00:16:31,150
+The subtree sizes help it make the decision
+
+181
+00:16:31,400 --> 00:16:34,700
+as to which way it should go to find which is the ith largest.
+
+182
+00:16:37,910 --> 00:16:39,730
+We can do a quick analysis.
+
+183
+00:16:41,410 --> 00:16:46,650
+On our red-black tree, how long does OS-Select take to run?
+
+184
+00:16:50,870 --> 00:16:55,750
+Yeah? Yeah, order log n if there are n elements in the tree.
+
+185
+00:16:55,990 --> 00:16:59,750
+Because the red-black tree is a balance tree.
+
+186
+00:16:59,940 --> 00:17:01,290
+Its height is order log n.
+
+187
+00:17:01,490 --> 00:17:04,320
+In fact, this code will work on any tree
+
+188
+00:17:04,490 --> 00:17:08,550
+that has order log n the height of the tree.
+
+189
+00:17:09,590 --> 00:17:12,130
+And so if you have a guaranteed height,
+
+190
+00:17:12,310 --> 00:17:17,550
+the way that red-black trees do, you're in good shape.
+
+191
+00:17:17,760 --> 00:17:23,100
+OS-Rank, we won't do but it is in the book,
+
+192
+00:17:23,350 --> 00:17:31,550
+also gets order log n. Here is a question I want to pose.
+
+193
+00:17:32,030 --> 00:17:57,080
+Why not just keep the ranks themselves? Yeah?
+
+194
+00:17:57,080 --> 00:18:00,500
+[Student]Inaudible
+
+195
+00:18:00,600 --> 00:18:03,830
+[Professor]It's the node itself.
+
+196
+00:18:04,050 --> 00:18:06,710
+Otherwise, you cannot take left of it.
+
+197
+00:18:08,980 --> 00:18:11,160
+I mean, if we were doing this in a decent language,
+
+198
+00:18:11,530 --> 00:18:14,500
+strongly typed language there would be no confusion.
+
+199
+00:18:14,550 --> 00:18:17,340
+But we're writing in this pseudocode that is good
+
+200
+00:18:17,510 --> 00:18:19,760
+because it's compact, which lets you focus on the algorithm.
+
+201
+00:18:19,960 --> 00:18:21,420
+But, of course, it doesn't have
+
+202
+00:18:21,570 --> 00:18:23,140
+a lot of the things you would really want
+
+203
+00:18:23,360 --> 00:18:25,310
+if you were programming things of scale
+
+204
+00:18:25,460 --> 00:18:30,680
+like type safety and so forth. Yeah?
+
+205
+00:18:30,680 --> 00:18:38,260
+[Student]Inaudible
+
+206
+00:18:39,050 --> 00:18:44,340
+[Professor]It is basically hard to maintain when you modify it.
+
+207
+00:18:44,660 --> 00:18:48,900
+For example, if we actually kept the ranks in the nodes,
+
+208
+00:18:49,230 --> 00:18:55,320
+certainly it would be easy to find the element of a given rank.
+
+209
+00:18:55,620 --> 00:18:58,380
+But all I have to do is insert the smallest element,
+
+210
+00:18:58,630 --> 00:19:02,180
+an element that is smaller than all of the other elements.
+
+211
+00:19:02,370 --> 00:19:05,630
+And what happens? All the ranks have to be changed.
+
+212
+00:19:05,880 --> 00:19:09,320
+Order n changes have to be made if that's what I was maintaining,
+
+213
+00:19:11,460 --> 00:19:15,870
+whereas with subtree sizes that's a lot easier.
+
+214
+00:19:18,360 --> 00:19:20,620
+Because it's hard to maintain
+
+215
+00:19:25,530 --> 00:19:30,480
+when the red-black tree is modified.
+
+216
+00:19:31,660 --> 00:19:36,160
+And that is the other sort of tricky thing
+
+217
+00:19:36,360 --> 00:19:47,470
+when you're augmenting a data structure.
+
+218
+00:19:47,710 --> 00:19:52,260
+You want to put in the things that your operations go fast,
+
+219
+00:19:52,470 --> 00:19:56,130
+but you cannot forget that there are already underlying operations
+
+220
+00:19:56,330 --> 00:19:59,060
+on the data structure that have to be maintained in some way.
+
+221
+00:19:59,270 --> 00:20:00,680
+Can we close this door, please?
+
+222
+00:20:02,390 --> 00:20:09,940
+Thank you. We have to look at what are the modifying operations
+
+223
+00:20:10,120 --> 00:20:12,620
+and how do we maintain them.
+
+224
+00:20:12,860 --> 00:20:16,030
+The modifying operations for red-black trees
+
+225
+00:20:20,180 --> 00:20:24,370
+are insert and delete.
+
+226
+00:20:24,670 --> 00:20:28,530
+If I were augmenting a binary heap,
+
+227
+00:20:28,740 --> 00:20:31,260
+what operations would I have to worry about?
+
+228
+00:20:35,610 --> 00:20:39,620
+If I were augmenting a heap, what are the modifying operations?
+
+229
+00:20:42,390 --> 00:20:46,560
+Binary min heap, for example, classic priority queue?
+
+230
+00:20:50,390 --> 00:20:59,190
+Who remembers heaps? What are the operations on a heap?
+
+231
+00:20:59,530 --> 00:21:01,910
+There's a good final question.
+
+232
+00:21:04,650 --> 00:21:07,730
+Take-home exam, don't worry about it.
+
+233
+00:21:07,960 --> 00:21:11,780
+Final, worry about it. What are the operations on a heap?
+
+234
+00:21:12,480 --> 00:21:20,790
+Just look it up on Books 24 or whatever it is, right?
+
+235
+00:21:22,560 --> 00:21:25,420
+AnswerMan? What does AnswerMan say?
+
+236
+00:21:25,820 --> 00:21:29,670
+[Student]Inaudible
+
+237
+00:21:30,420 --> 00:21:37,060
+[Professor]OK. And? If it's a min heap.
+
+238
+00:21:37,280 --> 00:21:42,620
+It's min, extract min, typical operations and insert.
+
+239
+00:21:43,690 --> 00:21:52,610
+And of those which are modifying? Insert and extract min, OK?
+
+240
+00:21:52,920 --> 00:21:56,090
+So, min is not. You don't have to worry about min
+
+241
+00:21:56,310 --> 00:21:58,480
+because all that is is a query.
+
+242
+00:21:58,730 --> 00:22:02,500
+You want to distinguish operations on a dynamic data structure
+
+243
+00:22:02,700 --> 00:22:04,660
+those that modify and those that don't,
+
+244
+00:22:04,830 --> 00:22:07,110
+because the ones that don't modify the data structure
+
+245
+00:22:07,290 --> 00:22:09,450
+are all perfectly fine as long
+
+246
+00:22:09,680 --> 00:22:11,240
+as you haven't destroyed information.
+
+247
+00:22:11,520 --> 00:22:13,670
+The queries, those are easy.
+
+248
+00:22:14,010 --> 00:22:16,550
+But the operations that modify the data structure,
+
+249
+00:22:16,740 --> 00:22:19,550
+those we're very concerned about in making sure we can maintain.
+
+250
+00:22:20,770 --> 00:22:26,990
+Our strategy for dealing with insert and delete in this case
+
+251
+00:22:29,760 --> 00:22:34,160
+is to update the subtree sizes
+
+252
+00:22:40,770 --> 00:22:46,960
+---- when inserting or deleting.
+
+253
+00:22:49,080 --> 00:22:53,050
+For example, let's look at what happens
+
+254
+00:22:53,190 --> 00:23:02,090
+when I insert k. Element key k.
+
+255
+00:23:06,430 --> 00:23:10,730
+I am going to want to insert it in here, right?
+
+256
+00:23:11,020 --> 00:23:13,770
+What is going to happen to this subtree size
+
+257
+00:23:13,950 --> 00:23:15,590
+if I am inserting k in here?
+
+258
+00:23:18,220 --> 00:23:27,520
+This is going to increase to 10. And then I go left.
+
+259
+00:23:27,720 --> 00:23:30,770
+This one is going to increase to 6.
+
+260
+00:23:32,390 --> 00:23:38,480
+Here it is going to increase to 4. Here 2.
+
+261
+00:23:40,240 --> 00:23:47,840
+And then I will put my k down there with a 1.
+
+262
+00:23:48,230 --> 00:23:51,660
+So I just updated on the way down. Pretty easy.
+
+263
+00:23:57,600 --> 00:24:03,780
+Yeah? But now it's not a red-black tree anymore.
+
+264
+00:24:05,470 --> 00:24:18,580
+You have to rebalance, so you must also handle rebalancing.
+
+265
+00:24:19,290 --> 00:24:24,330
+Because, remember, and this is something that people tend to forget
+
+266
+00:24:24,340 --> 00:24:26,310
+so it's always, I think,
+
+267
+00:24:26,540 --> 00:24:28,760
+helpful when I see patterns going on
+
+268
+00:24:28,940 --> 00:24:31,170
+to tell everybody what the pattern is
+
+269
+00:24:31,370 --> 00:24:33,100
+so that you can be sure of it in your work
+
+270
+00:24:33,330 --> 00:24:35,490
+that you're not falling into that pattern.
+
+271
+00:24:35,670 --> 00:24:40,620
+What people tend to forget when they're doing red-black trees is
+
+272
+00:24:40,800 --> 00:24:43,180
+they tend to remember the tree insert part of it,
+
+273
+00:24:43,390 --> 00:24:45,800
+but red-black insert,
+
+274
+00:24:46,050 --> 00:24:50,170
+that RB insert procedure actually has two parts to it.
+
+275
+00:24:50,310 --> 00:24:53,790
+First you call tree insert and then you have to rebalance.
+
+276
+00:24:55,750 --> 00:24:56,820
+And so you've got to make sure you do
+
+277
+00:24:57,110 --> 00:24:59,080
+the whole of the red-black insert.
+
+278
+00:24:59,290 --> 00:25:01,830
+Not just the tree insert part. We just did the tree insert part.
+
+279
+00:25:01,980 --> 00:25:08,110
+That was easy. We also have to handle rebalancing.
+
+280
+00:25:08,310 --> 00:25:11,040
+So there are two types of things we have to worry about.
+
+281
+00:25:11,230 --> 00:25:14,090
+One is red-black color changes.
+
+282
+00:25:17,410 --> 00:25:22,520
+Well, unfortunately those have no effect on subtree sizes.
+
+283
+00:25:22,760 --> 00:25:27,200
+If I change the colors of things, no effect, no problem.
+
+284
+00:25:30,360 --> 00:25:35,220
+But also the interesting one is rotations.
+
+285
+00:25:40,300 --> 00:25:44,150
+Rotations, it turns out, are fairly easy to fix up.
+
+286
+00:25:44,380 --> 00:25:46,470
+Because when I do a rotation,
+
+287
+00:25:46,650 --> 00:25:50,240
+I can update the nodes based on the children.I will show you that.
+
+288
+00:25:50,480 --> 00:25:58,950
+You basically look at children and fix up,
+
+289
+00:26:00,780 --> 00:26:07,260
+in this case, in order one time per rotation.
+
+290
+00:26:07,570 --> 00:26:11,280
+For example, imagine that
+
+291
+00:26:11,510 --> 00:26:14,810
+I had a piece of my tree that looked like this.
+
+292
+00:26:21,020 --> 00:26:26,180
+And let's say it was 7, 3, 4, the subtree sizes.
+
+293
+00:26:26,310 --> 00:26:28,520
+I'm not going to put the values in here.
+
+294
+00:26:28,700 --> 00:26:32,030
+And I did a right rotation on that edge
+
+295
+00:26:32,190 --> 00:26:35,560
+to put them the other way.
+
+296
+00:26:40,060 --> 00:26:42,610
+And so these guys get hooked up this way.
+
+297
+00:26:46,320 --> 00:26:50,810
+Always the three children stay as three children.
+
+298
+00:26:50,900 --> 00:26:52,880
+We just swing this guy over to there
+
+299
+00:26:53,040 --> 00:26:55,270
+and make this guy be the parent of the other one.
+
+300
+00:26:56,420 --> 00:26:58,210
+And so now the point is that
+
+301
+00:26:58,390 --> 00:27:02,570
+I can just simply update this guy to be,
+
+302
+00:27:02,740 --> 00:27:05,570
+well, he's got 8, 3 plus 4 plus 1
+
+303
+00:27:05,780 --> 00:27:10,740
+using our formula for what the size is.
+
+304
+00:27:12,650 --> 00:27:17,370
+And now, for this one, it's going to be 8 plus 7 plus 1 is 16,
+
+305
+00:27:17,600 --> 00:27:18,990
+or, if I think about it,
+
+306
+00:27:19,140 --> 00:27:21,160
+it's going to be whatever that was before
+
+307
+00:27:23,320 --> 00:27:27,720
+because I haven't changed this subtree size with a rotation.
+
+308
+00:27:27,960 --> 00:27:30,830
+Everything beneath this edge is still beneath this edge.
+
+309
+00:27:31,030 --> 00:27:34,520
+And so I fixed it up in order one time.
+
+310
+00:27:34,840 --> 00:27:37,460
+There are certain other types of operations
+
+311
+00:27:37,640 --> 00:27:40,450
+sometimes that occur where this isn't the value.
+
+312
+00:27:40,710 --> 00:27:42,990
+If I wasn't doing subtree sizes
+
+313
+00:27:43,200 --> 00:27:46,970
+but was doing some other property of the subtree,
+
+314
+00:27:48,760 --> 00:27:50,560
+it could be that this was no longer 16
+
+315
+00:27:50,960 --> 00:27:54,020
+in which case the effect might propagate up towards the root.
+
+316
+00:27:54,280 --> 00:27:57,810
+There is a nice little lemma in the book
+
+317
+00:27:58,100 --> 00:28:02,480
+that shows the conditions under which you can make sure that
+
+318
+00:28:02,660 --> 00:28:05,280
+the re-balancing doesn't cost you too much.
+
+319
+00:28:07,200 --> 00:28:09,030
+So that was pretty good.
+
+320
+00:28:09,220 --> 00:28:16,220
+Now, insert and delete, that is all we have to do for rotations,
+
+321
+00:28:16,410 --> 00:28:19,750
+are therefore still order log n time,
+
+322
+00:28:21,400 --> 00:28:25,170
+because a red-black tree only has to do order one rotations.
+
+323
+00:28:25,430 --> 00:28:27,740
+Do they normally take constant time?
+
+324
+00:28:27,930 --> 00:28:29,090
+Well, they still take constant time.
+
+325
+00:28:29,320 --> 00:28:30,970
+They just take a little bit bigger constant.
+
+326
+00:28:33,400 --> 00:28:36,890
+And so now we've been able to build this great data structure
+
+327
+00:28:37,080 --> 00:28:43,910
+that supports dynamic order statistic queries
+
+328
+00:28:46,080 --> 00:28:49,420
+and it works in order log n time
+
+329
+00:28:49,730 --> 00:28:52,860
+for insert, delete and the various queries.
+
+330
+00:28:53,080 --> 00:28:56,720
+OS-Select. I can also just search for an element.
+
+331
+00:28:56,950 --> 00:28:58,340
+I have taken the basic data structure
+
+332
+00:28:58,590 --> 00:29:00,510
+and have added some new operations on it.
+
+333
+00:29:01,850 --> 00:29:05,240
+Any questions about what we did here?
+
+334
+00:29:07,100 --> 00:29:11,790
+Do people understand this reasonably well?
+
+335
+00:29:13,360 --> 00:29:20,540
+OK. Then let's generalize, always a dangerous thing.
+
+336
+00:29:35,790 --> 00:29:38,780
+Augmenting data structures.
+
+337
+00:29:39,050 --> 00:29:42,510
+What I would like to do is give you a little methodology
+
+338
+00:29:42,650 --> 00:29:44,900
+for how you go about doing this safely
+
+339
+00:29:45,080 --> 00:29:48,250
+so you don't forget things.
+
+340
+00:29:48,430 --> 00:29:50,150
+The most common thing, by the way,
+
+341
+00:29:50,310 --> 00:29:56,340
+if there is an augmentation problem on the take-home
+
+342
+00:29:56,520 --> 00:29:59,020
+or if there is one on the final,
+
+343
+00:29:59,160 --> 00:30:03,520
+I guarantee that probably a quarter of the class
+
+344
+00:30:03,750 --> 00:30:09,070
+will forget the rotations if they augmented red-black tree.
+
+345
+00:30:09,260 --> 00:30:13,830
+I guarantee it. Anyway,
+
+346
+00:30:14,080 --> 00:30:16,140
+here is a little methodology to check yourself.
+
+347
+00:30:16,400 --> 00:30:19,610
+As I mentioned, the reason why this is so important is
+
+348
+00:30:19,760 --> 00:30:21,970
+because this is, in practice,
+
+349
+00:30:22,130 --> 00:30:25,580
+the thing that you do most of the time.
+
+350
+00:30:25,800 --> 00:30:29,040
+You don't just use a data structure as given.
+
+351
+00:30:29,250 --> 00:30:30,510
+You take a data structure.
+
+352
+00:30:30,680 --> 00:30:33,510
+You say I have my own operations I want to layer onto this.
+
+353
+00:30:34,490 --> 00:30:35,500
+We're going to give a methodology.
+
+354
+00:30:35,680 --> 00:30:37,150
+And what I will do, as I go along,
+
+355
+00:30:37,330 --> 00:30:40,500
+is will use the example of order statistics trees
+
+356
+00:30:43,240 --> 00:30:46,560
+to illustrate the methodology.
+
+357
+00:30:47,480 --> 00:30:49,860
+It is four steps.
+
+358
+00:30:50,060 --> 00:30:55,410
+The first is choose an underlying data structure.
+
+359
+00:31:02,720 --> 00:31:05,340
+Which in the case of order statistics tree was what?
+
+360
+00:31:07,050 --> 00:31:19,900
+Red-black tree. And the second thing we do is we figure out
+
+361
+00:31:20,130 --> 00:31:22,980
+what additional information we wish
+
+362
+00:31:23,150 --> 00:31:25,180
+to maintain in that data structure.
+
+363
+00:31:36,000 --> 00:31:46,850
+Which in this case is the subtree sizes.
+
+364
+00:31:47,030 --> 00:31:50,190
+Subtree sizes is what we keep for this one.
+
+365
+00:31:52,840 --> 00:31:58,930
+And when we did this we could make mistakes, right?
+
+366
+00:31:59,140 --> 00:32:00,790
+We could have said, oh, let's keep the rank.
+
+367
+00:32:00,970 --> 00:32:04,940
+And we start playing with it and discover we can do that.
+
+368
+00:32:05,090 --> 00:32:07,020
+It just goes really slowly.
+
+369
+00:32:07,030 --> 00:32:10,210
+It takes some creativity to figure out what is the information
+
+370
+00:32:10,370 --> 00:32:11,900
+that you're going to be able to keep,
+
+371
+00:32:12,040 --> 00:32:16,400
+but also to maintain the other properties that you want.
+
+372
+00:32:17,940 --> 00:32:27,030
+The third step is verify that the information can be maintained
+
+373
+00:32:31,490 --> 00:32:35,210
+---- for the modifying operations on the data structure.
+
+374
+00:32:43,630 --> 00:32:52,680
+And so in this case, for OS trees,
+
+375
+00:32:54,180 --> 00:32:57,890
+the modifying operations were insert and delete.
+
+376
+00:32:58,160 --> 00:33:00,800
+And, of course, we had to make sure we dealt with rotations.
+
+377
+00:33:07,090 --> 00:33:15,270
+And because rotations are part of that we could break it down
+
+378
+00:33:15,300 --> 00:33:18,220
+into the tree insert, the tree delete and rotations.
+
+379
+00:33:18,370 --> 00:33:20,340
+And once we've did that everything was fine.
+
+380
+00:33:20,510 --> 00:33:22,540
+We didn't, for this particular problem,
+
+381
+00:33:22,680 --> 00:33:25,540
+have to worry about color changes. But that's another thing
+
+382
+00:33:25,690 --> 00:33:29,720
+that under some things you might have to worry about.
+
+383
+00:33:29,870 --> 00:33:33,790
+For some reason the color made a difference.
+
+384
+00:33:33,930 --> 00:33:36,040
+Usually that doesn't make a difference.
+
+385
+00:33:36,180 --> 00:33:40,470
+And then the fourth step is to develop new operations.
+
+386
+00:33:48,880 --> 00:33:54,250
+Presumably that use the info that you have now stored.
+
+387
+00:33:54,500 --> 00:34:00,530
+And this was OS-Select and OS-Rank,
+
+388
+00:34:00,700 --> 00:34:02,980
+which we didn't give but which is there.
+
+389
+00:34:03,160 --> 00:34:05,750
+And also it's a nice little puzzle to figure out yourself,
+
+390
+00:34:05,930 --> 00:34:09,120
+how you would build OS-Rank. Not a hard piece of code.
+
+391
+00:34:13,050 --> 00:34:17,050
+This methodology is not actually the way you do this.
+
+392
+00:34:17,270 --> 00:34:21,150
+This is one of these things that's more like a checklist,
+
+393
+00:34:21,320 --> 00:34:27,320
+because you see whether or not you've got --
+
+394
+00:34:27,460 --> 00:34:28,740
+When you're actually doing this
+
+395
+00:34:28,880 --> 00:34:30,970
+maybe you developed the new operations first.
+
+396
+00:34:31,050 --> 00:34:33,620
+You've got to keep in mind the new operations
+
+397
+00:34:33,830 --> 00:34:35,220
+while you're verifying that the information
+
+398
+00:34:35,620 --> 00:34:37,360
+you're storing can be here.
+
+399
+00:34:37,500 --> 00:34:38,890
+Maybe you will then go back
+
+400
+00:34:39,030 --> 00:34:41,410
+and change this and sort of sort through it.
+
+401
+00:34:41,570 --> 00:34:43,830
+This is more a checklist that when you're done
+
+402
+00:34:44,970 --> 00:34:47,330
+this is how you write it up.
+
+403
+00:34:47,640 --> 00:34:52,270
+This is how you document that what you've done is,
+
+404
+00:34:52,420 --> 00:34:53,930
+in fact, a good thing. You have a checklist.
+
+405
+00:34:54,180 --> 00:34:55,680
+Here is my underlying data structure.
+
+406
+00:34:55,870 --> 00:34:58,180
+Here is the addition information I need.
+
+407
+00:34:58,340 --> 00:35:01,610
+See, I can still support the modifying operations
+
+408
+00:35:01,790 --> 00:35:02,930
+that the data structure used to have
+
+409
+00:35:03,110 --> 00:35:06,870
+and now here are my new operations and see what those are.
+
+410
+00:35:07,000 --> 00:35:08,320
+It's really a checklist.
+
+411
+00:35:08,510 --> 00:35:12,540
+Not a prescription for the order in which you do things.
+
+412
+00:35:12,730 --> 00:35:16,140
+You must do all these steps, not necessarily in this order.
+
+413
+00:35:16,320 --> 00:35:18,860
+This is a guide for your documentation.
+
+414
+00:35:19,020 --> 00:35:21,490
+When we ask for you to augment a data structure,
+
+415
+00:35:21,770 --> 00:35:25,520
+generally we're asking you to tell us what the four steps are.
+
+416
+00:35:25,680 --> 00:35:26,860
+It will help you organize your things.
+
+417
+00:35:26,980 --> 00:35:28,070
+It will also help make sure
+
+418
+00:35:28,200 --> 00:35:30,170
+you don't forget some step along the way.
+
+419
+00:35:30,880 --> 00:35:34,090
+I've seen people who have added the information
+
+420
+00:35:34,250 --> 00:35:38,430
+and developed new operations
+
+421
+00:35:38,660 --> 00:35:40,780
+but completely forgot to verify that
+
+422
+00:35:40,970 --> 00:35:43,120
+the information could be maintained.
+
+423
+00:35:44,830 --> 00:35:46,590
+So you want to make sure that you've done all those.
+
+424
+00:35:46,830 --> 00:35:56,310
+Usually you have to play -- -- with interactions
+
+425
+00:36:02,530 --> 00:36:04,920
+——between steps.
+
+426
+00:36:06,690 --> 00:36:11,520
+It's not just a do this, do this, do this.
+
+427
+00:36:12,110 --> 00:36:16,460
+We're going to do now a more complicated data structure.
+
+428
+00:36:16,690 --> 00:36:18,150
+It's not that much more complicated,
+
+429
+00:36:18,370 --> 00:36:21,560
+but its correctness is actually kind of challenging.
+
+430
+00:36:30,750 --> 00:36:35,330
+And it is actually a very practical and useful data structure.
+
+431
+00:36:35,700 --> 00:36:40,940
+I am amazed at how many people aren't aware that
+
+432
+00:36:41,350 --> 00:36:44,630
+there are data structures of this nature that are useful for them
+
+433
+00:36:44,900 --> 00:36:48,070
+when I see people writing really slow code.
+
+434
+00:36:49,460 --> 00:36:52,890
+And so the example we're going to do is interval trees.
+
+435
+00:36:57,490 --> 00:37:00,020
+And the idea of this is that
+
+436
+00:37:00,250 --> 00:37:06,490
+we want to maintain a set of intervals.
+
+437
+00:37:11,310 --> 00:37:13,790
+For example, time intervals.
+
+438
+00:37:19,000 --> 00:37:21,950
+I have a whole database of time intervals
+
+439
+00:37:22,120 --> 00:37:23,570
+that I'm trying to maintain.
+
+440
+00:37:23,790 --> 00:37:26,600
+Let's just do an example here.
+
+441
+00:37:59,880 --> 00:38:08,100
+This is going from 7 to 10, 5 to 11 and 4 to 8,
+
+442
+00:38:08,640 --> 00:38:17,820
+from 15 to 18, 17 to 19 and 21 to 23.
+
+443
+00:38:18,190 --> 00:38:20,890
+This is a set of intervals.
+
+444
+00:38:22,100 --> 00:38:26,250
+And if we have an interval i,
+
+445
+00:38:26,450 --> 00:38:32,150
+let's say this is interval i, which is 7,10.
+
+446
+00:38:32,280 --> 00:38:39,290
+We're going to call this endpoint the low endpoint of i
+
+447
+00:38:39,520 --> 00:38:43,940
+and this we're going to call the high endpoint of i.
+
+448
+00:38:44,210 --> 00:38:48,770
+The reason I use low and high rather than left or right is
+
+449
+00:38:48,880 --> 00:38:50,580
+because we're going to have a tree,
+
+450
+00:38:50,830 --> 00:38:53,230
+and we're going to want the left subtree and the right subtree.
+
+451
+00:38:53,450 --> 00:38:59,000
+So if I start saying left and right for intervals and left and right
+
+452
+00:38:59,170 --> 00:39:00,980
+for tree we're going to get really confused.
+
+453
+00:39:01,640 --> 00:39:04,320
+This is also a tip.  Let me say when you're coding,
+
+454
+00:39:04,570 --> 00:39:07,390
+you really have to think hard sometimes about the words
+
+455
+00:39:07,560 --> 00:39:08,780
+that you're using for things,
+
+456
+00:39:08,910 --> 00:39:10,710
+especially things like left and right
+
+457
+00:39:10,880 --> 00:39:14,800
+because they get so overused throughout programming.
+
+458
+00:39:14,910 --> 00:39:18,680
+It's a good idea to come up with a whole wealth of synonyms
+
+459
+00:39:18,830 --> 00:39:22,270
+for different situations so that it is clear in any piece of code
+
+460
+00:39:22,450 --> 00:39:23,800
+when you're talking, for example,
+
+461
+00:39:23,910 --> 00:39:25,650
+about the intervals versus the tree,
+
+462
+00:39:25,650 --> 00:39:27,350
+because we're going to have both going on here.
+
+463
+00:39:29,000 --> 00:39:30,590
+And what we're going to do is
+
+464
+00:39:30,810 --> 00:39:39,420
+we want to support insertion and deletion of intervals here.
+
+465
+00:39:39,570 --> 00:39:42,150
+And we're going to have a query,
+
+466
+00:39:42,320 --> 00:39:44,620
+which is going to be the new operation we're going to develop,
+
+467
+00:39:44,760 --> 00:39:51,390
+which is going to be to find an interval, any interval
+
+468
+00:39:52,500 --> 00:40:07,850
+in the set that overlaps a given query interval.
+
+469
+00:40:14,060 --> 00:40:25,250
+So I give you a query interval like say 6, 14
+
+470
+00:40:25,490 --> 00:40:30,010
+and you can return this guy or this guy,
+
+471
+00:40:30,240 --> 00:40:33,310
+this guy, couldn't return any of these
+
+472
+00:40:33,500 --> 00:40:35,850
+because these are all less than 14.
+
+473
+00:40:36,080 --> 00:40:38,690
+So I can return any one of those.
+
+474
+00:40:38,800 --> 00:40:40,110
+I only have to return one.
+
+475
+00:40:40,230 --> 00:40:42,720
+I just have to find one guy that overlaps.
+
+476
+00:40:44,120 --> 00:40:49,890
+Any question about what we're going to be setting up here?
+
+477
+00:40:50,120 --> 00:40:55,980
+OK. Our methodology is we're going to pick,
+
+478
+00:40:57,890 --> 00:41:00,090
+first of all, step one.
+
+479
+00:41:02,000 --> 00:41:04,270
+And here is our methodology.
+
+480
+00:41:09,820 --> 00:41:15,500
+Step one is we're going chose underlying data structure.
+
+481
+00:41:15,600 --> 00:41:17,930
+Does anybody have a suggestion as to what data structure
+
+482
+00:41:18,050 --> 00:41:21,940
+we ought to use here to support interval trees?
+
+483
+00:41:30,640 --> 00:41:33,560
+What data structure should we try to start here
+
+484
+00:41:33,840 --> 00:41:36,280
+to support interval trees?
+
+485
+00:41:41,390 --> 00:41:43,490
+Anybody have any idea?
+
+486
+00:41:44,000 --> 00:41:48,000
+A red-black tree. A binary search tree. Red-black tree.
+
+487
+00:41:48,300 --> 00:41:49,900
+We're going to use a red-black tree.
+
+488
+00:41:55,000 --> 00:41:57,560
+Oh, I've got to say what it is keyed on.
+
+489
+00:42:01,030 --> 00:42:03,060
+What is going to be the key for my red-black tree?
+
+490
+00:42:03,170 --> 00:42:05,370
+For each interval, what should I use for a key?
+
+491
+00:42:07,910 --> 00:42:13,250
+This is where there are a bunch of options, right?
+
+492
+00:42:19,250 --> 00:42:20,260
+Throw out some ideas.
+
+493
+00:42:20,380 --> 00:42:23,330
+It's always better to branch than it is to prune.
+
+494
+00:42:23,400 --> 00:42:24,470
+You can always prune later,
+
+495
+00:42:24,770 --> 00:42:27,380
+but if you don't branch you will never get the chance to prune.
+
+496
+00:42:27,490 --> 00:42:30,040
+So generation of ideas.
+
+497
+00:42:30,150 --> 00:42:32,030
+You'll need that when you're doing the design phase
+
+498
+00:42:32,140 --> 00:42:36,120
+and doing the take-home exam. Yeah?
+
+499
+00:42:36,340 --> 00:42:38,200
+[Student]Inaudible
+
+500
+00:42:38,300 --> 00:42:42,360
+[Professor]We're calling that the low endpoint.
+
+501
+00:42:42,520 --> 00:42:44,350
+OK, you could do low endpoint.
+
+502
+00:42:44,460 --> 00:42:45,630
+What other ideas are there?
+
+503
+00:42:47,900 --> 00:42:52,490
+High end point. Now you can look at low endpoint, high endpoint.
+
+504
+00:42:54,410 --> 00:42:58,370
+Well, between low and high which is better?
+
+505
+00:43:00,340 --> 00:43:02,620
+That one is not going to matter, right?
+
+506
+00:43:02,770 --> 00:43:05,220
+So doing high versus low, we don't have to consider that,
+
+507
+00:43:05,390 --> 00:43:08,370
+but there is another natural point you want to think about
+
+508
+00:43:08,480 --> 00:43:11,960
+using like the median, the middle point.
+
+509
+00:43:13,700 --> 00:43:22,190
+At least that is symmetric. What do you think?
+
+510
+00:43:22,370 --> 00:43:26,470
+What else might I use? The length?
+
+511
+00:43:29,470 --> 00:43:34,950
+I think the length doesn't feel to me productive.
+
+512
+00:43:35,060 --> 00:43:37,430
+This is just purely a matter of intuition.
+
+513
+00:43:37,440 --> 00:43:38,730
+It doesn't feel productive,
+
+514
+00:43:38,840 --> 00:43:39,880
+because if I know the length I don't know
+
+515
+00:43:40,030 --> 00:43:43,160
+where it is so it's going to be hard to
+
+516
+00:43:43,280 --> 00:43:48,260
+maintain information about where it is for queries.
+
+517
+00:43:48,390 --> 00:43:51,160
+It turns out we're going to use the low left endpoint,
+
+518
+00:43:54,380 --> 00:43:58,260
+but I think to me that was sort of a surprise
+
+519
+00:43:58,410 --> 00:44:00,180
+that you'd want to use that and not the middle one.
+
+520
+00:44:00,340 --> 00:44:03,240
+Because you're favoring one endpoint over the other.
+
+521
+00:44:03,410 --> 00:44:05,900
+It turns out that's the right thing to do, surprisingly.
+
+522
+00:44:08,850 --> 00:44:10,440
+There is another strategy.
+
+523
+00:44:10,590 --> 00:44:16,130
+Actually, there's another type of tree called a segment tree.
+
+524
+00:44:16,280 --> 00:44:17,630
+Actually, what you do is
+
+525
+00:44:17,630 --> 00:44:23,870
+you store both the left and right endpoints separately in the tree.
+
+526
+00:44:24,050 --> 00:44:25,640
+And then you maintain a data structure
+
+527
+00:44:25,790 --> 00:44:34,740
+where the line segments go up through the tree on to the other.
+
+528
+00:44:35,010 --> 00:44:37,190
+There are lots of things you can do,
+
+529
+00:44:37,340 --> 00:44:40,500
+but we're just going to keep it keyed on the low endpoint.
+
+530
+00:44:40,610 --> 00:44:43,320
+That's why this is a more clever data structure in some ways.
+
+531
+00:44:46,000 --> 00:44:52,820
+Now, this is harder. That is why this is a clever data structure.
+
+532
+00:44:52,950 --> 00:44:56,150
+What are we going to store in the
+
+533
+00:44:56,270 --> 00:45:01,320
+I think any of those ideas are good ideas
+
+534
+00:45:01,450 --> 00:45:03,090
+to throw out and look at.
+
+535
+00:45:03,210 --> 00:45:07,240
+You don't know which one is going to work until you play with it.
+
+536
+00:45:07,360 --> 00:45:12,460
+This one, though, is, I think, much harder to guess.
+
+537
+00:45:12,680 --> 00:45:15,000
+You're going to store in a node
+
+538
+00:45:15,010 --> 00:45:34,290
+the largest value, I will call it m, in the subtree rooted at that node.
+
+539
+00:45:43,880 --> 00:45:46,650
+We'll draw it like this, a node like this.
+
+540
+00:45:46,850 --> 00:45:50,860
+We will put the interval here and we will put the m value here.
+
+541
+00:46:00,000 --> 00:46:01,870
+Let's draw a picture.
+
+542
+00:46:37,680 --> 00:46:39,810
+Once again, I am not drawing the NILs.
+
+543
+00:46:58,660 --> 00:47:01,410
+I hope that that is a search tree
+
+544
+00:47:01,590 --> 00:47:10,030
+that is keyed on the low left endpoint. 4, 5, 7, 15, 17, 21.
+
+545
+00:47:10,340 --> 00:47:13,800
+It is keyed on the low left endpoint.
+
+546
+00:47:13,950 --> 00:47:16,970
+If this a red-black tree, let's just do another practice.
+
+547
+00:47:17,110 --> 00:47:20,990
+How can I color this so that it is a legal red-black tree?
+
+548
+00:47:23,810 --> 00:47:26,020
+Not too relevant to what we're doing right now
+
+549
+00:47:26,190 --> 00:47:30,240
+But a little drill doesn't hurt sometimes.
+
+550
+00:47:33,270 --> 00:47:35,550
+Remember, the NILs are not there and they are all black.
+
+551
+00:47:35,740 --> 00:47:39,720
+And the root is black. I will give that one to you.
+
+552
+00:47:49,860 --> 00:47:58,460
+Good. This will work. You sort of go through a little puzzle.
+
+553
+00:47:58,680 --> 00:48:00,850
+A logic puzzle.
+
+554
+00:48:01,600 --> 00:48:03,950
+Because this is really short
+
+555
+00:48:04,100 --> 00:48:05,350
+so it better not have any reds in it.
+
+556
+00:48:05,510 --> 00:48:07,750
+This has got to be black.
+
+557
+00:48:07,930 --> 00:48:10,070
+Now, if I'm going to balance the height,
+
+558
+00:48:10,210 --> 00:48:11,670
+I have got to have a layer of black here.
+
+559
+00:48:11,810 --> 00:48:13,670
+It couldn't be that one. It's got to be these two.
+
+560
+00:48:16,740 --> 00:48:21,880
+Good. Now let's compute the m value for each of these.
+
+561
+00:48:22,040 --> 00:48:27,850
+It's the largest value in the subtree rooted at that node.
+
+562
+00:48:28,020 --> 00:48:33,220
+What's the largest value in the subtree rooted at this node? 10.
+
+563
+00:48:34,550 --> 00:48:48,540
+And in this one? 18. In this one? 8. 18.
+
+564
+00:48:50,410 --> 00:48:56,670
+That one is 23 and that is 23.
+
+565
+00:49:00,660 --> 00:49:04,580
+In general, m is going to be
+
+566
+00:49:04,830 --> 00:49:10,360
+the maximum of three possible values.
+
+567
+00:49:11,730 --> 00:49:17,870
+Either the high point of the interval at x
+
+568
+00:49:18,100 --> 00:49:31,860
+or m of the left of x or m of the right of x.
+
+569
+00:49:39,420 --> 00:49:41,900
+Does everybody see that?
+
+570
+00:49:42,270 --> 00:49:45,240
+It is going to be m of x for any node.
+
+571
+00:49:45,490 --> 00:49:47,420
+I just have to look, what is the maximum here,
+
+572
+00:49:47,580 --> 00:49:48,840
+what is the maximum here
+
+573
+00:49:49,000 --> 00:49:51,390
+and what is the high point of the interval.
+
+574
+00:49:52,360 --> 00:49:54,260
+Whichever one of those is largest,
+
+575
+00:49:54,440 --> 00:49:58,530
+that's the largest for that subtree.
+
+576
+00:50:14,840 --> 00:50:16,990
+The modifying operations.
+
+577
+00:50:27,570 --> 00:50:34,380
+Let's first do insert. How can I do insert?
+
+578
+00:50:35,640 --> 00:50:37,820
+There are two parts.
+
+579
+00:50:38,040 --> 00:50:40,730
+The first part is to do the tree insert,
+
+580
+00:50:40,940 --> 00:50:43,530
+just a normal insert into a binary search tree.
+
+581
+00:50:52,600 --> 00:51:00,640
+What do I do? Insert a new interval?
+
+582
+00:51:16,980 --> 00:51:19,250
+Insert a new interval here?
+
+583
+00:51:19,490 --> 00:51:21,310
+How can I fix up the m's?
+
+584
+00:51:21,660 --> 00:51:31,310
+[Student]Inaudible
+
+585
+00:51:31,800 --> 00:51:34,750
+[Professor]That's right. You just go down the tree
+
+586
+00:51:34,940 --> 00:51:38,300
+and look at my current interval.
+
+587
+00:51:38,510 --> 00:51:40,610
+And if it's got a bigger max,
+
+588
+00:51:40,800 --> 00:51:43,100
+this is something that is going into that subtree.
+
+589
+00:51:43,240 --> 00:51:47,560
+If its high endpoint is bigger than the current max,
+
+590
+00:51:47,690 --> 00:51:49,030
+update the current max.
+
+591
+00:51:49,140 --> 00:51:51,960
+I just do that as I'm going through the insertion,
+
+592
+00:51:52,080 --> 00:51:55,070
+wherever it happens to land up in every subtree that it hits,
+
+593
+00:51:55,210 --> 00:51:56,900
+every node that it hits on the way down.
+
+594
+00:51:57,040 --> 00:52:06,800
+I just update it with the maximum wherever it happens to fall.
+
+595
+00:52:12,480 --> 00:52:16,550
+Good. You just fix them on the way down.
+
+596
+00:52:24,400 --> 00:52:26,680
+But we also have to do the other section.
+
+597
+00:52:26,870 --> 00:52:35,100
+Also need to handle rotations.
+
+598
+00:52:41,930 --> 00:52:49,320
+So let's just see how we might do rotations as an example.
+
+599
+00:52:57,550 --> 00:53:03,400
+Let's say this is 11, 15, 30.
+
+600
+00:53:12,000 --> 00:53:14,520
+Let's say I'm doing a right rotation.
+
+601
+00:53:15,300 --> 00:53:17,360
+This is coming off from somewhere.
+
+602
+00:53:29,430 --> 00:53:31,860
+That is coming off.
+
+603
+00:53:32,430 --> 00:53:36,930
+This is still going to be the child that has 30,
+
+604
+00:53:37,110 --> 00:53:39,020
+the one that 14 and the one that has 19.
+
+605
+00:53:42,190 --> 00:53:45,110
+And so now we've rotated this way,
+
+606
+00:53:45,280 --> 00:53:49,480
+so this is the 11, 15 and this is the 6, 20.
+
+607
+00:53:52,350 --> 00:53:56,390
+For this one, I just use my formula here.
+
+608
+00:53:57,980 --> 00:54:02,150
+I just look here and say which is the biggest, 14, 15 or 19?
+
+609
+00:54:02,390 --> 00:54:08,890
+19. And I look here. Which is the biggest? 30, 19 or 20? 30.
+
+610
+00:54:09,140 --> 00:54:13,530
+Or, once again, it turns out, not too hard to show,
+
+611
+00:54:13,770 --> 00:54:16,420
+that it's always whatever was there,
+
+612
+00:54:16,610 --> 00:54:18,580
+because we're talking about the biggest thing in the subtree.
+
+613
+00:54:18,870 --> 00:54:20,890
+And the membership of the subtree
+
+614
+00:54:21,120 --> 00:54:23,010
+hasn't changed when we do the rotation.
+
+615
+00:54:26,400 --> 00:54:28,850
+That just took me order one time to fix up.
+
+616
+00:54:44,180 --> 00:55:03,420
+Fixing up the m's during rotation takes O(1) time.
+
+617
+00:55:07,200 --> 00:55:17,070
+So the total insert time is O(log n).
+
+618
+00:55:22,320 --> 00:55:26,380
+Once I figured out that this is the right information,
+
+619
+00:55:26,400 --> 00:55:29,030
+of course we don't know what we're using this information for yet.
+
+620
+00:55:29,160 --> 00:55:32,040
+But once I know that that is the information,
+
+621
+00:55:32,200 --> 00:55:36,040
+showing you that it works in certain delete continuing work
+
+622
+00:55:36,190 --> 00:55:37,810
+in order log n time is easy.
+
+623
+00:55:37,920 --> 00:55:40,820
+Now, delete is actually a little bit trickier
+
+624
+00:55:43,890 --> 00:55:46,030
+but I will just say it is similar.
+
+625
+00:55:47,800 --> 00:55:51,210
+Because in delete you go through and you find something,
+
+626
+00:55:51,370 --> 00:55:55,320
+you may have to go through the whole business of swapping it.
+
+627
+00:55:57,810 --> 00:56:00,190
+If it's an internal node you've got to swap it
+
+628
+00:56:00,300 --> 00:56:02,270
+with its successor or predecessor.
+
+629
+00:56:02,390 --> 00:56:07,020
+And so there are a bunch of things that have to be dealt with,
+
+630
+00:56:07,120 --> 00:56:08,290
+but it is all stuff where
+
+631
+00:56:08,450 --> 00:56:10,950
+you can update the information using this thing.
+
+632
+00:56:11,090 --> 00:56:12,870
+And it's all essentially local changes
+
+633
+00:56:12,980 --> 00:56:14,730
+when you're updating this information
+
+634
+00:56:16,530 --> 00:56:20,840
+because you can do it essentially only on a path up from the root
+
+635
+00:56:20,950 --> 00:56:24,260
+and most of the tree is never dealt with.
+
+636
+00:56:24,360 --> 00:56:27,020
+I will leave that for you folks to work out.
+
+637
+00:56:27,140 --> 00:56:30,000
+It's also in the book if you want to cheat,
+
+638
+00:56:31,660 --> 00:56:33,180
+but it is a good exercise.
+
+639
+00:56:33,400 --> 00:56:36,130
+Any questions about the first three steps?
+
+640
+00:56:40,460 --> 00:56:43,160
+Fourth step is new operations.
+
+641
+00:57:15,750 --> 00:57:23,300
+Interval search of i is going to find an interval
+
+642
+00:57:26,220 --> 00:57:32,250
+that overlaps the interval i.
+
+643
+00:57:32,630 --> 00:57:36,620
+So i here is an interval. It's got two coordinates.
+
+644
+00:57:36,790 --> 00:57:39,000
+And this, rather than writing recursively,
+
+645
+00:57:39,150 --> 00:57:42,130
+we're going to write as, it's sort of going to be recursive,
+
+646
+00:57:42,240 --> 00:57:44,170
+but we're going to write it with a while loop.
+
+647
+00:57:47,460 --> 00:57:49,770
+You could write it recursively.
+
+648
+00:57:49,920 --> 00:57:51,880
+The other one that we wrote, we could have written
+
+649
+00:57:52,040 --> 00:57:54,930
+as a while loop as well and not had the recursive call.
+
+650
+00:57:55,150 --> 00:57:57,880
+Here we're going to basically just start x gets the root.
+
+651
+00:58:00,570 --> 00:58:02,230
+And then while --
+
+652
+00:59:45,100 --> 00:59:51,380
+That is the code. Let's just see how it works.
+
+653
+00:59:51,660 --> 01:00:12,050
+Let's search for the interval 14, 16 in this tree.
+
+654
+01:00:13,900 --> 01:00:18,150
+Let's see. x starts out at the root.
+
+655
+01:00:18,480 --> 01:00:22,390
+And while it is not NIL,
+
+656
+01:00:22,610 --> 01:00:26,290
+and it's not NIL because it's the root, what is this doing?
+
+657
+01:00:26,520 --> 01:00:29,340
+Somebody tell me what that code does.
+
+658
+01:00:29,340 --> 01:00:48,630
+[Student]Inaudible
+
+659
+01:00:49,320 --> 01:00:51,090
+[Professor]Well, what is this doing?
+
+660
+01:00:51,380 --> 01:00:56,240
+This is testing something between i and int of x.
+
+661
+01:00:56,530 --> 01:00:59,650
+Int of x is the interval stored at x.
+
+662
+01:01:00,560 --> 01:01:03,130
+What is this testing for?
+
+663
+01:01:14,740 --> 01:01:16,990
+I hope I got it right.
+
+664
+01:01:27,980 --> 01:01:32,570
+What is this testing for? Yeah?
+
+665
+01:01:32,570 --> 01:01:39,390
+[Student]Inaudible
+
+666
+01:01:40,090 --> 01:01:45,250
+[Professor]Above or below? I need just simple words.
+
+667
+01:01:45,570 --> 01:01:53,230
+Test for overlaps. In particular test whether they do or don't?
+
+668
+01:01:53,540 --> 01:02:03,260
+Do? Don't? If I get to this point,
+
+669
+01:02:03,390 --> 01:02:14,230
+what do I know about i and int of x?
+
+670
+01:02:16,550 --> 01:02:26,620
+Don't overlap. They don't overlap
+
+671
+01:02:26,840 --> 01:02:31,140
+because the high of one is smaller than the low of the other.
+
+672
+01:02:31,270 --> 01:02:33,400
+The high of one is smaller than the low of the other.
+
+673
+01:02:33,510 --> 01:02:34,520
+They don't overlap that way.
+
+674
+01:02:34,680 --> 01:02:36,440
+Could they overlap the other way?
+
+675
+01:02:36,570 --> 01:02:41,390
+No because we're testing also whether the low of the one
+
+676
+01:02:41,510 --> 01:02:44,160
+is bigger than the high of the other.
+
+677
+01:02:44,310 --> 01:02:47,080
+They're saying it's either like this or like this.
+
+678
+01:02:50,160 --> 01:02:55,840
+This is testing not overlap. That makes it simpler.
+
+679
+01:02:56,070 --> 01:02:59,400
+When I'm searching for 14, 16, I check here.
+
+680
+01:02:59,580 --> 01:03:01,190
+And I say do they overlap?
+
+681
+01:03:01,350 --> 01:03:04,530
+And the answer is, now we can understand it
+
+682
+01:03:04,690 --> 01:03:07,900
+without having to go through all the arithmetic calculations,
+
+683
+01:03:08,010 --> 01:03:14,440
+no they don't overlap. If they did overlap, I found what I want.
+
+684
+01:03:14,590 --> 01:03:15,810
+And what's going to happen?
+
+685
+01:03:17,930 --> 01:03:20,680
+I am going to drop out of the while loop and just return x,
+
+686
+01:03:20,920 --> 01:03:24,120
+because I will return something that overlaps.
+
+687
+01:03:24,300 --> 01:03:27,700
+That is my goal. Here it says they don't overlap.
+
+688
+01:03:28,970 --> 01:03:33,310
+So then I say, well, if left of x is not NIL,
+
+689
+01:03:34,530 --> 01:03:40,680
+in other words, I've got a left child and low of i
+
+690
+01:03:40,930 --> 01:03:45,790
+is less than or equal to m of left of x, then we go left.
+
+691
+01:03:46,030 --> 01:03:49,310
+What happens in this case if I'm searching for 14, 16?
+
+692
+01:03:49,510 --> 01:03:52,440
+Is the low of i less than or equal to m of left of x?
+
+693
+01:03:52,670 --> 01:03:56,060
+Low of i is 14.
+
+694
+01:03:58,150 --> 01:04:05,620
+And I am searching. And is it less than 18?
+
+695
+01:04:06,310 --> 01:04:09,960
+Yes. Therefore, what do I do?
+
+696
+01:04:10,160 --> 01:04:15,370
+I go left and make x point to this guy.
+
+697
+01:04:16,210 --> 01:04:19,000
+Now I check. Does it overlap?
+
+698
+01:04:19,230 --> 01:04:28,050
+No. I take a look at the left guy. It is 8.
+
+699
+01:04:28,270 --> 01:04:37,460
+I compare 8 with 14, right? And is it lower?
+
+700
+01:04:37,500 --> 01:04:39,470
+No, so I go right.
+
+701
+01:04:41,760 --> 01:04:45,700
+And now I discover that I have an overlap here and it overlaps.
+
+702
+01:04:46,020 --> 01:04:54,790
+It returns then the 15, 18 as an overlapping one.
+
+703
+01:04:55,070 --> 01:05:05,270
+If I were searching for 12, 14.
+
+704
+01:05:11,750 --> 01:05:13,160
+I would go up to the top.
+
+705
+01:05:13,520 --> 01:05:18,310
+And I look, 12, 14, it doesn't overlap here.
+
+706
+01:05:18,440 --> 01:05:21,940
+I look at the 18 and it is greater so I go left.
+
+707
+01:05:23,790 --> 01:05:26,880
+I then look here. Does it overlap?
+
+708
+01:05:27,060 --> 01:05:29,550
+No. So then what happens?
+
+709
+01:05:29,790 --> 01:05:36,990
+I look at the left. It says I go right. I look here.
+
+710
+01:05:37,220 --> 01:05:41,570
+Then I go and I look at the left. It says, no, go right.
+
+711
+01:05:41,730 --> 01:05:46,950
+I go here, which is NIL, and now it is NIL. I return NIL.
+
+712
+01:05:47,120 --> 01:05:54,320
+And does 12, 14 overlap anything in the set?
+
+713
+01:05:54,500 --> 01:05:58,700
+No. So, therefore, it always works.
+
+714
+01:06:00,820 --> 01:06:11,960
+OK? OK. We're going to do correctness in a minute,
+
+715
+01:06:12,170 --> 01:06:17,440
+but let's just do our analysis first so we don't have to do it
+
+716
+01:06:17,730 --> 01:06:25,590
+because the correctness is going to be a little bit tricky.
+
+717
+01:06:25,770 --> 01:06:36,210
+Time = O(lg n) because all I am doing is going down the tree.
+
+718
+01:06:36,460 --> 01:06:39,900
+It takes time proportional to the height of the tree.
+
+719
+01:06:40,080 --> 01:06:47,030
+That's pretty easy. If I need to list all overlaps,
+
+720
+01:06:47,190 --> 01:06:49,690
+suppose I want to list all the overlaps,
+
+721
+01:06:49,880 --> 01:06:50,900
+how quickly can I do that?
+
+722
+01:06:53,880 --> 01:06:55,660
+Can somebody suggest how I could use this
+
+723
+01:06:55,770 --> 01:06:59,830
+as a subroutine to list all overlaps?
+
+724
+01:07:11,060 --> 01:07:13,590
+Suppose I have k overlaps,
+
+725
+01:07:13,860 --> 01:07:16,610
+k intervals that overlap my query interval
+
+726
+01:07:16,800 --> 01:07:18,880
+and I want to find every single one of them,
+
+727
+01:07:19,010 --> 01:07:30,890
+how fast can I do that? How do I do it?
+
+728
+01:07:41,740 --> 01:07:49,750
+How do I do it? If I search a second time,
+
+729
+01:07:49,960 --> 01:07:51,250
+I might get the same value.
+
+730
+01:07:58,230 --> 01:08:02,120
+Yeah, there you go. Do what?
+
+731
+01:08:03,500 --> 01:08:07,520
+When you find it delete it. Put it over to the side.
+
+732
+01:08:07,690 --> 01:08:10,280
+Find the next one, delete it until there are none left.
+
+733
+01:08:10,460 --> 01:08:18,770
+And then, if I don't want to modify the data structure,
+
+734
+01:08:18,930 --> 01:08:20,190
+insert them all back in.
+
+735
+01:08:21,300 --> 01:08:24,850
+It costs me k lg n if they are k overlaps.
+
+736
+01:08:25,060 --> 01:08:27,610
+That's actually called an output sensitive algorithm.
+
+737
+01:08:27,790 --> 01:08:30,540
+Because the running time of it depends upon
+
+738
+01:08:30,740 --> 01:08:34,610
+how much it outputs, so this is output sensitive.
+
+739
+01:08:40,450 --> 01:08:43,780
+The best to date for this problem, by the way,
+
+740
+01:08:43,890 --> 01:08:51,930
+wasting all is O(k+lg n) with a different data structure.
+
+741
+01:08:53,740 --> 01:08:58,880
+And, actually, that was open for a while as an open problem.
+
+742
+01:09:00,870 --> 01:09:13,750
+OK. Correctness. Why does this algorithm always work correctly?
+
+743
+01:09:17,340 --> 01:09:20,990
+The key issue of the correctness is that
+
+744
+01:09:21,310 --> 01:09:25,020
+I am picking one way to go, left or right.
+
+745
+01:09:25,250 --> 01:09:28,310
+And that's great, as long as it is in that subtree.
+
+746
+01:09:29,150 --> 01:09:32,860
+But how do I know that when I pick I decide I'm going to
+
+747
+01:09:33,010 --> 01:09:34,910
+go left that it might not be in the right subtree
+
+748
+01:09:35,010 --> 01:09:36,310
+and I went the wrong way?
+
+749
+01:09:38,290 --> 01:09:40,050
+Or, if I went right,
+
+750
+01:09:40,160 --> 01:09:42,720
+that I accidentally left one out on the left side?
+
+751
+01:09:42,830 --> 01:09:44,550
+We're always going just one direction.
+
+752
+01:09:44,660 --> 01:09:51,810
+And that's sort of the cleverness of the code.
+
+753
+01:09:52,070 --> 01:09:55,660
+The theorem is let's let L be
+
+754
+01:09:56,070 --> 01:10:03,140
+the set of intervals i prime in the left of a node x.
+
+755
+01:10:03,170 --> 01:10:09,370
+And R be the set of i primes in the right of x.
+
+756
+01:10:13,960 --> 01:10:16,910
+And now there are two parts I am going to show.
+
+757
+01:10:17,070 --> 01:10:32,510
+If the search goes right then the set of i prime in L,
+
+758
+01:10:32,870 --> 01:10:41,020
+such that i prime overlaps i is the empty set.
+
+759
+01:10:41,230 --> 01:10:44,190
+That's the first thing I do.
+
+760
+01:10:44,350 --> 01:10:47,630
+If it goes right then there is nothing
+
+761
+01:10:47,770 --> 01:10:50,500
+in the left subtree that overlaps.
+
+762
+01:10:50,660 --> 01:10:54,270
+It's always, whenever the code goes right, no problem,
+
+763
+01:10:56,450 --> 01:10:59,440
+because there was nothing in the left subtree to be found.
+
+764
+01:10:59,580 --> 01:11:04,120
+Does everybody understand what that says?
+
+765
+01:11:04,340 --> 01:11:05,560
+We are going to prove this,
+
+766
+01:11:05,710 --> 01:11:07,140
+but I want to make sure people understand.
+
+767
+01:11:07,280 --> 01:11:09,360
+Because the second one is going to be harder to understand
+
+768
+01:11:09,520 --> 01:11:11,880
+so you've got to make sure you understand this one first.
+
+769
+01:11:12,020 --> 01:11:16,260
+Any questions about this? OK. If the search goes left
+
+770
+01:11:24,870 --> 01:11:39,530
+——then the set of i prime in L such that i prime overlaps i,
+
+771
+01:11:39,760 --> 01:11:47,680
+empty set, implies that i prime
+
+772
+01:11:59,090 --> 01:12:04,300
+——OK. What is this saying? If the search goes left,
+
+773
+01:12:10,080 --> 01:12:13,600
+if the left was empty,
+
+774
+01:12:13,800 --> 01:12:15,860
+in other words, if you went left and you discovered that
+
+775
+01:12:16,050 --> 01:12:17,920
+there was nothing in there to find,
+
+776
+01:12:18,060 --> 01:12:22,230
+no overlapping interval to find then it is OK
+
+777
+01:12:22,370 --> 01:12:25,230
+because it wouldn't have helped me to go right anyway
+
+778
+01:12:25,440 --> 01:12:28,720
+because there is nothing in the right to be found.
+
+779
+01:12:30,490 --> 01:12:32,130
+So it is not guaranteeing that
+
+780
+01:12:32,260 --> 01:12:33,700
+there is nothing to be found in the left,
+
+781
+01:12:33,850 --> 01:12:36,680
+but if there happens to be nothing to find in the left it is OK
+
+782
+01:12:36,840 --> 01:12:38,650
+because there was nothing to be found in the right either.
+
+783
+01:12:38,810 --> 01:12:42,450
+That is what the second one says.
+
+784
+01:12:42,600 --> 01:12:47,710
+In either case, you're OK to go the way.
+
+785
+01:12:54,210 --> 01:13:02,910
+So let's do this proof.
+
+786
+01:13:03,190 --> 01:13:05,070
+Does everybody understand what the proof says?
+
+787
+01:13:05,250 --> 01:13:11,820
+Understanding the proof is tricky. It's logic. Logic is tricky.
+
+788
+01:13:13,880 --> 01:13:18,100
+Suppose the search goes right. We'll do the first one.
+
+789
+01:13:25,230 --> 01:13:34,030
+If left of x is NIL then we are done
+
+790
+01:13:37,730 --> 01:13:43,090
+since we proved what we wanted to prove.
+
+791
+01:13:43,270 --> 01:13:50,120
+If we go right there are two possibilities,
+
+792
+01:13:50,320 --> 01:13:56,090
+either we have left of x be NIL or left of x is not NIL.
+
+793
+01:13:56,320 --> 01:13:58,780
+So if it is NIL we are OK because we said
+
+794
+01:13:58,930 --> 01:14:01,080
+if it goes right I want to prove this,
+
+795
+01:14:01,220 --> 01:14:04,580
+that the things in the left subtree that overlap is empty.
+
+796
+01:14:04,720 --> 01:14:06,000
+If there is nothing there,
+
+797
+01:14:06,110 --> 01:14:07,810
+there is clearly nothing there that overlaps.
+
+798
+01:14:07,880 --> 01:14:22,250
+Otherwise, the low of i is greater than m of the left of x.
+
+799
+01:14:25,560 --> 01:14:32,260
+If I look at x here, either x was NIL
+
+800
+01:14:32,480 --> 01:14:40,380
+in the while statement here or this is true.
+
+801
+01:14:40,630 --> 01:14:43,980
+We just said it is not NIL so let's take a look at,
+
+802
+01:14:44,180 --> 01:14:49,750
+excuse me. I'm on the wrong line. I am in this loop.
+
+803
+01:14:49,980 --> 01:14:56,430
+Left of x was not NIL and the low of i was this.
+
+804
+01:14:56,610 --> 01:14:59,960
+Which way am I going here? I am going right.
+
+805
+01:15:00,120 --> 01:15:01,880
+Therefore, this was not true.
+
+806
+01:15:02,030 --> 01:15:05,520
+So either left of x was not NIL, which was the first one,
+
+807
+01:15:05,670 --> 01:15:13,760
+or low of i is greater than m of left of x if I am going right.
+
+808
+01:15:13,900 --> 01:15:17,940
+If I'm going right one of those two had to be true.
+
+809
+01:15:18,170 --> 01:15:20,300
+The first one was easy.
+
+810
+01:15:20,450 --> 01:15:24,210
+Otherwise, we have this, low of i is greater than m of left of x.
+
+811
+01:15:24,350 --> 01:15:28,970
+Now this has got to be that value.
+
+812
+01:15:29,120 --> 01:15:32,890
+m of left of x is the right endpoint,
+
+813
+01:15:33,030 --> 01:15:38,330
+is the high endpoint of some interval in that subtree.
+
+814
+01:15:38,510 --> 01:15:48,630
+This is equal to the high of j for some j in L.
+
+815
+01:15:48,820 --> 01:15:53,210
+So m of left of x must be equal to the high of some endpoint
+
+816
+01:15:53,360 --> 01:15:57,260
+because that's how we're picking the m's.
+
+817
+01:15:57,400 --> 01:16:00,970
+For some j in the left subtree.
+
+818
+01:16:01,040 --> 01:16:18,700
+And no other interval in L has a larger high endpoint
+
+819
+01:16:25,240 --> 01:16:31,730
+——than high of j. If I draw a picture here,
+
+820
+01:16:31,970 --> 01:16:39,800
+I have over here i and this is the low of i.
+
+821
+01:16:40,110 --> 01:16:43,310
+And I have j where we say
+
+822
+01:16:43,380 --> 01:16:47,900
+its high endpoint is less than the low of i.
+
+823
+01:16:48,050 --> 01:16:51,530
+This is j, and I don't know how far over it goes.
+
+824
+01:16:55,540 --> 01:16:57,910
+And this has high of j
+
+825
+01:17:06,890 --> 01:17:10,460
+——which is the highest one in the left subtree.
+
+826
+01:17:10,610 --> 01:17:15,530
+There is nobody else who has got a higher right endpoint.
+
+827
+01:17:15,750 --> 01:17:17,750
+There is nobody else in this subtree
+
+828
+01:17:17,850 --> 01:17:21,590
+who could possibly overlap I,
+
+829
+01:17:23,420 --> 01:17:28,310
+because all of them end somewhere before this point.
+
+830
+01:17:28,550 --> 01:17:31,900
+This point is the highest one in a subtree.
+
+831
+01:17:32,120 --> 01:17:37,970
+Therefore, i prime in L
+
+832
+01:17:38,110 --> 01:17:45,880
+such that i prime overlaps i is the empty set.
+
+833
+01:17:46,140 --> 01:17:58,790
+And now the hard case. Everybody stretch. Hard case.
+
+834
+01:17:58,990 --> 01:18:01,740
+Does everybody follow this?
+
+835
+01:18:01,860 --> 01:18:04,400
+The point is that because this is
+
+836
+01:18:04,470 --> 01:18:07,150
+the highest guy everybody else has to be left,
+
+837
+01:18:07,340 --> 01:18:09,290
+so if you didn't overlap the highest guy
+
+838
+01:18:09,360 --> 01:18:10,850
+you're not going to overlap anybody.
+
+839
+01:18:12,560 --> 01:18:15,920
+Suppose the search goes left
+
+840
+01:18:22,530 --> 01:18:31,050
+——and that there is nothing to overlap in the left subtree.
+
+841
+01:18:34,420 --> 01:18:45,250
+I went left here but I am not going to find anything.
+
+842
+01:18:45,390 --> 01:18:50,170
+Now I want to prove that it wouldn't have helped me to go right.
+
+843
+01:18:50,330 --> 01:18:53,420
+That's essentially what the theorem here says.
+
+844
+01:18:53,590 --> 01:18:56,290
+That if I assume this it wouldn't have helped to go right.
+
+845
+01:18:56,390 --> 01:18:57,910
+I want to show that there is nothing in the right subtree.
+
+846
+01:18:58,020 --> 01:18:59,430
+So going left was OK
+
+847
+01:18:59,570 --> 01:19:01,280
+because I wasn't going to find anything anyway.
+
+848
+01:19:01,900 --> 01:19:05,400
+Similarly, we go through a similar analysis.
+
+849
+01:19:06,210 --> 01:19:11,860
+Low of i is less than or equal to m of the left of x,
+
+850
+01:19:13,690 --> 01:19:26,230
+which once again is equal to the high of j for some j in L.
+
+851
+01:19:26,470 --> 01:19:34,800
+We are just saying if I go left these things must be true.
+
+852
+01:19:36,080 --> 01:19:53,210
+I went left. Since j is in L it doesn't overlap i,
+
+853
+01:19:53,540 --> 01:19:59,180
+because the set of things that overlap i in L is empty set.
+
+854
+01:19:59,390 --> 01:20:04,800
+Since j doesn't overlap i that implies that
+
+855
+01:20:04,970 --> 01:20:17,450
+the high of i must be less than the low of j.
+
+856
+01:20:22,820 --> 01:20:28,700
+Since j is in L and it doesn't overlap i,
+
+857
+01:20:29,080 --> 01:20:31,970
+what are the possibilities?
+
+858
+01:20:33,060 --> 01:20:37,610
+We essentially have here, if I draw a picture,
+
+859
+01:20:37,820 --> 01:20:42,450
+I have j and L and I have i here.
+
+860
+01:20:46,840 --> 01:20:50,140
+The point is that it doesn't overlap it,
+
+861
+01:20:52,490 --> 01:20:56,630
+therefore, it must be to the left
+
+862
+01:20:56,800 --> 01:21:05,550
+because its low endpoint is less than this.
+
+863
+01:21:05,700 --> 01:21:07,390
+But it doesn't overlap it,
+
+864
+01:21:07,550 --> 01:21:11,240
+therefore its high endpoint must be left of the low of this one.
+
+865
+01:21:24,990 --> 01:21:28,770
+Now we will use the binary search tree property.
+
+866
+01:21:34,900 --> 01:21:43,050
+That implies that for all i prime in R,
+
+867
+01:21:43,280 --> 01:21:45,580
+everything in the right subtree,
+
+868
+01:21:45,800 --> 01:21:54,970
+we have a low of j is less than or equal to low of i prime,
+
+869
+01:21:55,260 --> 01:21:57,960
+so we're sorted on the low endpoints.
+
+870
+01:21:59,610 --> 01:22:03,760
+Everything in the right subtree must have a low endpoint
+
+871
+01:22:03,930 --> 01:22:08,400
+that starts to the right of the low endpoint of j
+
+872
+01:22:08,740 --> 01:22:10,690
+because j in the left subtree.
+
+873
+01:22:10,900 --> 01:22:14,530
+And everything in the whole tree is sorted by low endpoints,
+
+874
+01:22:14,720 --> 01:22:17,520
+so anything in the right subtree is going to start over here.
+
+875
+01:22:17,680 --> 01:22:24,300
+Those are other things. These are the i primes in R.
+
+876
+01:22:24,540 --> 01:22:26,590
+We don't know how many there are,
+
+877
+01:22:26,700 --> 01:22:29,660
+but they all start to the right of this point.
+
+878
+01:22:29,810 --> 01:22:31,400
+So they cannot overlap i either,
+
+879
+01:22:35,890 --> 01:22:38,560
+therefore, there is nothing.
+
+880
+01:22:38,680 --> 01:22:50,810
+All the i primes in R is also nobody.
+
+881
+01:22:53,610 --> 01:23:00,820
+Just to go back again, the basic idea is that
+
+882
+01:23:00,970 --> 01:23:07,470
+since this guy doesn't overlap the guy who is in the left
+
+883
+01:23:07,620 --> 01:23:10,350
+and everybody to the right is going to be further to the right,
+
+884
+01:23:10,460 --> 01:23:15,610
+if I go left and don't find anything that's OK
+
+885
+01:23:15,750 --> 01:23:17,410
+because I am not going to find anything over here anyway.
+
+886
+01:23:17,550 --> 01:23:18,620
+They are not going to overlap.
+
+887
+01:23:21,960 --> 01:23:25,490
+Data-structure augmentation, great stuff.
+
+888
+01:23:25,590 --> 01:23:28,300
+It will give you a lot of rich, rich data structures
+
+889
+01:23:28,510 --> 01:23:32,490
+built on any ones you know,
+
+890
+01:23:32,620 --> 01:23:37,830
+hash tables, heaps, binary search trees and so forth.
+

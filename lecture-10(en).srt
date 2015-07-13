@@ -1,0 +1,5314 @@
+﻿1
+00:00:05,330 --> 00:00:08,140
+Good morning.
+
+2
+00:00:08,570 --> 00:00:12,980
+It looks like 9:30 is getting earlier and earlier for everyone.
+
+3
+00:00:13,280 --> 00:00:14,610
+Hello to all the people watching at home.
+
+4
+00:00:16,200 --> 00:00:19,580
+I think there should be a requirement that
+
+5
+00:00:19,680 --> 00:00:21,340
+if you're watching the video,
+
+6
+00:00:21,360 --> 00:00:24,820
+you can only watch it 9:30-11:00 on Sunday,
+
+7
+00:00:25,810 --> 00:00:33,030
+or at least start watching then just so you can all feel our mornings.
+
+8
+00:00:33,480 --> 00:00:36,390
+Today, we're going to talk about balanced search trees.
+
+9
+00:00:36,930 --> 00:00:38,870
+Now, we've hinted at this for a while.
+
+10
+00:00:40,120 --> 00:00:43,310
+Our goal today is to get a search tree data structure,
+
+11
+00:00:43,800 --> 00:00:45,680
+so we can insert, delete, and search
+
+12
+00:00:46,230 --> 00:00:48,960
+all at log n time for operations.
+
+13
+00:00:49,670 --> 00:00:53,040
+So, we want a tree that's guaranteed to be log n in height.
+
+14
+00:00:54,640 --> 00:00:56,950
+So, that's a balanced search tree data structure.
+
+15
+00:01:09,500 --> 00:01:11,820
+And, we want a data structure
+
+16
+00:01:12,250 --> 00:01:15,140
+that can maintain a dynamic set of n elements
+
+17
+00:01:15,230 --> 00:01:18,200
+in log n time for operation.
+
+18
+00:01:28,710 --> 00:01:35,640
+So, we'll say, using a tree of height order log n.
+
+19
+00:01:43,890 --> 00:01:46,430
+Now, if you look very closely,
+
+20
+00:01:46,750 --> 00:01:50,320
+we haven't actually defined what a search tree data structure is.
+
+21
+00:01:50,570 --> 00:01:52,850
+We've defined what a binary search tree data structure is,
+
+22
+00:01:53,310 --> 00:01:54,680
+and that's one particular kind.
+
+23
+00:01:54,870 --> 00:01:56,310
+And that's what we will be focusing on today.
+
+24
+00:01:56,310 --> 00:02:00,480
+In recitation on Friday, we will look at, or you will like that,
+
+25
+00:02:00,680 --> 00:02:03,280
+balanced search trees that are not necessarily binary.
+
+26
+00:02:03,480 --> 00:02:06,520
+Each node can have a constant number of children, not just two.
+
+27
+00:02:07,860 --> 00:02:09,900
+So, I'm defining it generally.
+
+28
+00:02:10,020 --> 00:02:13,140
+You actually see what a search tree is in the general case later on.
+
+29
+00:02:13,280 --> 00:02:15,780
+Today, we will just be focusing on the binary case.
+
+30
+00:02:16,130 --> 00:02:17,540
+So, I won't define this yet.
+
+31
+00:02:19,920 --> 00:02:22,480
+So, there are a lot of different balanced search tree data structures.
+
+32
+00:02:25,140 --> 00:02:28,990
+So, these are the main ones that I know of.
+
+33
+00:02:29,340 --> 00:02:31,300
+The first one was AVL trees.
+
+34
+00:02:32,010 --> 00:02:34,250
+This was invented in 1962.
+
+35
+00:02:35,450 --> 00:02:37,760
+So, that was the beginning of fast data structures.
+
+36
+00:02:42,210 --> 00:02:45,490
+The next three sort of come together
+
+37
+00:02:47,020 --> 00:02:54,590
+and this is what you will cover in recitation this week.
+
+38
+00:02:55,900 --> 00:02:58,840
+So, these are non binary trees.
+
+39
+00:02:59,310 --> 00:03:01,560
+Instead of binary, we have maybe binary and tertiary,
+
+40
+00:03:01,800 --> 00:03:03,770
+or maybe binary and tertiary, or quaternary,
+
+41
+00:03:04,460 --> 00:03:06,800
+over a general concept degree, B.
+
+42
+00:03:08,350 --> 00:03:11,570
+So, that's another way you can get balance.
+
+43
+00:03:11,900 --> 00:03:14,040
+Two-three trees, which were the second trees to be invented,
+
+44
+00:03:14,160 --> 00:03:16,990
+they were invented in 1970 by Hopcroft.
+
+45
+00:03:19,370 --> 00:03:21,970
+The trees we will cover today are called red black trees.
+
+46
+00:03:22,420 --> 00:03:33,890
+These are binary search trees of guaranteed logarithmic height.
+
+47
+00:03:35,070 --> 00:03:37,920
+So then, there's some others.
+
+48
+00:03:42,280 --> 00:03:46,840
+So, skip lists are ones that we will cover next week.
+
+49
+00:03:49,900 --> 00:03:52,470
+It's not exactly a tree, but it's more or less a tree,
+
+50
+00:03:52,860 --> 00:03:58,610
+and one that you will see in your problem set this week are treaps,
+
+51
+00:04:01,220 --> 00:04:03,720
+which I won't talk too much about here.
+
+52
+00:04:03,900 --> 00:04:05,850
+But they are in some sense easier to get
+
+53
+00:04:06,110 --> 00:04:09,870
+because they essentially just rely on the material from last Monday.
+
+54
+00:04:10,550 --> 00:04:12,130
+So, on Monday we saw that
+
+55
+00:04:12,370 --> 00:04:14,120
+if we just randomly built a binary search tree,
+
+56
+00:04:14,510 --> 00:04:18,140
+it's going to have log n height most of the time in expectation.
+
+57
+00:04:18,850 --> 00:04:22,240
+So, treaps are a way to make that dynamic,
+
+58
+00:04:22,450 --> 00:04:24,330
+so that instead of just having a static set of n items,
+
+59
+00:04:24,540 --> 00:04:26,500
+you can insert and delete into those items
+
+60
+00:04:26,660 --> 00:04:28,600
+and still effectively randomly permute them
+
+61
+00:04:29,160 --> 00:04:30,180
+and put them in a tree.
+
+62
+00:04:30,940 --> 00:04:32,560
+So in some sense, it's the easiest.
+
+63
+00:04:32,830 --> 00:04:36,270
+It's also one of the most recent search tree data structures.
+
+64
+00:04:36,500 --> 00:04:38,160
+That was invented in 1996
+
+65
+00:04:39,000 --> 00:04:43,490
+by a couple of geometers, Rimon Sidell and Aragen.
+
+66
+00:04:43,920 --> 00:04:47,900
+So, those are just some search tree data structures.
+
+67
+00:04:48,150 --> 00:04:50,370
+The only ones we will not cover in this class are AVL trees.
+
+68
+00:04:51,170 --> 00:04:52,990
+They're not too hard. If you're interested,
+
+69
+00:04:53,210 --> 00:04:55,040
+you should read about them because they're fun.
+
+70
+00:04:56,850 --> 00:05:00,760
+I think they are a problem in the textbook.
+
+71
+00:05:01,720 --> 00:05:05,050
+OK, but today, we're going to focus on red black trees,
+
+72
+00:05:13,700 --> 00:05:21,470
+which is a fairly simple idea, red black trees.
+
+73
+00:05:22,220 --> 00:05:26,140
+And, it's a particular way of guaranteeing this logarithmic height
+
+74
+00:05:26,570 --> 00:05:29,200
+so that all the operations can be supported in log n time.
+
+75
+00:05:30,290 --> 00:05:33,080
+So, they are binary search trees.
+
+76
+00:05:35,670 --> 00:05:43,000
+And, they have a little bit of extra information in each node
+
+77
+00:05:43,070 --> 00:05:45,630
+called the color field.
+
+78
+00:06:00,910 --> 00:06:04,070
+And there are several properties that a tree
+
+79
+00:06:04,430 --> 00:06:06,680
+with a color field has to satisfy
+
+80
+00:06:06,770 --> 00:06:08,930
+in order to be called a red black tree.
+
+81
+00:06:09,430 --> 00:06:11,440
+These are called the red black properties.
+
+82
+00:06:11,870 --> 00:06:15,530
+And, this will take a little bit of time to write down,
+
+83
+00:06:15,860 --> 00:06:17,860
+but it's all pretty simple.
+
+84
+00:06:18,360 --> 00:06:22,240
+So once I write them down I will just say what they really mean.
+
+85
+00:06:22,600 --> 00:06:24,860
+There's four properties.
+
+86
+00:06:27,870 --> 00:06:29,710
+The first one's pretty simple.
+
+87
+00:06:30,000 --> 00:06:33,520
+Every node is either red or black,
+
+88
+00:06:34,380 --> 00:06:37,750
+hence the name of red black trees.
+
+89
+00:06:39,910 --> 00:06:44,250
+So, the color field is just a single bit specifying red or black.
+
+90
+00:06:44,450 --> 00:06:47,540
+And red nodes, I'm going to denote by a double circle
+
+91
+00:06:47,680 --> 00:06:49,010
+because I don't have colored chalk here,
+
+92
+00:06:49,230 --> 00:06:51,060
+and black nodes will be a single circle.
+
+93
+00:06:51,280 --> 00:06:52,950
+And you probably don't have colored pens either,
+
+94
+00:06:53,150 --> 00:06:55,340
+so it will save us some grief.
+
+95
+00:06:55,570 --> 00:07:00,960
+Red is double circle; black is single circle.
+
+96
+00:07:01,240 --> 00:07:02,920
+And, we sort of prefer black nodes in some sense.
+
+97
+00:07:03,250 --> 00:07:05,570
+Red nodes are a pain, as we'll see.
+
+98
+00:07:07,210 --> 00:07:16,080
+OK, second property is that the root and the leaves are all black.
+
+99
+00:07:23,610 --> 00:07:27,450
+And, I'm going to pull a little trick here.
+
+100
+00:07:27,740 --> 00:07:30,520
+Treat binary search trees a little bit differently
+
+101
+00:07:30,560 --> 00:07:31,780
+than we have in the past.
+
+102
+00:07:32,290 --> 00:07:35,570
+Normally, you think of the tree as a bunch of nodes.
+
+103
+00:07:35,730 --> 00:07:38,910
+Each node could have zero or one or two children,
+
+104
+00:07:39,250 --> 00:07:40,250
+something like this.
+
+105
+00:07:40,550 --> 00:07:43,440
+I'm going to imagine appending every place
+
+106
+00:07:43,470 --> 00:07:45,590
+where a node does not have a child.
+
+107
+00:07:45,920 --> 00:07:48,680
+I'm going to put a little dot here,
+
+108
+00:07:48,930 --> 00:07:50,700
+an external node, which I call a leaf.
+
+109
+00:07:51,130 --> 00:07:53,260
+So, normally leaves would have been these items.
+
+110
+00:07:53,570 --> 00:07:58,290
+I'm just going to add to every absent child pointer a new leaf.
+
+111
+00:07:58,670 --> 00:07:59,820
+And, these will be my leaves.
+
+112
+00:08:00,110 --> 00:08:03,450
+These are really the nil pointers from each of these nodes.
+
+113
+00:08:03,710 --> 00:08:06,300
+So now, every internal node has exactly two children,
+
+114
+00:08:06,710 --> 00:08:08,450
+and every leaf has zero children.
+
+115
+00:08:08,850 --> 00:08:11,360
+OK, so these are those I'm referring to.
+
+116
+00:08:11,540 --> 00:08:16,870
+These are black, and this guy is black according to rule two.
+
+117
+00:08:17,220 --> 00:08:21,690
+Now the properties get a little bit more interesting.
+
+118
+00:08:26,540 --> 00:08:31,380
+The parent of every red node is black.
+
+119
+00:08:35,070 --> 00:08:38,450
+So, whenever I have a red node,
+
+120
+00:08:38,740 --> 00:08:42,650
+its parent has to be black, a single circle.
+
+121
+00:08:44,910 --> 00:08:50,060
+OK, so in other words, if you look at a path in the tree
+
+122
+00:08:50,410 --> 00:08:53,000
+you can never have two red nodes consecutive.
+
+123
+00:08:53,310 --> 00:08:56,370
+You can have, at most, red, black, red, black.
+
+124
+00:08:56,560 --> 00:08:58,380
+You can have several black nodes consecutive,
+
+125
+00:08:58,550 --> 00:08:59,940
+but never two red nodes.
+
+126
+00:09:00,260 --> 00:09:03,400
+OK, and then one more rule.
+
+127
+00:09:03,730 --> 00:09:06,630
+It says a little bit more about such paths.
+
+128
+00:09:09,670 --> 00:09:14,970
+So, if we take a simple path, meaning it doesn't repeat any vertices
+
+129
+00:09:15,610 --> 00:09:30,980
+from a node, x, to a descended leaf of x,
+
+130
+00:09:33,880 --> 00:09:37,420
+all such paths to all descendant leaves
+
+131
+00:09:37,740 --> 00:09:40,350
+have the same number of black nodes on them.
+
+132
+00:09:54,880 --> 00:10:00,950
+So, let me draw a picture. We have some tree.
+
+133
+00:10:01,300 --> 00:10:03,220
+We have some node, x, in the tree.
+
+134
+00:10:03,660 --> 00:10:05,840
+And, I'm looking at all the paths
+
+135
+00:10:06,080 --> 00:10:08,350
+from x down to some descendant leaf
+
+136
+00:10:08,690 --> 00:10:10,870
+down here at the bottom of the tree.
+
+137
+00:10:11,220 --> 00:10:15,480
+All of these paths should have the same number of black nodes.
+
+138
+00:10:15,700 --> 00:10:21,000
+So, here I'll draw that each one has four black nodes,
+
+139
+00:10:21,200 --> 00:10:23,020
+the leaf, and three above it.
+
+140
+00:10:26,070 --> 00:10:29,190
+We know that from property three,
+
+141
+00:10:29,400 --> 00:10:32,820
+at most, half of the nodes are red
+
+142
+00:10:33,100 --> 00:10:34,200
+because whenever I have a red node,
+
+143
+00:10:34,420 --> 00:10:35,670
+the parent must be black.
+
+144
+00:10:36,100 --> 00:10:38,590
+But I want all of these paths to have
+
+145
+00:10:38,760 --> 00:10:40,230
+exactly the same number of black nodes.
+
+146
+00:10:40,670 --> 00:10:43,390
+One subtlety here is that the black height,
+
+147
+00:10:43,750 --> 00:10:47,250
+I didn't really leave room.  So I'll write it over here.
+
+148
+00:10:50,190 --> 00:10:53,570
+This should be the same for all paths, but in particular,
+
+149
+00:10:53,770 --> 00:10:58,450
+the count I'm interested in does not include x itself.
+
+150
+00:11:04,070 --> 00:11:09,600
+OK, so if x is black, I'm only calling the black height.
+
+151
+00:11:09,820 --> 00:11:12,200
+So, the black height of x is this count four.
+
+152
+00:11:12,620 --> 00:11:15,380
+And even if x is black, the black height is four.
+
+153
+00:11:15,660 --> 00:11:18,050
+So, these are just some minor details
+
+154
+00:11:18,330 --> 00:11:21,730
+to get all of the algorithms a bit clean.
+
+155
+00:11:22,160 --> 00:11:24,610
+So, let's look at an example of a red black tree.
+
+156
+00:11:27,430 --> 00:11:31,270
+So, yeah, I'll show you an example.
+
+157
+00:11:31,460 --> 00:11:33,530
+Then I'll say why we care about these properties.
+
+158
+00:12:14,750 --> 00:12:17,610
+OK, so this tree has several properties.
+
+159
+00:12:17,830 --> 00:12:19,580
+The first thing is that it's a binary search tree.
+
+160
+00:12:20,330 --> 00:12:22,170
+OK, and so you can check it in order traversal.
+
+161
+00:12:22,360 --> 00:12:24,080
+It should give these numbers in sorted order:
+
+162
+00:12:24,330 --> 00:12:27,940
+three, seven, eight, ten, 11, 18, 22, 26.
+
+163
+00:12:28,130 --> 00:12:30,010
+So, it's a valid binary search tree.
+
+164
+00:12:30,270 --> 00:12:32,100
+We've appended these leaves with no keys in them.
+
+165
+00:12:32,180 --> 00:12:33,310
+They are just hanging around.
+
+166
+00:12:33,390 --> 00:12:35,100
+Those are the nil pointers.
+
+167
+00:12:35,350 --> 00:12:36,950
+So, each of these, you can call them nil.
+
+168
+00:12:37,200 --> 00:12:42,650
+They are all just marked there, wherever there is absent child.
+
+169
+00:12:42,970 --> 00:12:47,640
+And then, I've double circled some of the nodes to color them red.
+
+170
+00:12:47,930 --> 00:12:51,680
+OK, if I didn't, the black heights wouldn't match up.
+
+171
+00:12:52,020 --> 00:12:53,850
+So, I have to be a little bit careful.
+
+172
+00:12:54,100 --> 00:12:57,790
+From every node, we'd like to measure the number
+
+173
+00:12:57,970 --> 00:13:00,720
+of black nodes from that node down to any descendent leaf.
+
+174
+00:13:01,050 --> 00:13:05,680
+So, for example, the nil pointers, their black height is zero.
+
+175
+00:13:05,860 --> 00:13:07,200
+Good. That's always the answer.
+
+176
+00:13:07,380 --> 00:13:09,630
+So, these guys always have black height zero.
+
+177
+00:13:09,860 --> 00:13:14,330
+I'll just represent that here. Black height equals zero.
+
+178
+00:13:14,710 --> 00:13:18,560
+OK, what's the black height of three?
+
+179
+00:13:20,260 --> 00:13:25,200
+Zero? Not quite, because these nodes are black.
+
+180
+00:13:25,570 --> 00:13:27,180
+So the black height is one.
+
+181
+00:13:27,660 --> 00:13:31,020
+You're right that we don't count three even though it's black.
+
+182
+00:13:31,310 --> 00:13:35,360
+It's not included in the count. But the leaves count.
+
+183
+00:13:35,780 --> 00:13:37,840
+And there's only two paths here,
+
+184
+00:13:38,040 --> 00:13:40,880
+and they each have the same number of black nodes as they should.
+
+185
+00:13:41,190 --> 00:13:43,990
+Over here, let's say eight also has black height one
+
+186
+00:13:44,090 --> 00:13:45,590
+even though it's red.
+
+187
+00:13:46,920 --> 00:13:49,140
+OK: same with 11,
+
+188
+00:13:49,770 --> 00:13:54,440
+same with 26. Each of them only has two paths.
+
+189
+00:13:54,660 --> 00:13:58,040
+Each path has one black node on it.
+
+190
+00:13:58,340 --> 00:14:01,670
+Ten: what's the black height?
+
+191
+00:14:01,970 --> 00:14:06,900
+It's still one, good, because we don't count ten.
+
+192
+00:14:07,230 --> 00:14:09,690
+There's now four paths to leaves.
+
+193
+00:14:10,000 --> 00:14:12,840
+Each of them contains exactly one black node, plus the root,
+
+194
+00:14:12,930 --> 00:14:14,080
+which we don't count.
+
+195
+00:14:14,560 --> 00:14:17,700
+22: same thing, hopefully.
+
+196
+00:14:18,270 --> 00:14:20,570
+This is getting a little more interesting.
+
+197
+00:14:20,820 --> 00:14:22,340
+There's one path here which has one black node.
+
+198
+00:14:22,600 --> 00:14:23,940
+There are other paths here, which are longer.
+
+199
+00:14:24,210 --> 00:14:26,330
+But they still only have one black node.
+
+200
+00:14:26,740 --> 00:14:28,460
+So, if we just sort of ignore the red nodes,
+
+201
+00:14:28,710 --> 00:14:30,240
+all these paths have the same length.
+
+202
+00:14:30,480 --> 00:14:34,580
+OK: 18 should be bigger hopefully, black height of two
+
+203
+00:14:34,930 --> 00:14:39,570
+because each of these paths now has one black node here,
+
+204
+00:14:39,840 --> 00:14:42,490
+one black node in leaves, or one black note here,
+
+205
+00:14:42,750 --> 00:14:44,510
+and one black node in the leaves.
+
+206
+00:14:45,140 --> 00:14:51,340
+And finally, the root should have a black height of two.
+
+207
+00:14:52,480 --> 00:14:53,780
+It's easier to see over here, I guess.
+
+208
+00:14:54,010 --> 00:14:55,620
+Each of these paths has two black nodes.
+
+209
+00:14:55,880 --> 00:14:57,480
+Same over here.
+
+210
+00:14:58,000 --> 00:15:02,180
+OK, so hopefully these properties make sense.
+
+211
+00:15:02,190 --> 00:15:03,900
+We didn't check all of them.
+
+212
+00:15:03,910 --> 00:15:05,670
+Every red node has a black parent.
+
+213
+00:15:05,960 --> 00:15:07,910
+If you look at all of these paths,
+
+214
+00:15:08,200 --> 00:15:12,200
+we sort of alternate, red, black at most.
+
+215
+00:15:12,430 --> 00:15:13,910
+Or we have just a bunch of blacks.
+
+216
+00:15:14,000 --> 00:15:15,890
+But we never repeat two reds in a row.
+
+217
+00:15:15,930 --> 00:15:17,660
+The root and the leaves are black
+
+218
+00:15:17,940 --> 00:15:19,910
+that we used pretty much by definition.
+
+219
+00:15:20,330 --> 00:15:22,420
+Every node is red or black. OK, that's easy.
+
+220
+00:15:24,210 --> 00:15:26,570
+This is a particular set of properties.
+
+221
+00:15:26,580 --> 00:15:28,200
+It may seem a bit arbitrary at this point.
+
+222
+00:15:28,280 --> 00:15:29,980
+They will make a lot more sense
+
+223
+00:15:30,190 --> 00:15:32,180
+as we see what consequences they have.
+
+224
+00:15:32,580 --> 00:15:34,570
+But there are a couple of goals
+
+225
+00:15:34,890 --> 00:15:36,490
+that we are trying to achieve here.
+
+226
+00:15:36,850 --> 00:15:39,190
+One is that these properties should force the tree
+
+227
+00:15:39,400 --> 00:15:42,000
+to have logarithmic height, order log n height.
+
+228
+00:15:42,280 --> 00:15:44,490
+And, they do, although that's probably not obvious at this point.
+
+229
+00:15:44,740 --> 00:15:49,230
+It follows mainly from all the properties.
+
+230
+00:15:49,790 --> 00:15:51,250
+Three and four are the main ones.
+
+231
+00:15:51,530 --> 00:15:53,320
+But you pretty much need all of them.
+
+232
+00:15:53,660 --> 00:15:59,220
+The other desire we have from these properties is that
+
+233
+00:15:59,560 --> 00:16:01,000
+they are somehow easy to maintain.
+
+234
+00:16:01,660 --> 00:16:05,150
+OK, I can create a tree in the beginning that has this property.
+
+235
+00:16:05,420 --> 00:16:09,500
+For example, I could make, I have to be a little bit careful,
+
+236
+00:16:09,780 --> 00:16:14,200
+but certainly if I take a perfectly balanced binary tree
+
+237
+00:16:14,580 --> 00:16:19,010
+and make all of the nodes black, it will satisfy those properties.
+
+238
+00:16:19,370 --> 00:16:22,000
+OK, this is a red black tree.
+
+239
+00:16:25,090 --> 00:16:28,270
+OK, so it's not too hard to make any these properties
+
+240
+00:16:28,460 --> 00:16:29,570
+hold just from the beginning.
+
+241
+00:16:29,850 --> 00:16:32,090
+The tricky part is to maintain them.
+
+242
+00:16:32,400 --> 00:16:34,170
+When I insert a node into this tree,
+
+243
+00:16:34,370 --> 00:16:35,410
+and delete a node for this tree,
+
+244
+00:16:35,600 --> 00:16:37,820
+I want to make it not too hard.
+
+245
+00:16:38,060 --> 00:16:41,300
+In log n time, I've got to be able to restore all these properties.
+
+246
+00:16:41,590 --> 00:16:44,210
+OK, that will be the hardest part.
+
+247
+00:16:44,570 --> 00:16:47,390
+The first thing we will do is prove that these properties imply
+
+248
+00:16:47,850 --> 00:16:50,150
+that the tree has to have height order log n.
+
+249
+00:16:50,440 --> 00:16:52,170
+Therefore, all searches and queries
+
+250
+00:16:52,420 --> 00:16:54,300
+on a data structure will run fast.
+
+251
+00:16:54,850 --> 00:16:57,330
+The hard part will be to make sure these properties stay true
+
+252
+00:16:57,650 --> 00:17:02,990
+if they initially held true when we make changes to the tree.
+
+253
+00:17:07,200 --> 00:17:15,420
+So, let's look at the height of a red black tree.
+
+254
+00:17:32,080 --> 00:17:34,780
+And from this we will start to see
+
+255
+00:17:35,010 --> 00:17:36,920
+where these properties come from,
+
+256
+00:17:37,330 --> 00:17:39,920
+why we chose these properties.
+
+257
+00:18:03,360 --> 00:18:08,170
+So, the claim is that the height of a red black tree with n keys,
+
+258
+00:18:08,660 --> 00:18:10,020
+so, I'm not saying nodes here
+
+259
+00:18:10,210 --> 00:18:11,950
+because I really only want to count the internal nodes,
+
+260
+00:18:12,290 --> 00:18:14,430
+not these extra leaves that we've added,
+
+261
+00:18:14,660 --> 00:18:18,830
+has height, at most, two times log of n plus one, so order log n.
+
+262
+00:18:21,420 --> 00:18:25,030
+But, we have a pretty precise bound of a factor of two.
+
+263
+00:18:25,290 --> 00:18:29,920
+There is a proof of this in the textbook by induction,
+
+264
+00:18:30,220 --> 00:18:31,670
+and you should read that.
+
+265
+00:18:31,950 --> 00:18:34,880
+What I'm going to give us more of a proof sketch.
+
+266
+00:18:39,220 --> 00:18:41,240
+But you should read the proof by induction
+
+267
+00:18:41,240 --> 00:18:43,390
+because all the practice you can get
+
+268
+00:18:43,640 --> 00:18:45,110
+with proof by induction is good.
+
+269
+00:18:45,430 --> 00:18:47,710
+The proof sketch on the other hand gives a lot more intuition
+
+270
+00:18:47,790 --> 00:18:50,110
+with what's going on with red black trees
+
+271
+00:18:50,390 --> 00:18:53,180
+and connects up with recitation on Friday.
+
+272
+00:18:53,400 --> 00:18:55,380
+So, let me tell you that instead.
+
+273
+00:18:55,880 --> 00:19:01,680
+I'm going to leave that board blank and go over here.
+
+274
+00:19:27,290 --> 00:19:31,340
+So, the first thing I'm going to do,
+
+275
+00:19:31,890 --> 00:19:33,930
+I'm going to manipulate this tree
+
+276
+00:19:34,020 --> 00:19:35,850
+until it looks like something that I know.
+
+277
+00:19:36,160 --> 00:19:41,210
+The main change I'm going to make is
+
+278
+00:19:41,490 --> 00:19:43,920
+to merge each red node into its parent.
+
+279
+00:19:44,300 --> 00:19:47,930
+And we know that the parent of a red node must be black.
+
+280
+00:19:56,740 --> 00:20:00,600
+So, merge each red node into its black parent.
+
+281
+00:20:01,150 --> 00:20:04,360
+So, let's look at that here.
+
+282
+00:20:04,690 --> 00:20:07,600
+So, I'm going to take this red node, merge it into its parent,
+
+283
+00:20:07,810 --> 00:20:10,450
+take this red node, merge it into its path, and so on.
+
+284
+00:20:10,800 --> 00:20:13,800
+There's one up there which I can't reach.
+
+285
+00:20:14,000 --> 00:20:15,770
+But I'm going to redraw this picture now.
+
+286
+00:20:16,050 --> 00:20:21,020
+So, seven, so the top node now becomes,
+
+287
+00:20:21,260 --> 00:20:23,800
+in some sense, seven and 18.
+
+288
+00:20:24,150 --> 00:20:26,040
+They got merged together,
+
+289
+00:20:26,230 --> 00:20:27,500
+but no one else joined them.
+
+290
+00:20:27,820 --> 00:20:30,740
+Then, on the left, we have three.
+
+291
+00:20:31,110 --> 00:20:34,570
+OK, nothing joined that, and there's some leaves as usual.
+
+292
+00:20:34,960 --> 00:20:39,530
+Now, if you look at, maybe, I'm going to have to draw this.
+
+293
+00:20:41,080 --> 00:20:45,630
+Uh-oh. I heard that sound before.
+
+294
+00:20:45,940 --> 00:20:49,920
+So, I'm merging these nodes together,
+
+295
+00:20:50,220 --> 00:20:53,690
+and I'm merging all of these nodes together
+
+296
+00:20:54,080 --> 00:20:57,370
+because each of these red nodes merges into that black node.
+
+297
+00:20:57,580 --> 00:20:59,450
+And, I'm merging these two nodes together.
+
+298
+00:20:59,660 --> 00:21:02,150
+So, I'm putting this red node into that black node.
+
+299
+00:21:02,340 --> 00:21:05,030
+So, now you can see from the root, which is now 7/18.
+
+300
+00:21:05,440 --> 00:21:07,680
+There are three children hanging off.
+
+301
+00:21:08,090 --> 00:21:13,560
+So, in that picture, I'd like to draw that fact
+
+302
+00:21:14,010 --> 00:21:18,100
+assuming I can get this board back down. Good.
+
+303
+00:21:18,490 --> 00:21:24,740
+So, between seven and 18,
+
+304
+00:21:25,030 --> 00:21:32,340
+I have this conglomerate node, eight, ten, 11.
+
+305
+00:21:32,690 --> 00:21:37,290
+And, there are four leaves hanging off of that node.
+
+306
+00:21:41,840 --> 00:21:45,270
+And, off to the right, after 18,
+
+307
+00:21:45,550 --> 00:21:49,820
+I have a conglomerate node, 22/26,
+
+308
+00:21:50,170 --> 00:21:52,660
+and there are three leaves hanging off of there.
+
+309
+00:21:54,540 --> 00:21:58,390
+OK, kind of a weird tree
+
+310
+00:21:58,600 --> 00:22:00,680
+because we dealt mainly with binary trees so far,
+
+311
+00:22:00,860 --> 00:22:03,380
+but this is a foreshadowing of what will come on Friday.
+
+312
+00:22:03,730 --> 00:22:06,790
+This is something called a two-three-four tree.
+
+313
+00:22:09,660 --> 00:22:13,520
+Any guesses why it's called a two-three-four tree?
+
+314
+00:22:16,860 --> 00:22:20,700
+Every node can have two, three, or four kids,
+
+315
+00:22:21,050 --> 00:22:23,760
+yeah, except the leaves. They have zero.
+
+316
+00:22:24,000 --> 00:22:25,130
+There is another nice property
+
+317
+00:22:25,140 --> 00:22:29,040
+of two-three-four trees maybe hinted at.
+
+318
+00:22:29,190 --> 00:22:30,560
+So, there's really no control over
+
+319
+00:22:30,750 --> 00:22:35,180
+whether you have two children or three children or four children.
+
+320
+00:22:35,480 --> 00:22:37,670
+But, there is another nice property.
+
+321
+00:22:39,390 --> 00:22:40,710
+Yeah?
+
+322
+00:22:41,540 --> 00:22:46,380
+[student]Inaudible
+
+323
+00:22:46,980 --> 00:22:49,840
+All of the leaves have the same depth, exactly.
+
+324
+00:22:50,290 --> 00:22:53,150
+All of these guys have the same depth in the tree.
+
+325
+00:22:53,480 --> 00:22:55,750
+Why is that? Because of property four.
+
+326
+00:22:56,100 --> 00:23:00,970
+On Friday, you will see just how to maintain that property.
+
+327
+00:23:01,220 --> 00:23:02,560
+But out of this transformation,
+
+328
+00:23:02,820 --> 00:23:05,480
+we get that all the leaves have the same depth:
+
+329
+00:23:05,690 --> 00:23:07,480
+because their depth, now,
+
+330
+00:23:07,750 --> 00:23:11,630
+or let's say their height in the tree is their black height.
+
+331
+00:23:12,030 --> 00:23:14,370
+And, the depth of these leaves
+
+332
+00:23:14,620 --> 00:23:17,070
+will be the black height of the root.
+
+333
+00:23:17,450 --> 00:23:20,680
+Because we are raising all the red nodes,
+
+334
+00:23:21,010 --> 00:23:22,600
+and we said if we look at a path,
+
+335
+00:23:22,840 --> 00:23:24,110
+and we ignore all the red nodes,
+
+336
+00:23:24,350 --> 00:23:26,920
+then the number of black nodes along a path is the same.
+
+337
+00:23:27,190 --> 00:23:29,300
+Now we are basically just leaving all the black nodes.
+
+338
+00:23:29,630 --> 00:23:32,650
+And so, along all these paths we'll have
+
+339
+00:23:32,900 --> 00:23:34,320
+the same number of black nodes.
+
+340
+00:23:34,630 --> 00:23:37,580
+And therefore, every leaf will have the same depth.
+
+341
+00:23:38,600 --> 00:23:41,130
+Let me write down some of these properties.
+
+342
+00:23:41,400 --> 00:23:53,720
+So, every internal node has between two and four children.
+
+343
+00:23:57,650 --> 00:24:02,710
+And every leaf has the same depth,
+
+344
+00:24:10,450 --> 00:24:15,920
+namely, the black height of the root.
+
+345
+00:24:25,890 --> 00:24:35,790
+This is by property four. OK, so this is telling us a lot.
+
+346
+00:24:36,180 --> 00:24:37,890
+So, essentially what this transformation
+
+347
+00:24:38,120 --> 00:24:40,190
+is doing is ignoring the red nodes.
+
+348
+00:24:40,450 --> 00:24:42,180
+Then, if you just focus on the black nodes,
+
+349
+00:24:42,460 --> 00:24:43,810
+height equals black height.
+
+350
+00:24:44,100 --> 00:24:46,300
+And then, black height is telling us that
+
+351
+00:24:46,550 --> 00:24:50,700
+all the root to leaf paths have the same length.
+
+352
+00:24:51,100 --> 00:24:52,860
+Therefore, all these nodes are at the same level.
+
+353
+00:24:53,220 --> 00:24:56,630
+Having leaves at the same level as a good thing
+
+354
+00:24:56,950 --> 00:24:59,180
+because it means that your tree is pretty much balanced.
+
+355
+00:24:59,470 --> 00:25:01,920
+If you have a tree where all the nodes are branching,
+
+356
+00:25:02,190 --> 00:25:04,370
+so, they'll have at least two children,
+
+357
+00:25:04,660 --> 00:25:06,550
+and all the leaves are at the same level,
+
+358
+00:25:06,860 --> 00:25:08,860
+that's pretty balanced.
+
+359
+00:25:09,080 --> 00:25:11,480
+OK, we will prove some form of that now.
+
+360
+00:25:11,730 --> 00:25:17,330
+I'm going to call the height of this tree h prime.
+
+361
+00:25:17,620 --> 00:25:22,030
+The height of the original tree is h.
+
+362
+00:25:22,400 --> 00:25:24,480
+That's what we want to bound here.
+
+363
+00:25:26,460 --> 00:25:28,510
+So, the first thing is to bound h prime.
+
+364
+00:25:28,780 --> 00:25:31,050
+And then we want to relate h and h prime.
+
+365
+00:25:32,610 --> 00:25:39,090
+OK, so the first question is
+
+366
+00:25:39,310 --> 00:25:42,310
+how many leaves are there in this tree?
+
+367
+00:25:42,580 --> 00:25:44,240
+And, it doesn't really matter which tree I'm looking at
+
+368
+00:25:44,310 --> 00:25:46,250
+because I didn't really do anything to the leaves.
+
+369
+00:25:46,310 --> 00:25:48,540
+All the leaves are black. So the leaves didn't change.
+
+370
+00:25:49,010 --> 00:25:50,870
+How many leaves are there in this tree,
+
+371
+00:25:51,070 --> 00:25:52,510
+and then therefore, in this tree？
+
+372
+00:25:52,730 --> 00:25:57,270
+Sorry? Nine. Indeed, there are nine,
+
+373
+00:25:57,510 --> 00:25:58,960
+but I meant in general, sorry.
+
+374
+00:25:59,280 --> 00:26:00,420
+In this example there are nine.
+
+375
+00:26:00,770 --> 00:26:04,820
+How many keys are there? Eight.
+
+376
+00:26:05,090 --> 00:26:09,540
+So, in general, how do you write nine as a function of eight
+
+377
+00:26:09,850 --> 00:26:16,250
+for large values of nine or eight?
+
+378
+00:26:16,520 --> 00:26:24,000
+Sorry? Plus one, good, correct answer, by guessing.
+
+379
+00:26:24,290 --> 00:26:29,620
+n plus one. OK, why is it n plus one?
+
+380
+00:26:29,820 --> 00:26:32,620
+Let's look at the binary tree case
+
+381
+00:26:32,850 --> 00:26:34,290
+where we sort of understand what's going on?
+
+382
+00:26:34,590 --> 00:26:37,600
+Well, wherever you have a key,
+
+383
+00:26:37,910 --> 00:26:39,580
+there are two branches.
+
+384
+00:26:39,920 --> 00:26:43,370
+And, that's not a very good argument.
+
+385
+00:26:43,710 --> 00:26:48,850
+OK, we have what is here called a branching binary tree.
+
+386
+00:26:49,120 --> 00:26:51,070
+Every internal node has exactly two children.
+
+387
+00:26:51,890 --> 00:26:54,520
+And, we are counting the number of leaves
+
+388
+00:26:54,610 --> 00:26:55,760
+that you get from that process
+
+389
+00:26:55,850 --> 00:26:57,240
+in terms of the number of internal nodes.
+
+390
+00:26:57,550 --> 00:27:00,180
+The number of leaves in a tree, or a branching tree,
+
+391
+00:27:00,410 --> 00:27:02,760
+as always one plus the number of internal nodes.
+
+392
+00:27:03,080 --> 00:27:04,500
+You should know that.
+
+393
+00:27:04,760 --> 00:27:06,350
+You can prove it by induction.
+
+394
+00:27:06,560 --> 00:27:08,730
+OK, so the number of leaves is n plus one.
+
+395
+00:27:08,940 --> 00:27:10,380
+It doesn't hold if you have a single child.
+
+396
+00:27:10,770 --> 00:27:16,270
+It holds if every internal node has a branching factor of two.
+
+397
+00:27:19,900 --> 00:27:22,270
+OK, this is in either tree.
+
+398
+00:27:23,770 --> 00:27:27,050
+And now, we want to pull out some relation
+
+399
+00:27:27,250 --> 00:27:29,270
+between the number of leaves and the height of the tree.
+
+400
+00:27:30,550 --> 00:27:33,240
+So, what's a good relation to use here?
+
+401
+00:27:33,550 --> 00:27:35,720
+We know exactly how many leaves there are.
+
+402
+00:27:35,920 --> 00:27:37,260
+That will somehow connect us to n.
+
+403
+00:27:37,510 --> 00:27:39,270
+What we care about is the height.
+
+404
+00:27:39,480 --> 00:27:40,800
+And let's look at the height of this tree.
+
+405
+00:27:42,770 --> 00:27:47,650
+So, if I have a two-three-four tree of height h prime, 
+406
+00:27:47,885 --> 00:27:49,939
+how many leaves could it have?
+
+406
+00:27:50,180 --> 00:27:54,180
+What's the minimum and maximum number of leaves it could have?
+
+407
+00:27:55,850 --> 00:27:58,470
+2^h to 4^h, or h prime.
+
+408
+00:27:59,610 --> 00:28:03,430
+So, we also know in the two-three-four tree,
+
+409
+00:28:05,710 --> 00:28:11,330
+the number of leaves has to be between four to the h prime,
+
+410
+00:28:11,570 --> 00:28:14,080
+because at most I could branch four ways in each node.
+
+411
+00:28:14,320 --> 00:28:17,790
+And, it's at least two to the h prime
+
+412
+00:28:18,010 --> 00:28:23,630
+because I know that every node branches at least two ways. That's key.
+
+413
+00:28:24,860 --> 00:28:27,960
+So, I only care about one of these, I think this one.
+
+414
+00:28:29,130 --> 00:28:33,690
+So, I get that two to the h prime is,
+
+415
+00:28:33,930 --> 00:28:35,400
+at most, n plus one.
+
+416
+00:28:35,700 --> 00:28:37,080
+So the number of leaves is n plus one.
+
+417
+00:28:37,160 --> 00:28:38,450
+We know that exactly.
+
+418
+00:28:38,800 --> 00:28:41,970
+So, we rewrite, we take logs of both sides.
+
+419
+00:28:42,240 --> 00:28:46,990
+It says h one is at most log of n plus one.
+
+420
+00:28:48,260 --> 00:28:51,030
+So, we have a nice, balanced tree.
+
+421
+00:28:51,040 --> 00:28:52,410
+This should be intuitive.
+
+422
+00:28:52,600 --> 00:28:54,460
+If I had every node branching two ways,
+
+423
+00:28:54,690 --> 00:28:57,480
+and all the leaves at the same level, that's a perfect tree.
+
+424
+00:28:57,750 --> 00:29:01,210
+It should be exactly log base two of n plus one,
+
+425
+00:29:01,420 --> 00:29:02,490
+and turns out not quite n.
+
+426
+00:29:02,720 --> 00:29:04,150
+That should be the height of the tree.
+
+427
+00:29:04,340 --> 00:29:05,870
+Here, I might have even more branching,
+
+428
+00:29:06,070 --> 00:29:08,850
+which is making things even shallower in some sense.
+
+429
+00:29:09,110 --> 00:29:11,730
+So, I get more leaves out of the same height.
+
+430
+00:29:11,820 --> 00:29:13,120
+But that's only better for me.
+
+431
+00:29:13,180 --> 00:29:14,460
+That will only decrease the height
+
+432
+00:29:14,530 --> 00:29:15,680
+in terms of the number of leaves.
+
+433
+00:29:15,950 --> 00:29:18,690
+n plus one here is the number of leaves.
+
+434
+00:29:18,930 --> 00:29:24,950
+So: cool. That's an easy upper bound on the height of this tree.
+
+435
+00:29:25,150 --> 00:29:27,430
+Now, what we really care about is the height of this tree. 
+437
+00:29:27,666 --> 00:29:29,713
+So, we want to relate h and h prime.
+
+436
+00:29:29,980 --> 00:29:32,220
+Any suggestions on how we might do that?
+
+437
+00:29:32,450 --> 00:29:36,550
+How do we know that the height of this reduced tree
+
+438
+00:29:36,790 --> 00:29:38,560
+is not too much smaller than this one.
+
+439
+00:29:39,050 --> 00:29:40,690
+We know that this one is, at most, log n.
+
+440
+00:29:40,850 --> 00:29:43,810
+We want this to be, at most, two log n plus one.
+
+441
+00:29:45,200 --> 00:29:49,750
+We know the answer. We've said the theorem. Sorry?
+
+442
+00:29:50,070 --> 00:29:52,450
+[student]Inaudible
+
+443
+00:29:52,690 --> 00:29:55,340
+Right. So, property three tells us that
+
+444
+00:29:55,540 --> 00:29:58,810
+we can only have one red node for every black one.
+
+445
+00:29:59,070 --> 00:30:00,580
+We can, at most, alternate red and black.
+
+446
+00:30:00,860 --> 00:30:02,580
+So, if we look at one of these paths
+
+447
+00:30:02,740 --> 00:30:06,750
+that goes from a root to a leaf,
+
+448
+00:30:07,040 --> 00:30:08,790
+the number of red nodes can be,
+
+449
+00:30:09,040 --> 00:30:10,850
+at most, half the length of the path.
+
+450
+00:30:11,100 --> 00:30:14,500
+And we take the max overall paths, that's the height of the tree.
+
+451
+00:30:14,850 --> 00:30:19,400
+So, we know that h is, at most, two times h prime,
+
+452
+00:30:19,770 --> 00:30:25,370
+or maybe it's easier to think of h prime is at least a half, h.
+
+453
+00:30:25,670 --> 00:30:27,300
+Assuming I got that right,
+
+454
+00:30:27,580 --> 00:30:33,290
+because at most a half of the nodes
+
+455
+00:30:33,560 --> 00:30:47,600
+on any root to leaf path ---- are red.
+
+456
+00:30:49,740 --> 00:30:51,840
+So, at least half of them have to be black.
+
+457
+00:30:52,120 --> 00:30:55,290
+And, all-black nodes are captured in this picture
+
+458
+00:30:55,290 --> 00:30:57,980
+cause we've thrown away the red nodes. So we have this relation,
+
+459
+00:30:58,270 --> 00:31:03,930
+and therefore, h is, at most, two times log n plus one.
+
+460
+00:31:04,350 --> 00:31:07,980
+OK: pretty easy.
+
+461
+00:31:08,300 --> 00:31:10,200
+But you have to remember,
+
+462
+00:31:10,470 --> 00:31:12,360
+this tree has to be balanced,
+
+463
+00:31:12,630 --> 00:31:14,350
+and they are not too far away from each other.
+
+464
+00:31:14,400 --> 00:31:17,370
+OK, so in Friday's recitation,
+
+465
+00:31:17,610 --> 00:31:19,120
+you will see how to manipulate trees with this form.
+
+466
+00:31:19,350 --> 00:31:20,400
+There is a cool way to do it.
+
+467
+00:31:20,610 --> 00:31:21,680
+That's two-three-four trees.
+
+468
+00:31:21,900 --> 00:31:23,270
+Today, we're going to see
+
+469
+00:31:23,480 --> 00:31:26,440
+how to manipulate trees in this form as red black trees.
+
+470
+00:31:26,790 --> 00:31:28,590
+And, you'll see today's lecture,
+
+471
+00:31:28,690 --> 00:31:29,940
+and you'll see Friday's recitation,
+
+472
+00:31:30,160 --> 00:31:31,800
+and they won't really seem to relate at all.
+
+473
+00:31:32,150 --> 00:31:34,300
+But they're the same, just a bit hidden.
+
+474
+00:31:38,510 --> 00:31:47,830
+OK, so this is good news.
+
+475
+00:31:48,100 --> 00:31:50,470
+We now know that all red black trees are balanced.
+
+476
+00:31:50,800 --> 00:31:52,660
+So as long as we can make sure that
+
+477
+00:31:52,890 --> 00:31:57,910
+our tree stays a red black tree, we'll be OK.
+
+478
+00:31:58,230 --> 00:32:01,710
+We'll be OK in the sense that the height is always log n.
+
+479
+00:32:02,030 --> 00:32:10,320
+And therefore, queries in a red black tree,
+
+480
+00:32:10,580 --> 00:32:14,020
+so queries are things like search, find a given key,
+
+481
+00:32:14,290 --> 00:32:17,590
+find the minimum, find the maximum,
+
+482
+00:32:17,890 --> 00:32:22,260
+find a successor, find a predecessor.
+
+483
+00:32:22,550 --> 00:32:24,460
+These are all queries that we know
+
+484
+00:32:24,660 --> 00:32:27,570
+how to support in a binary search tree.
+
+485
+00:32:27,860 --> 00:32:31,190
+And we know how to do them in order height time.
+
+486
+00:32:33,250 --> 00:32:36,520
+And the height here is log n so we know that
+
+487
+00:32:36,570 --> 00:32:43,880
+all of these operations take order log n in a red black tree.
+
+488
+00:32:54,840 --> 00:33:13,480
+OK -- So, queries are easy.
+
+489
+00:33:13,730 --> 00:33:15,200
+We are done with queries,
+
+490
+00:33:15,490 --> 00:33:18,280
+just from balance: not a surprise.
+
+491
+00:33:18,370 --> 00:33:19,720
+We know that balances is good.
+
+492
+00:33:19,950 --> 00:33:22,430
+The hard part for us will be to do updates.
+
+493
+00:33:30,660 --> 00:33:34,040
+And in this context, updates means insert and delete.
+
+494
+00:33:37,540 --> 00:33:40,670
+In general, and a data structure, we talk about queries
+
+495
+00:33:40,980 --> 00:33:43,840
+which ask questions about the data in the structure,
+
+496
+00:33:44,030 --> 00:33:46,490
+and updates which modify the data in the structure.
+
+497
+00:33:46,730 --> 00:33:48,140
+And most of the time here,
+
+498
+00:33:48,350 --> 00:33:49,610
+we are always thinking about dynamic sets.
+
+499
+00:33:49,910 --> 00:33:51,010
+So, you can change the dynamics set
+
+500
+00:33:51,010 --> 00:33:52,420
+by adding or deleting an element.
+
+501
+00:33:52,780 --> 00:33:54,310
+You can ask all sorts of questions.
+
+502
+00:33:54,600 --> 00:33:57,810
+In priority queues, there were other updates like delete Min.
+
+503
+00:33:58,390 --> 00:34:02,380
+Here we have find Min, but we could then delete it.
+
+504
+00:34:02,690 --> 00:34:05,960
+Typically these are the operations we care about.
+
+505
+00:34:06,230 --> 00:34:08,000
+And we'll talk about updates to include those of these,
+
+506
+00:34:08,000 --> 00:34:09,660
+and queries to include all of these,
+
+507
+00:34:09,960 --> 00:34:12,340
+or whatever happens to be relevant.
+
+508
+00:34:12,670 --> 00:34:14,610
+In problem sets especially, you'll see
+
+509
+00:34:14,800 --> 00:34:17,080
+all sorts of different queries that you can support.
+
+510
+00:34:19,510 --> 00:34:22,280
+OK, so how do we support updates?
+
+511
+00:34:22,680 --> 00:34:25,570
+Well, we have binary search tree insert,
+
+512
+00:34:26,050 --> 00:34:27,760
+which we call tree insert.
+
+513
+00:34:28,020 --> 00:34:30,260
+We have binary search tree delete, tree delete.
+
+514
+00:34:31,950 --> 00:34:33,970
+They will preserve the binary search tree property,
+
+515
+00:34:34,320 --> 00:34:36,050
+but we know they don't necessarily preserve balance.
+
+516
+00:34:36,350 --> 00:34:37,820
+We can insert a bunch of nodes.
+
+517
+00:34:38,000 --> 00:34:39,330
+Just keep adding new minimum elements
+
+518
+00:34:39,340 --> 00:34:41,240
+and you will get a really long path off the end.
+
+519
+00:34:41,520 --> 00:34:45,950
+So, presumably, they do not preserve the red black properties
+
+520
+00:34:46,240 --> 00:34:48,500
+because we know red black implies balance.
+
+521
+00:34:48,810 --> 00:34:51,460
+In particular, they won't satisfy property one,
+
+522
+00:34:51,700 --> 00:34:53,660
+which I've erased, which is every node is red or black.
+
+523
+00:34:53,930 --> 00:34:55,900
+It'll add a node, and not assign it a color.
+
+524
+00:34:56,180 --> 00:34:57,720
+So, we've got to assign it a color.
+
+525
+00:34:57,980 --> 00:35:00,150
+And, as soon as we do that,
+
+526
+00:35:00,400 --> 00:35:02,000
+we'll probably violate some other property.
+
+527
+00:35:02,230 --> 00:35:03,850
+And then we have to fix that property, and so on.
+
+528
+00:35:04,050 --> 00:35:06,190
+So, it's a bit tricky, but you play around with it
+
+529
+00:35:06,400 --> 00:35:08,570
+and it's not too hard.
+
+530
+00:35:10,250 --> 00:35:15,420
+OK, so updates must modify the tree.
+
+531
+00:35:24,320 --> 00:35:27,440
+And to preserve the red black properties,
+
+532
+00:35:27,700 --> 00:35:32,110
+they're going to do it in three different kinds of modifications.
+
+533
+00:35:32,340 --> 00:35:35,880
+The first thing we will indeed do is just use the BST operation,
+
+534
+00:35:36,190 --> 00:35:37,490
+tree insert or tree delete.
+
+535
+00:35:37,800 --> 00:35:39,210
+That's something we know how to do.
+
+536
+00:35:39,490 --> 00:35:42,360
+Let's just do it. We are going to
+
+537
+00:35:42,530 --> 00:35:45,440
+have to change the colors of some of the nodes.
+
+538
+00:35:45,660 --> 00:35:49,160
+In particular, the one that we insert better be colored somehow.
+
+539
+00:35:49,510 --> 00:35:51,290
+And in general, if we just rip out a node,
+
+540
+00:35:51,550 --> 00:35:53,170
+we are going to have to recolor it,
+
+541
+00:35:53,410 --> 00:35:57,740
+recolor some nearby nodes.
+
+542
+00:35:57,750 --> 00:36:01,630
+There is one other kind of operation we're going to do.
+
+543
+00:36:01,890 --> 00:36:04,230
+So, recoloring just means set to red or black.
+
+544
+00:36:04,520 --> 00:36:08,060
+The other thing you might do is rearrange the tree,
+
+545
+00:36:08,280 --> 00:36:11,950
+change the pointers, change the links from one node to another.
+
+546
+00:36:12,250 --> 00:36:14,910
+And, we're going to do that at the very structured way.
+
+547
+00:36:15,170 --> 00:36:18,040
+And, this is one of the main reasons that
+
+548
+00:36:18,280 --> 00:36:20,430
+red black trees are interesting.
+
+549
+00:36:20,680 --> 00:36:22,480
+The kinds of changes they make are very simple,
+
+550
+00:36:22,740 --> 00:36:24,850
+and they also don't make very many of them.
+
+551
+00:36:25,120 --> 00:36:27,350
+So, they're called rotations.
+
+552
+00:36:27,610 --> 00:36:30,000
+So, here's a rotation.
+
+553
+00:36:44,540 --> 00:36:48,930
+OK, this is a way of drawing a generic part of a tree.
+
+554
+00:36:49,220 --> 00:36:50,540
+We have two nodes, A and B.
+
+555
+00:36:50,770 --> 00:36:51,770
+There is some subtrees hanging off,
+
+556
+00:36:51,830 --> 00:36:52,990
+which we draw as triangles.
+
+557
+00:36:53,040 --> 00:36:54,460
+We don't know how big they are.
+
+558
+00:36:54,720 --> 00:36:57,150
+We know they better all have the same black height
+
+559
+00:36:57,440 --> 00:36:58,600
+if it's a red black tree.
+
+560
+00:36:58,850 --> 00:37:00,360
+But in general, it just looks like this.
+
+561
+00:37:00,590 --> 00:37:02,220
+There is some parent, and there's some rest
+
+562
+00:37:02,220 --> 00:37:03,470
+of the tree out here which we don't draw.
+
+563
+00:37:03,870 --> 00:37:05,480
+I'll give these subtrees names,
+
+564
+00:37:05,760 --> 00:37:08,130
+Greek names, alpha, beta, gamma.
+
+565
+00:37:09,540 --> 00:37:16,930
+And, I'll define the operation right rotate of B.
+
+566
+00:37:19,250 --> 00:37:21,760
+So general, if I have a node, B, I look at it
+
+567
+00:37:21,980 --> 00:37:23,170
+and I want to do it right rotation,
+
+568
+00:37:23,450 --> 00:37:25,830
+I look at its left child and re-draw this picture
+
+569
+00:37:26,130 --> 00:37:28,080
+all the subtrees of those two nodes.
+
+570
+00:37:28,420 --> 00:37:32,140
+And, I create this tree.
+
+571
+00:37:43,230 --> 00:37:49,280
+So, all I've done is turn this edge 90°.
+
+572
+00:37:49,520 --> 00:37:52,630
+What was the parent of B is now the parent of A.
+
+573
+00:37:52,960 --> 00:37:54,480
+A is now the new parent of B.
+
+574
+00:37:54,800 --> 00:37:55,910
+The subtrees rearrange.
+
+575
+00:37:55,990 --> 00:37:57,240
+Before, they were both subtrees of,
+
+576
+00:37:57,290 --> 00:37:59,120
+these two were subtrees of A.
+
+577
+00:37:59,350 --> 00:38:01,050
+And, gamma was a subtree of B.
+
+578
+00:38:01,300 --> 00:38:02,580
+Gamma is still a subtree of B,
+
+579
+00:38:02,800 --> 00:38:03,850
+and alpha still is a subtree of A.
+
+580
+00:38:04,060 --> 00:38:08,760
+But, beta switched to being a subtree of B.
+
+581
+00:38:09,030 --> 00:38:11,590
+OK, the main thing we want to check here is that
+
+582
+00:38:11,800 --> 00:38:16,540
+this operation preserves the binary search tree property.
+
+583
+00:38:16,830 --> 00:38:21,500
+Remember, the binary search tree property says that
+
+584
+00:38:21,770 --> 00:38:24,450
+all the elements in the left subtree of a node
+
+585
+00:38:24,710 --> 00:38:27,550
+are less than or equal to the node,
+
+586
+00:38:27,810 --> 00:38:29,290
+and all the elements in the right subtree
+
+587
+00:38:29,560 --> 00:38:31,550
+are greater than or equal to that value.
+
+588
+00:38:31,830 --> 00:38:35,260
+So, in particular, if we take some node,
+
+589
+00:38:35,500 --> 00:38:42,020
+little a in alpha, little b in beta, and little c in gamma,
+
+590
+00:38:42,290 --> 00:38:47,100
+then a is less than or equal to capital A,
+
+591
+00:38:47,310 --> 00:38:48,860
+is less than or equal to little b,
+
+592
+00:38:49,110 --> 00:38:52,200
+is less than or equal to capital B,
+
+593
+00:38:52,480 --> 00:38:55,080
+is less than or equal to little c.
+
+594
+00:38:55,380 --> 00:38:57,730
+And, this is the condition
+
+595
+00:38:58,080 --> 00:39:00,110
+both on the left side and on the right side
+
+596
+00:39:00,350 --> 00:39:03,370
+because Alpha is left of everything.
+
+597
+00:39:03,640 --> 00:39:05,830
+Beta is in between A and B,
+
+598
+00:39:06,020 --> 00:39:07,890
+and gamma is after B.
+
+599
+00:39:08,150 --> 00:39:09,850
+And the same thing is true over here.
+
+600
+00:39:10,050 --> 00:39:11,780
+Beta is still, it's supposed to be all the nodes
+
+601
+00:39:11,980 --> 00:39:13,580
+that come between capital A and capital B.
+
+602
+00:39:13,820 --> 00:39:18,790
+So, this is good. We could definitely do this operation,
+
+603
+00:39:19,000 --> 00:39:20,360
+still have the binary search tree,
+
+604
+00:39:20,550 --> 00:39:23,350
+and we are going to use rotations in a particularly careful way
+
+605
+00:39:23,590 --> 00:39:25,730
+to make sure that we maintain all these properties.
+
+606
+00:39:25,850 --> 00:39:26,920
+That's the hard part.
+
+607
+00:39:27,190 --> 00:39:29,090
+But, rotations will be our key.
+
+608
+00:39:29,340 --> 00:39:30,950
+This was the right rotate operation.
+
+609
+00:39:31,190 --> 00:39:33,520
+The reverse operation is left rotate.
+
+610
+00:39:36,500 --> 00:39:38,890
+So, this is left rotate of A.
+
+611
+00:39:39,170 --> 00:39:41,950
+In general, of the two nodes that
+
+612
+00:39:42,130 --> 00:39:43,230
+are involved, we list the top one.
+
+613
+00:39:43,490 --> 00:39:46,200
+So, its right rotate of B will give you this.
+
+614
+00:39:46,410 --> 00:39:47,810
+Left rotate of A will give you this.
+
+615
+00:39:48,070 --> 00:39:53,340
+So, these are reversible operations, which feels good.
+
+616
+00:39:53,530 --> 00:40:00,760
+The other thing is that they only take constant time operations
+
+617
+00:40:01,080 --> 00:40:04,940
+because we are only changing a constant number of pointers.
+
+618
+00:40:05,140 --> 00:40:07,400
+As long as you know the node, B, that you are interested in
+
+619
+00:40:07,590 --> 00:40:10,460
+you set the left pointer of B to be,
+
+620
+00:40:10,700 --> 00:40:12,500
+if you want it to be beta,
+
+621
+00:40:12,700 --> 00:40:15,370
+so you set left of B to be right of A, and so on, and so on.
+
+622
+00:40:15,700 --> 00:40:17,220
+You make constant number of those changes.
+
+623
+00:40:17,460 --> 00:40:18,480
+You update the parents as well.
+
+624
+00:40:18,690 --> 00:40:21,040
+It's only a constant number of links that are changing,
+
+625
+00:40:21,300 --> 00:40:23,910
+so, a constant number of assignments you need to do.
+
+626
+00:40:24,130 --> 00:40:28,370
+So, you've probably seen rotations before.
+
+627
+00:40:28,760 --> 00:40:35,730
+But we are going to use them in a complicated way.
+
+628
+00:40:43,630 --> 00:40:45,590
+So, let's look at how to do insertion.
+
+629
+00:40:50,340 --> 00:40:52,790
+We'll see it three times in some sense.
+
+630
+00:40:58,680 --> 00:41:01,420
+First, I'll tell you the basic idea, which is pretty simple.
+
+631
+00:41:01,670 --> 00:41:03,130
+I mentioned some of it already.
+
+632
+00:41:03,350 --> 00:41:06,450
+Then, we'll do it on an example, feel it in our bones,
+
+633
+00:41:06,680 --> 00:41:09,400
+and then we'll give the pseudocode
+
+634
+00:41:09,630 --> 00:41:13,610
+so that you could go home and implement it if you wanted.
+
+635
+00:41:13,800 --> 00:41:17,420
+OK, this is, I should say, red black insert,
+
+636
+00:41:17,740 --> 00:41:20,210
+which in the book is called RB insert,
+
+637
+00:41:20,510 --> 00:41:25,010
+not for root beer, but for red black.
+
+638
+00:41:26,600 --> 00:41:30,290
+OK, so the first thing we're going to do, as I said,
+
+639
+00:41:30,480 --> 00:41:32,190
+is binary search tree, insert that node.
+
+640
+00:41:32,400 --> 00:41:34,060
+So, x now becomes a new leaf.
+
+641
+00:41:34,240 --> 00:41:36,400
+We searched for x wherever it's supposed to go.
+
+642
+00:41:36,580 --> 00:41:38,800
+We create, I shouldn't call it a leaf now.
+
+643
+00:41:39,080 --> 00:41:41,660
+It's now a node hanging off.
+
+644
+00:41:41,670 --> 00:41:44,330
+It's an internal node hanging off one of the original nodes.
+
+645
+00:41:44,540 --> 00:41:45,990
+Maybe we added it right here.
+
+646
+00:41:46,280 --> 00:41:48,750
+It now gets two new leaves hanging off of it.
+
+647
+00:41:50,070 --> 00:41:52,090
+It has no internal children.
+
+648
+00:41:52,360 --> 00:41:54,980
+And, we get to pick a color for it.
+
+649
+00:41:55,170 --> 00:42:00,210
+And, we will pick the color red.
+
+650
+00:42:01,520 --> 00:42:05,630
+OK, why red? We definitely have to pick one of two colors.
+
+651
+00:42:05,820 --> 00:42:07,730
+We could flip a coin. That might work,
+
+652
+00:42:07,940 --> 00:42:09,880
+but it's going to make our job even messier.
+
+653
+00:42:10,170 --> 00:42:14,550
+So, we are adding a new node.
+
+654
+00:42:14,750 --> 00:42:16,140
+It's not a root or a leaf presumably,
+
+655
+00:42:16,500 --> 00:42:19,240
+so we don't really need it to be black by property two.
+
+656
+00:42:19,490 --> 00:42:22,490
+Property three, every red node has a black parent.
+
+657
+00:42:22,730 --> 00:42:24,330
+That might be a problem.
+
+658
+00:42:24,550 --> 00:42:28,270
+So, the problem is if its parent is red.
+
+659
+00:42:28,490 --> 00:42:31,870
+Then we violate property two.
+
+660
+00:42:32,100 --> 00:42:43,880
+The parent might be red, property three, sorry.
+
+661
+00:42:44,140 --> 00:42:49,520
+OK, the good news is that property four is still true
+
+662
+00:42:49,760 --> 00:42:51,220
+because property four is just counting numbers
+
+663
+00:42:51,310 --> 00:42:52,560
+of black nodes down various paths.
+
+664
+00:42:52,740 --> 00:42:54,590
+That's really the hard property to maintain.
+
+665
+00:42:54,760 --> 00:42:56,670
+If we just add a new red node,
+
+666
+00:42:56,860 --> 00:42:58,500
+none of the black heights change.
+
+667
+00:42:58,680 --> 00:43:01,270
+None of the number of black nodes along the path changes.
+
+668
+00:43:01,490 --> 00:43:03,310
+So, this still has to hold.
+
+669
+00:43:03,560 --> 00:43:06,640
+The only thing we can violate is property three.
+
+670
+00:43:06,880 --> 00:43:08,550
+That's reasonable.
+
+671
+00:43:08,760 --> 00:43:11,530
+We know we've got to violate something at the beginning.
+
+672
+00:43:11,710 --> 00:43:13,830
+We can't just do a binary search tree insert.
+
+673
+00:43:16,150 --> 00:43:22,940
+OK, so, let's give it a try on this tree.
+
+674
+00:43:28,030 --> 00:43:31,720
+I should say how we are going to fix this.
+
+675
+00:43:31,930 --> 00:43:35,960
+How do we fix property three?
+
+676
+00:43:36,270 --> 00:43:43,820
+We are going to move the violation of three up the tree.
+
+677
+00:43:45,440 --> 00:43:48,050
+So, we're going to start at node x,
+
+678
+00:43:48,140 --> 00:43:49,500
+and move up towards the root.
+
+679
+00:43:49,770 --> 00:43:54,210
+This is via recoloring.
+
+680
+00:43:54,290 --> 00:43:55,700
+The only thing, initially,
+
+681
+00:43:55,900 --> 00:43:58,620
+we'll do is recoloring until we get to some point
+
+682
+00:44:02,820 --> 00:44:06,560
+where we can fix the violation using a rotation –
+
+683
+00:44:17,840 --> 00:44:20,060
+——and probably also recoloring.
+
+684
+00:44:25,850 --> 00:44:29,240
+OK, so let's see this algorithm in action.
+
+685
+00:44:29,530 --> 00:44:32,110
+I want to copy this tree,
+
+686
+00:44:32,330 --> 00:44:33,760
+and you are going to have to copy it, too.
+
+687
+00:44:34,020 --> 00:44:37,070
+So, I'll just redraw it instead of modifying that diagram.
+
+688
+00:44:51,780 --> 00:44:54,550
+So, we have this nice red black tree.
+
+689
+00:44:54,850 --> 00:45:09,160
+And, we'll try inserting a new value of 15.
+
+690
+00:45:14,200 --> 00:45:20,980
+22 is the new black. OK, that should be the same tree.
+
+691
+00:45:21,290 --> 00:45:24,840
+So now, I'm choosing the number 15 to insert,
+
+692
+00:45:25,030 --> 00:45:27,750
+because that will show a fairly interesting insertion.
+
+693
+00:45:28,030 --> 00:45:30,190
+Sometimes, the insertion doesn't take very much work.
+
+694
+00:45:30,390 --> 00:45:31,680
+We just do the rotation and we're done.
+
+695
+00:45:31,860 --> 00:45:36,810
+I just like to look at an interesting case.
+
+696
+00:45:37,000 --> 00:45:39,170
+So, we insert 15. 15 is bigger than seven.
+
+697
+00:45:39,340 --> 00:45:40,700
+It's less than 18. It's bigger than ten.
+
+698
+00:45:40,890 --> 00:45:42,700
+It's bigger than 11. So, 15 goes here.
+
+699
+00:45:42,930 --> 00:45:47,140
+So, we add a new red node of 15.
+
+700
+00:45:47,410 --> 00:45:51,470
+And, it has two black leaves hanging off of it,
+
+701
+00:45:51,760 --> 00:45:53,760
+replaced one black leaf. Now we have two.
+
+702
+00:45:54,060 --> 00:46:04,450
+OK, now, we violate property three
+
+703
+00:46:04,760 --> 00:46:07,610
+because we added a new red child of a red node.
+
+704
+00:46:07,820 --> 00:46:10,300
+So, now we have two consecutive red nodes in a root to leaf path.
+
+705
+00:46:10,600 --> 00:46:12,220
+We'd like to make this black,
+
+706
+00:46:12,430 --> 00:46:13,800
+but that would screw up the black heights
+
+707
+00:46:14,010 --> 00:46:16,770
+because now this node would have one black node over here,
+
+708
+00:46:16,940 --> 00:46:18,550
+and two black nodes down this path.
+
+709
+00:46:18,550 --> 00:46:22,160
+So, that's not good. What can we do?
+
+710
+00:46:22,410 --> 00:46:23,910
+Well, let's try to re-color.
+
+711
+00:46:31,140 --> 00:46:36,440
+Yes. This always takes a little while to remember.
+
+712
+00:46:36,690 --> 00:46:41,690
+So, our fix is going to be to recolor.
+
+713
+00:46:41,940 --> 00:46:43,950
+And, the first thing that struck me, which doesn't work,
+
+714
+00:46:44,160 --> 00:46:46,090
+cause we try to recolor around here.
+
+715
+00:46:46,330 --> 00:46:48,000
+It doesn't look so good
+
+716
+00:46:48,510 --> 00:46:50,560
+because we've got red stuff out here,
+
+717
+00:46:50,770 --> 00:46:51,900
+but we've got a black node over here.
+
+718
+00:46:52,100 --> 00:46:54,090
+So we can't make this one red, and this one black.
+
+719
+00:46:54,350 --> 00:46:55,410
+It wouldn't quite work.
+
+720
+00:46:55,600 --> 00:47:00,520
+If we look up a little higher at the grandparent of 15 up here,
+
+721
+00:47:00,740 --> 00:47:03,760
+we have a black node here and two red children.
+
+722
+00:47:04,020 --> 00:47:06,270
+That's actually pretty good news
+
+723
+00:47:06,530 --> 00:47:11,300
+because we could, instead, make that two black children
+
+724
+00:47:11,510 --> 00:47:14,400
+and a red parent. Locally, that's going to be fine.
+
+725
+00:47:14,720 --> 00:47:16,940
+It's not going to change any black heights
+
+726
+00:47:17,140 --> 00:47:19,700
+because any path that went through these nodes before
+
+727
+00:47:19,890 --> 00:47:22,520
+will still go through the same number of black nodes.
+
+728
+00:47:22,750 --> 00:47:25,020
+Instead of going through a black node always here,
+
+729
+00:47:25,220 --> 00:47:26,830
+it will go through a black node either here or here
+
+730
+00:47:27,030 --> 00:47:29,240
+because paths always go down to the leaves.
+
+731
+00:47:29,490 --> 00:47:32,830
+So, that's what we're going to do, recolor these guys.
+
+732
+00:47:33,110 --> 00:47:37,110
+And, we will get ten, which is red.
+
+733
+00:47:37,400 --> 00:47:42,250
+We'll get eight, which is black, 11 which is black,
+
+734
+00:47:42,490 --> 00:47:45,860
+and these things don't change.
+
+735
+00:47:46,100 --> 00:47:48,370
+Everything else doesn't change.
+
+736
+00:47:48,620 --> 00:47:49,630
+We are going to leave 15 red.
+
+737
+00:47:49,820 --> 00:47:51,080
+It's no longer in violation.
+
+738
+00:47:51,270 --> 00:47:54,500
+15 is great because now its parent is black.
+
+739
+00:47:54,730 --> 00:47:57,580
+We now have a new violation up here with 18
+
+740
+00:47:57,800 --> 00:47:59,870
+because 18 is also red.
+
+741
+00:48:00,100 --> 00:48:03,290
+That's the only violation we have.
+
+742
+00:48:03,480 --> 00:48:04,870
+In general, we'll have, at most,
+
+743
+00:48:05,050 --> 00:48:08,020
+one violation at any time until we fix it.
+
+744
+00:48:08,250 --> 00:48:10,230
+Then we'll have zero violations.
+
+745
+00:48:18,680 --> 00:48:26,220
+OK, so, now we have a violation between ten and 18:
+
+746
+00:48:30,010 --> 00:48:31,760
+somehow always counterintuitive to me.
+
+747
+00:48:32,010 --> 00:48:36,930
+I had to look at the cheat sheet again. Really?
+
+748
+00:48:37,240 --> 00:48:40,130
+No, OK, good. I was going to say,
+
+749
+00:48:40,330 --> 00:48:41,890
+we can't recolor anymore. Good.
+
+750
+00:48:42,140 --> 00:48:46,190
+I'm not that bad. So, what we'd like to do is,
+
+751
+00:48:46,190 --> 00:48:47,990
+again, look at the grandparent of ten,
+
+752
+00:48:48,220 --> 00:48:50,020
+which is now seven, the root of the tree.
+
+753
+00:48:50,230 --> 00:48:53,290
+It is black, but one of its children is black.
+
+754
+00:48:53,510 --> 00:48:55,710
+The other is red. So, we can't play the same game
+
+755
+00:48:55,730 --> 00:48:57,120
+of taking the blackness of seven,
+
+756
+00:48:57,400 --> 00:48:59,590
+and moving it down to the two children.
+
+757
+00:48:59,790 --> 00:49:01,050
+Never mind that the root is supposed to stay black.
+
+758
+00:49:01,280 --> 00:49:02,440
+We'll ignore that property for now.
+
+759
+00:49:02,810 --> 00:49:05,880
+We can't make these two black and make this one red,
+
+760
+00:49:05,970 --> 00:49:07,680
+because then we'd get an imbalance.
+
+761
+00:49:07,890 --> 00:49:09,750
+This was already black. So now,
+
+762
+00:49:09,950 --> 00:49:11,900
+paths going down here will have
+
+763
+00:49:12,160 --> 00:49:14,300
+one fewer black node than paths going out here.
+
+764
+00:49:14,520 --> 00:49:17,100
+So, we can't just recolor seven and its children.
+
+765
+00:49:17,350 --> 00:49:19,910
+So, instead, we've got to do a rotation.
+
+766
+00:49:20,160 --> 00:49:21,460
+We'd better be near the end.
+
+767
+00:49:21,680 --> 00:49:24,320
+So, what I will do is rotate this edge.
+
+768
+00:49:24,510 --> 00:49:27,600
+I'm going to rotate eighteen to the right.
+
+769
+00:49:27,800 --> 00:49:37,480
+So that's the next operation: rotate right of 18.
+
+770
+00:50:00,520 --> 00:50:03,280
+We'll delete one more operation after this.
+
+771
+00:50:03,560 --> 00:50:05,690
+So, we rotate right 18.
+
+772
+00:50:05,900 --> 00:50:09,690
+So, the root stays the same: seven, three, its children.
+
+773
+00:50:09,910 --> 00:50:13,720
+Now, the right child of seven is no longer 18.
+
+774
+00:50:14,060 --> 00:50:18,330
+It's now ten. 18 becomes the red child of ten.
+
+775
+00:50:20,750 --> 00:50:27,070
+OK, we have eight over here with its two children.
+
+776
+00:50:27,350 --> 00:50:31,590
+11 and 15: that subtree fits in between ten and 18.
+
+777
+00:50:31,990 --> 00:50:39,790
+So, it goes here: 11 and 15.
+
+778
+00:50:44,490 --> 00:50:46,080
+And then, there's the right subtree.
+
+779
+00:50:46,290 --> 00:50:47,470
+Everything to the right of 18,
+
+780
+00:50:47,710 --> 00:50:52,960
+that goes over here: 22 and 26.
+
+781
+00:50:53,210 --> 00:50:58,260
+And hopefully I'm not changing any colors during that operation.
+
+782
+00:51:00,340 --> 00:51:01,740
+If I did, let me know.
+
+783
+00:51:01,960 --> 00:51:05,880
+OK, it looks good. So, I still have this violation,
+
+784
+00:51:06,120 --> 00:51:08,920
+still in trouble between ten and 18.
+
+785
+00:51:09,150 --> 00:51:11,210
+But, I've made this straighter.
+
+786
+00:51:11,430 --> 00:51:13,590
+OK, that's what we want to do, it turns out,
+
+787
+00:51:13,810 --> 00:51:16,340
+is make the connection between 18, the violator,
+
+788
+00:51:16,580 --> 00:51:19,050
+and its grandparent, a straight connection:
+
+789
+00:51:19,140 --> 00:51:20,390
+two rights or two lefts.
+
+790
+00:51:20,610 --> 00:51:22,370
+Here we had to zigzag right, left.
+
+791
+00:51:22,570 --> 00:51:23,980
+We like to make it straight.
+
+792
+00:51:24,150 --> 00:51:27,720
+OK, it doesn't look like a much more balanced tree that this one.
+
+793
+00:51:27,880 --> 00:51:28,890
+In fact, it looks a little worse.
+
+794
+00:51:29,100 --> 00:51:31,950
+What we can do is now rotate these guys,
+
+795
+00:51:32,180 --> 00:51:34,760
+or rather, rotate this edge.
+
+796
+00:51:34,980 --> 00:51:40,110
+I'm going to rotate seven to the left, make ten the root,
+
+797
+00:51:40,340 --> 00:51:42,430
+and that things will start to look balanced.
+
+798
+00:51:46,530 --> 00:51:52,920
+This is a rotate left of seven.
+
+799
+00:51:53,180 --> 00:51:56,110
+And, I'm also going to do some recoloring
+
+800
+00:51:56,370 --> 00:52:01,140
+at the same time just to save me drawing one more picture
+
+801
+00:52:01,380 --> 00:52:03,750
+because the root has to be black.
+
+802
+00:52:03,960 --> 00:52:05,470
+I'm going to make 10 black immediately.
+
+803
+00:52:05,670 --> 00:52:09,450
+I'll make seven red. That's the change.
+
+804
+00:52:09,700 --> 00:52:11,240
+And that the rest is just a rotation.
+
+805
+00:52:13,680 --> 00:52:16,320
+So, we have 18 over here.
+
+806
+00:52:16,510 --> 00:52:21,400
+I think I actually have to rotate to keep some red blackness here.
+
+807
+00:52:25,380 --> 00:52:29,470
+Eight comes between seven and ten.
+
+808
+00:52:29,710 --> 00:52:39,370
+So it goes here. 11 goes between ten and 18, so it goes here.
+
+809
+00:52:45,130 --> 00:52:49,590
+22 and 26 come after 18.
+
+810
+00:52:56,800 --> 00:53:00,720
+Now, if I'm lucky, I should satisfy all of properties that I want.
+
+811
+00:53:00,970 --> 00:53:02,320
+Every node is red or black.
+
+812
+00:53:02,600 --> 00:53:05,700
+Every red node has a black child.
+
+813
+00:53:05,910 --> 00:53:07,370
+This is the last place we change.
+
+814
+00:53:07,640 --> 00:53:08,670
+Red nodes have black children,
+
+815
+00:53:08,840 --> 00:53:11,680
+and all the black heights should be well defined.
+
+816
+00:53:11,910 --> 00:53:15,580
+For every node, the number of black nodes
+
+817
+00:53:15,780 --> 00:53:18,730
+along any node to leaf path is the same.
+
+818
+00:53:18,980 --> 00:53:21,850
+And you check, that was true before,
+
+819
+00:53:22,060 --> 00:53:25,790
+and I did a little bit of trickery with the recoloring here.
+
+820
+00:53:26,050 --> 00:53:27,260
+But it's still true.
+
+821
+00:53:27,500 --> 00:53:31,430
+I mean, you can check that just locally around this rotation.
+
+822
+00:53:31,680 --> 00:53:33,380
+OK, we'll do that in a little bit.
+
+823
+00:53:33,560 --> 00:53:35,200
+For now, it's just an example.
+
+824
+00:53:35,400 --> 00:53:38,100
+It's probably not terribly clear where these re-colorings
+
+825
+00:53:38,280 --> 00:53:40,150
+and rotations come from necessarily, but it worked,
+
+826
+00:53:40,360 --> 00:53:42,790
+and it at least convinces you that it's possible.
+
+827
+00:53:43,000 --> 00:53:46,210
+And now, we'll give a general algorithm for doing it.
+
+828
+00:53:46,460 --> 00:53:48,520
+Any questions before we go on?
+
+829
+00:53:52,510 --> 00:53:57,630
+So, it's not exactly, I mean, just writing down
+
+830
+00:53:57,690 --> 00:54:00,070
+the algorithm is not terribly intuitive.
+
+831
+00:54:00,290 --> 00:54:05,580
+Red black trees of the sort of thing where you play around a bit.
+
+832
+00:54:05,770 --> 00:54:09,180
+You say, OK, I'm going to just think about recoloring and rotations.
+
+833
+00:54:09,330 --> 00:54:11,520
+Let's restrict myself to those operations.
+
+834
+00:54:11,670 --> 00:54:13,680
+What could I do? Well, I'll try to recolor.
+
+835
+00:54:13,860 --> 00:54:16,220
+If that works great, it pushes the problem up higher.
+
+836
+00:54:16,440 --> 00:54:19,680
+And, there's only log n levels, order log n levels,
+
+837
+00:54:19,980 --> 00:54:21,790
+so that's going to take order log n time.
+
+838
+00:54:21,980 --> 00:54:23,070
+At some point, I'll get stuck.
+
+839
+00:54:23,180 --> 00:54:24,540
+I can't recolor anymore.
+
+840
+00:54:24,720 --> 00:54:27,190
+Then it turns out, a couple of rotations will do it.
+
+841
+00:54:27,410 --> 00:54:29,640
+Always, two rotations will suffice.
+
+842
+00:54:29,850 --> 00:54:33,460
+And you just play with it, and that turns out to work.
+
+843
+00:54:33,680 --> 00:54:46,000
+And here's how. OK, so let's suppose we have a red black tree.
+
+844
+00:54:46,190 --> 00:54:47,900
+And value x, we want to insert.
+
+845
+00:54:48,110 --> 00:54:49,910
+Here's the algorithm.
+
+846
+00:54:50,120 --> 00:54:52,720
+First, we insert it into the BST.
+
+847
+00:54:52,940 --> 00:54:59,740
+So that we know. Then, we color the node red.
+
+848
+00:54:59,940 --> 00:55:02,700
+And here, I'm going to use a slightly more precise notation.
+
+849
+00:55:02,920 --> 00:55:05,940
+Color is a field of x.
+
+850
+00:55:08,560 --> 00:55:10,810
+And now, we are going to walk our way up the tree
+
+851
+00:55:10,970 --> 00:55:13,960
+with a while loop until we get to the root,
+
+852
+00:55:15,070 --> 00:55:19,510
+or until we reach a black node.
+
+853
+00:55:26,580 --> 00:55:28,610
+So, in general, x initially is
+
+854
+00:55:28,820 --> 00:55:30,630
+going to be the element that we inserted.
+
+855
+00:55:30,830 --> 00:55:32,130
+But, we're going to move x up the tree.
+
+856
+00:55:32,330 --> 00:55:34,360
+If ever we find that x is a black node,
+
+857
+00:55:34,540 --> 00:55:36,850
+we're happy because maybe its parent is red.
+
+858
+00:55:37,020 --> 00:55:38,520
+Maybe it isn't. I don't care.
+
+859
+00:55:38,680 --> 00:55:41,050
+Black nodes can have arbitrarily colored parents.
+
+860
+00:55:41,280 --> 00:55:43,030
+It's red nodes that we worry about.
+
+861
+00:55:43,250 --> 00:55:45,580
+So, if x is red, we have to keep doing this loop.
+
+862
+00:55:47,350 --> 00:55:50,150
+Of course, I just wrote the wrong one.
+
+863
+00:55:50,390 --> 00:55:54,250
+While the color is red, we're going to keep doing this.
+
+864
+00:55:58,130 --> 00:56:02,260
+So, there are three cases, or six,
+
+865
+00:56:02,470 --> 00:56:04,290
+depending on how you count.
+
+866
+00:56:04,500 --> 00:56:07,300
+That's what makes this a little bit tricky to memorize.
+
+867
+00:56:13,100 --> 00:56:18,670
+OK, but there are some symmetric situations.
+
+868
+00:56:18,900 --> 00:56:24,060
+Let me draw them. What we care about, I've argued,
+
+869
+00:56:24,230 --> 00:56:27,820
+is between x and its grandparent.
+
+870
+00:56:28,060 --> 00:56:29,920
+So, I'm using p of x here to denote
+
+871
+00:56:30,120 --> 00:56:31,640
+parent of x just because it's shorter.
+
+872
+00:56:31,860 --> 00:56:34,400
+So, p of x is x's grandparent.
+
+873
+00:56:34,660 --> 00:56:37,840
+Left of p of x is the left child.
+
+874
+00:56:38,050 --> 00:56:40,670
+So, what I'm interested in is I look at x.
+
+875
+00:56:40,870 --> 00:56:45,110
+And, if I don't assign any directions, x is the child of some p of x,
+
+876
+00:56:45,340 --> 00:56:51,860
+and p of x is the child of the grandparent, p of p of x.
+
+877
+00:56:52,070 --> 00:56:53,550
+Now, these edges aren't vertical.
+
+878
+00:56:53,630 --> 00:56:55,070
+They are either left or right.
+
+879
+00:56:55,290 --> 00:56:56,530
+And, I care about which one.
+
+880
+00:56:56,760 --> 00:57:00,210
+In particular, I'm looking at whether the parent is
+
+881
+00:57:00,410 --> 00:57:01,940
+the left child of the grandparent.
+
+882
+00:57:02,150 --> 00:57:12,350
+So, I want to know, does it look like this?
+
+883
+00:57:12,700 --> 00:57:14,860
+OK, and I don't know whether x is
+
+884
+00:57:15,050 --> 00:57:17,340
+to the left or to the right of the parent.
+
+885
+00:57:17,540 --> 00:57:19,920
+But, is parent of x the left child of p of p of x,
+
+886
+00:57:20,150 --> 00:57:21,940
+or is it the right child?
+
+887
+00:57:22,180 --> 00:57:26,500
+And these two cases are totally symmetric.
+
+888
+00:57:26,710 --> 00:57:29,470
+But I need to assume it's one way or the other.
+
+889
+00:57:29,660 --> 00:57:31,480
+Otherwise, I can't draw the pictures.
+
+890
+00:57:31,710 --> 00:57:37,210
+OK, so this will be, let's call it category A.
+
+891
+00:57:37,450 --> 00:57:39,120
+And, this is category B.
+
+892
+00:57:39,340 --> 00:57:42,120
+And, I'm going to tell you what to do in category A.
+
+893
+00:57:42,400 --> 00:57:45,010
+And category B is symmetric. You just flip left and right.
+
+894
+00:57:45,360 --> 00:57:49,220
+OK, so this is A.
+
+895
+00:57:52,600 --> 00:57:57,360
+So, within category A, there are three cases.
+
+896
+00:57:57,710 --> 00:57:59,020
+And within category B,
+
+897
+00:57:59,230 --> 00:58:00,840
+there is the same three cases, just reversed.
+
+898
+00:58:01,100 --> 00:58:10,450
+So, we're going to do is look at the other child of the grandparent.
+
+899
+00:58:16,020 --> 00:58:17,820
+This is one reason why we sort of
+
+900
+00:58:18,050 --> 00:58:20,310
+need to know which way we are looking.
+
+901
+00:58:20,540 --> 00:58:23,470
+If the parent of x is the left child of the grandparent,
+
+902
+00:58:23,880 --> 00:58:25,780
+we're going to look at the other child of the grandparent,
+
+903
+00:58:25,990 --> 00:58:28,980
+which would be the right child of the grandparent, call that node y.
+
+904
+00:58:29,180 --> 00:58:32,660
+This is also known as the uncle or the aunt of x,
+
+905
+00:58:32,860 --> 00:58:34,550
+depending on whether y is male or female.
+
+906
+00:58:34,810 --> 00:58:39,860
+OK, so this is uncle or aunt.
+
+907
+00:58:40,120 --> 00:58:41,790
+Unfortunately, in English,
+
+908
+00:58:42,000 --> 00:58:45,480
+there is no gender-free version of this as far as I know.
+
+909
+00:58:45,740 --> 00:58:49,300
+There's parent and child, but no uncle-aunt.
+
+910
+00:58:49,550 --> 00:58:50,800
+I'm sure we could come up with one.
+
+911
+00:58:50,990 --> 00:58:54,960
+I'm not going to try. It's going to sound bad.
+
+912
+00:58:55,180 --> 00:58:59,590
+OK, so why do I care about y?
+
+913
+00:58:59,860 --> 00:59:02,250
+Because, I want to see if I can do this recoloring step.
+
+914
+00:59:02,500 --> 00:59:03,980
+The recoloring idea was, well,
+
+915
+00:59:04,220 --> 00:59:06,920
+the grandparents, let's say it's black.
+
+916
+00:59:07,140 --> 00:59:11,010
+If I can push the blackness of the grandparent
+
+917
+00:59:11,260 --> 00:59:12,710
+down into the two children,
+
+918
+00:59:12,940 --> 00:59:17,210
+then if both of these are red, in other words, then I'd be happy.
+
+919
+00:59:17,430 --> 00:59:18,780
+Then I'd push the problem up.
+
+920
+00:59:19,000 --> 00:59:20,390
+This guy is now red. This guy is black.
+
+921
+00:59:20,590 --> 00:59:21,680
+So these two are all right.
+
+922
+00:59:21,880 --> 00:59:23,660
+This one may violate the great grandparent.
+
+923
+00:59:23,890 --> 00:59:27,250
+But we will just keep going up, and that will be fine.
+
+924
+00:59:27,520 --> 00:59:30,150
+Today, if we're lucky, y is red.
+
+925
+00:59:30,440 --> 00:59:32,260
+Then we can just do recoloring.
+
+926
+00:59:35,940 --> 00:59:47,590
+So, if the color of y is red, then we will recolor.
+
+927
+00:59:47,830 --> 00:59:52,630
+And, I'm going to defer this to a picture called case one.
+
+928
+00:59:54,540 --> 00:59:56,780
+OK, let me first tell you how the cases breakup,
+
+929
+00:59:56,980 --> 00:59:58,810
+and then we will see how they work.
+
+930
+01:00:14,310 --> 01:00:18,160
+So, if we're not in case one,
+
+931
+01:00:18,370 --> 01:00:20,420
+so this else should be aligned with that,
+
+932
+01:00:20,650 --> 01:00:24,820
+then, then we are either in case two or three.
+
+933
+01:00:25,040 --> 01:00:27,740
+So, here's the dichotomy.
+
+934
+01:00:32,370 --> 01:00:35,650
+It turns out we've actually seen all of the cases,
+
+935
+01:00:35,860 --> 01:00:39,180
+maybe not A versus B, but we've seen the case
+
+936
+01:00:39,410 --> 01:00:41,000
+of the very beginning where we just recolor.
+
+937
+01:00:41,190 --> 01:00:43,510
+That's case one. The next thing we saw is,
+
+938
+01:00:43,700 --> 01:00:48,020
+well, it's kind of annoying that the grandparent and ten,
+
+939
+01:00:48,270 --> 01:00:50,710
+so seven and ten were not straight.
+
+940
+01:00:50,940 --> 01:00:52,040
+They were zigzagged.
+
+941
+01:00:52,260 --> 01:00:53,860
+So, case two is when they are zigzagged.
+
+942
+01:00:54,100 --> 01:01:01,540
+It turns out if x is the right child of its parent,
+
+943
+01:01:01,860 --> 01:01:05,820
+and the parent is the left child of the grandparent,
+
+944
+01:01:06,060 --> 01:01:08,700
+that's a we've assumed so far, that is case two.
+
+945
+01:01:14,340 --> 01:01:18,900
+OK, the other case is that x is the left child of its parent.
+
+946
+01:01:19,100 --> 01:01:20,640
+So, then we have a left chain,
+
+947
+01:01:20,640 --> 01:01:23,050
+x, parent of x, grandparent of x.
+
+948
+01:01:23,290 --> 01:01:24,480
+That is case three.
+
+949
+01:01:27,450 --> 01:01:30,010
+OK, I did not write else here
+
+950
+01:01:30,320 --> 01:01:33,170
+because what case two does is it reduces to case three.
+
+951
+01:01:33,450 --> 01:01:35,450
+So, in case two, we are going to do the stuff that's here.
+
+952
+01:01:35,550 --> 01:01:37,160
+And then, we're going to do the stuff here.
+
+953
+01:01:37,330 --> 01:01:39,130
+For case three, we just do the stuff here.
+
+954
+01:01:39,350 --> 01:01:41,140
+Or in case one, we just do the stuff here.
+
+955
+01:01:41,410 --> 01:01:45,640
+And then, that finishes the three cases on the A side,
+
+956
+01:01:45,900 --> 01:01:53,480
+then back to this if. We say else, this is case B,
+
+957
+01:01:55,810 --> 01:01:58,680
+which is the same as A,
+
+958
+01:02:01,820 --> 01:02:06,410
+but reversing the notions of left and right,
+
+959
+01:02:11,710 --> 01:02:15,920
+OK, in the natural way.
+
+960
+01:02:16,140 --> 01:02:17,560
+Every time we write left of something,
+
+961
+01:02:17,770 --> 01:02:19,730
+we instead write right of something, and vice versa.
+
+962
+01:02:19,950 --> 01:02:23,050
+So, this is really just flipping everything over.
+
+963
+01:02:23,240 --> 01:02:27,230
+We'll just focus on category A.
+
+964
+01:02:27,430 --> 01:02:29,990
+And, let's see what we do in each of the three cases.
+
+965
+01:02:30,220 --> 01:02:31,330
+We've seen it in an example.
+
+966
+01:02:31,550 --> 01:02:37,380
+But let's do it generically. Let's do it here.
+
+967
+01:02:45,240 --> 01:02:50,120
+Sorry, there's one more line to the algorithm, I should say.
+
+968
+01:02:50,430 --> 01:02:55,420
+It's not aligned with here. We color the root.
+
+969
+01:02:55,650 --> 01:02:57,630
+There's a chance when you do all of this
+
+970
+01:02:57,850 --> 01:02:59,010
+that the root becomes red.
+
+971
+01:02:59,220 --> 01:03:00,880
+We always want the root to be black.
+
+972
+01:03:01,100 --> 01:03:05,330
+If it's red, we set it to black at the very end of the algorithm.
+
+973
+01:03:07,400 --> 01:03:11,460
+This does not change the black height property.
+
+974
+01:03:11,640 --> 01:03:14,510
+Everything will still be fine because every path
+
+975
+01:03:14,730 --> 01:03:17,920
+either goes to the root or it doesn't, every x to leaf path.
+
+976
+01:03:18,180 --> 01:03:21,670
+So, changing the root from red to black is no problem.
+
+977
+01:03:21,920 --> 01:03:24,330
+It will increase the black heights of everyone,
+
+978
+01:03:24,530 --> 01:03:28,080
+but all the paths will still have the same value.
+
+979
+01:03:28,320 --> 01:03:30,490
+It will be one larger.
+
+980
+01:03:31,540 --> 01:03:34,280
+So, let's look at the three cases.
+
+981
+01:03:34,470 --> 01:03:42,300
+And, I'm going to use some notation.
+
+982
+01:03:42,520 --> 01:03:45,330
+Remember, we had triangles in order to
+
+983
+01:03:45,540 --> 01:03:49,830
+denote arbitrary subtrees when we define a rotation.
+
+984
+01:03:50,070 --> 01:03:52,720
+I'm going to use triangle with a dot on top
+
+985
+01:03:52,960 --> 01:04:02,310
+to say that this subtree has a black root.
+
+986
+01:04:02,560 --> 01:04:06,760
+So, when I fill something white, it means black
+
+987
+01:04:07,000 --> 01:04:08,660
+because I'm on a black board.
+
+988
+01:04:08,850 --> 01:04:20,450
+Sorry. OK, and I also have the property that
+
+989
+01:04:20,620 --> 01:04:24,000
+each of these triangles have the same black height.
+
+990
+01:04:27,010 --> 01:04:29,360
+So, this will let me make sure that
+
+991
+01:04:29,530 --> 01:04:32,970
+the black height property, property four, is being observed.
+
+992
+01:04:33,170 --> 01:04:37,670
+So, let me just show you case one.
+
+993
+01:04:37,940 --> 01:04:41,130
+We always want to make sure property four is preserved
+
+994
+01:04:41,350 --> 01:04:42,690
+because it's really hard to get that back.
+
+995
+01:04:42,940 --> 01:04:45,260
+It's essentially the balance of the tree.
+
+996
+01:04:45,490 --> 01:04:49,470
+So, let's suppose we have some node,
+
+997
+01:04:49,710 --> 01:04:54,510
+C, left child, A, right child, B,
+
+998
+01:04:54,770 --> 01:04:57,650
+and some subtrees hanging off of those guys.
+
+999
+01:04:57,960 --> 01:05:00,670
+And, all of those subtrees have the same black height.
+
+1000
+01:05:00,920 --> 01:05:04,830
+So, in other words, these things are all at the same level.
+
+1001
+01:05:10,140 --> 01:05:13,840
+OK, this is not quite what I wanted,
+
+1002
+01:05:14,040 --> 01:05:18,510
+sorry. So, I'm considering, this is node x.
+
+1003
+01:05:18,730 --> 01:05:21,310
+x is red, and its parent is red.
+
+1004
+01:05:21,570 --> 01:05:22,890
+Therefore, we need to fix something.
+
+1005
+01:05:23,100 --> 01:05:25,600
+We look at the node, y, which is over here.
+
+1006
+01:05:25,880 --> 01:05:29,710
+And, I'll call it, the key is D.
+
+1007
+01:05:29,920 --> 01:05:35,560
+The node is called y. OK, it has subtrees hanging off as well,
+
+1008
+01:05:35,780 --> 01:05:38,400
+all with the same black height.
+
+1009
+01:05:38,630 --> 01:05:42,290
+So, that will be true. If all of these nodes are red,
+
+1010
+01:05:42,500 --> 01:05:45,340
+then all of these nodes have the same black height.
+
+1011
+01:05:45,590 --> 01:05:47,480
+And therefore, all of the child subtrees,
+
+1012
+01:05:47,670 --> 01:05:48,800
+which have black roots,
+
+1013
+01:05:49,000 --> 01:05:51,410
+all had to have the same black height as well.
+
+1014
+01:05:51,610 --> 01:05:57,690
+OK, so we're looking at a big chunk of red children subtree of a black node
+
+1015
+01:05:57,890 --> 01:06:01,130
+looking at all the stuff that happens to be red.
+
+1016
+01:06:01,330 --> 01:06:03,690
+In case one, why is red so it participates?
+
+1017
+01:06:03,890 --> 01:06:07,000
+So, a way to think of this as if we converted
+
+1018
+01:06:07,190 --> 01:06:08,870
+into the two-three-four-tree, or tried to,
+
+1019
+01:06:09,080 --> 01:06:11,630
+we would merge all of this stuff into one node.
+
+1020
+01:06:11,820 --> 01:06:13,570
+That's essentially what we're doing here.
+
+1021
+01:06:13,770 --> 01:06:15,550
+This is not a two-three-four tree, though.
+
+1022
+01:06:15,730 --> 01:06:17,560
+We now have five children, which is bad.
+
+1023
+01:06:17,770 --> 01:06:19,020
+This is why we want to fix it.
+
+1024
+01:06:19,250 --> 01:06:25,680
+So, we're going to recolor in case one.
+
+1025
+01:06:25,930 --> 01:06:27,910
+And, we're going to take C.
+
+1026
+01:06:28,060 --> 01:06:29,880
+Instead of making C black, and A and D red,
+
+1027
+01:06:30,100 --> 01:06:32,260
+we are going to make A and D black, and C red.
+
+1028
+01:06:32,470 --> 01:06:42,130
+So, C is red. A is black. D is black.
+
+1029
+01:06:42,370 --> 01:06:46,300
+And, the subtrees are the same.
+
+1030
+01:06:46,510 --> 01:06:48,050
+B is the same. It's still red.
+
+1031
+01:06:53,000 --> 01:06:56,390
+OK, now we need to check that we preserve property four,
+
+1032
+01:06:56,600 --> 01:06:58,770
+that all of the paths have the same number of black nodes.
+
+1033
+01:06:58,970 --> 01:07:01,460
+That follows because we know we didn't touch these subtrees.
+
+1034
+01:07:01,640 --> 01:07:03,070
+They all have the same black height.
+
+1035
+01:07:03,260 --> 01:07:06,050
+And, if you look at any path, like,
+
+1036
+01:07:06,240 --> 01:07:08,450
+all the paths from A are going to have that black height.
+
+1037
+01:07:08,640 --> 01:07:11,870
+All the paths from C are going to have that black height plus one
+
+1038
+01:07:12,080 --> 01:07:15,130
+because there's a black node in all the left paths,
+
+1039
+01:07:15,390 --> 01:07:17,170
+and there is a black node in all the right paths.
+
+1040
+01:07:17,420 --> 01:07:20,240
+So, all the black links are the same.
+
+1041
+01:07:20,480 --> 01:07:22,780
+So, this preserves property four.
+
+1042
+01:07:23,000 --> 01:07:25,380
+And, it fixes property three locally
+
+1043
+01:07:25,450 --> 01:07:27,710
+because B used to violate A.
+
+1044
+01:07:27,880 --> 01:07:30,330
+Now B does not violate anything.
+
+1045
+01:07:30,640 --> 01:07:33,930
+C, now, might be violated.
+
+1046
+01:07:34,230 --> 01:07:35,630
+So, what we're going to do is set x,
+
+1047
+01:07:35,800 --> 01:07:38,680
+our new value of x, will be C.
+
+1048
+01:07:38,890 --> 01:07:42,760
+So, it used to be B. We move it up a couple levels.
+
+1049
+01:07:42,980 --> 01:07:45,280
+Or, in the original tree, yeah,
+
+1050
+01:07:45,460 --> 01:07:46,850
+we also move it up a couple levels.
+
+1051
+01:07:47,020 --> 01:07:48,690
+So, we're making progress up the tree.
+
+1052
+01:07:48,900 --> 01:07:50,790
+And then we continue this loop.
+
+1053
+01:07:50,990 --> 01:07:54,730
+That's case one: recolor, go up.
+
+1054
+01:07:54,980 --> 01:07:59,180
+C may violate its parent in which case we have to recurse.
+
+1055
+01:07:59,410 --> 01:08:03,990
+So, we are recursing, in some sense, or continuing on C.
+
+1056
+01:08:07,010 --> 01:08:10,580
+So now, let's look at case two.
+
+1057
+01:08:36,810 --> 01:08:43,060
+So, I'm still, in some sense, defining this algorithm by picture.
+
+1058
+01:08:43,300 --> 01:08:47,530
+This is some nice, graphical, programming language.
+
+1059
+01:08:55,630 --> 01:08:58,360
+So, let's draw case two.
+
+1060
+01:09:02,210 --> 01:09:04,860
+Yeah, I forgot to mention something about case one.
+
+1061
+01:09:05,110 --> 01:09:08,990
+So, I drew some things here.
+
+1062
+01:09:09,140 --> 01:09:11,360
+What do I actually know is true?
+
+1063
+01:09:11,560 --> 01:09:14,730
+So, let's look at the algorithm in which I've now reversed.
+
+1064
+01:09:14,930 --> 01:09:18,320
+We are assuming that we are in category A.
+
+1065
+01:09:18,530 --> 01:09:21,270
+In other words, the parent is the left child of the grandparent.
+
+1066
+01:09:21,510 --> 01:09:24,090
+So, A is the left child of C. That much I knew.
+
+1067
+01:09:24,280 --> 01:09:25,570
+Therefore, y is the right child.
+
+1068
+01:09:25,760 --> 01:09:27,810
+D is the right child of C.
+
+1069
+01:09:28,040 --> 01:09:29,380
+I didn't actually know
+
+1070
+01:09:29,550 --> 01:09:30,950
+whether B was the right child or the left child.
+
+1071
+01:09:31,120 --> 01:09:34,180
+It didn't matter. In case one, it doesn't matter.
+
+1072
+01:09:34,370 --> 01:09:39,980
+OK, so I should've said, the children of A may be reversed.
+
+1073
+01:09:40,240 --> 01:09:42,950
+But it just said the same picture.
+
+1074
+01:09:51,850 --> 01:09:54,370
+OK, I thought of this because in case two, we care.
+
+1075
+01:09:54,380 --> 01:09:56,920
+So, case one: we didn't really care.
+
+1076
+01:09:57,110 --> 01:10:02,340
+In case two, we say, well, case two is up there,
+
+1077
+01:10:02,590 --> 01:10:05,610
+is x the right child of the parent, or the left child?
+
+1078
+01:10:05,820 --> 01:10:07,610
+If it's the right child, we are in case two.
+
+1079
+01:10:07,840 --> 01:10:10,580
+So now, I can really know that x here,
+
+1080
+01:10:10,790 --> 01:10:14,110
+which is B, is the right child of A.
+
+1081
+01:10:14,390 --> 01:10:16,270
+Before, I didn't know and I didn't care.
+
+1082
+01:10:16,530 --> 01:10:18,700
+Now, I'm assuming that it's this way.
+
+1083
+01:10:19,030 --> 01:10:20,780
+OK, y is still over here.
+
+1084
+01:10:21,030 --> 01:10:24,810
+And now, now we know that y is black.
+
+1085
+01:10:25,050 --> 01:10:28,760
+So, y over here is a black node.
+
+1086
+01:10:29,010 --> 01:10:30,470
+So now, if I did the contraction trick,
+
+1087
+01:10:30,710 --> 01:10:34,880
+all of these nodes, A, B, and C, would conglomerate into one.
+
+1088
+01:10:35,080 --> 01:10:37,900
+I only have four children. That actually looks pretty good.
+
+1089
+01:10:38,120 --> 01:10:39,600
+y would not be involved because it's black.
+
+1090
+01:10:39,840 --> 01:10:50,840
+So, in this case, we are going to do a left rotation on A.
+
+1091
+01:10:56,200 --> 01:11:00,450
+So, we take the edge, we turn at 90°.
+
+1092
+01:11:00,680 --> 01:11:05,470
+What we get is A on the left, B on the right still.
+
+1093
+01:11:05,710 --> 01:11:09,070
+It should preserve the in order traversal, C up top still.
+
+1094
+01:11:09,280 --> 01:11:12,160
+We have the y subtree hanging off, as before.
+
+1095
+01:11:12,360 --> 01:11:16,760
+We have one of the other three subtrees hanging off B,
+
+1096
+01:11:16,970 --> 01:11:18,680
+and the other two now hang off A.
+
+1097
+01:11:18,920 --> 01:11:23,200
+So, this is just a generic rotation picture applied to this edge.
+
+1098
+01:11:23,460 --> 01:11:27,020
+OK, what that does, is before we had a zigzag
+
+1099
+01:11:27,240 --> 01:11:30,300
+between x and its grandparent. Now, we have a zigzig.
+
+1100
+01:11:30,530 --> 01:11:33,350
+We have a straight path between x.
+
+1101
+01:11:33,620 --> 01:11:36,260
+So, x is still down here. I'm not changing x in this case
+
+1102
+01:11:36,470 --> 01:11:40,230
+because after I do case two, I immediately do case three.
+
+1103
+01:11:40,450 --> 01:11:42,560
+So, this is what case three will look like.
+
+1104
+01:11:42,780 --> 01:11:44,950
+And now, I continue on to case three.
+
+1105
+01:11:59,130 --> 01:12:03,030
+So, finally, here's case three.
+
+1106
+01:12:03,290 --> 01:12:05,850
+And, this will finally complete the insertion algorithm.
+
+1107
+01:12:06,100 --> 01:12:12,780
+We have a black node, C. We have a red left child from C.
+
+1108
+01:12:13,010 --> 01:12:17,090
+We have a red, left, grandchild which is x.
+
+1109
+01:12:19,010 --> 01:12:20,620
+And then, we have these black subtrees
+
+1110
+01:12:20,920 --> 01:12:23,930
+all of the same black height hanging off, OK,
+
+1111
+01:12:28,460 --> 01:12:33,130
+which is exactly what we had at the end of case two.
+
+1112
+01:12:33,370 --> 01:12:35,440
+So, that definitely connects over.
+
+1113
+01:12:35,640 --> 01:12:39,420
+And remember, this is the only case left in category A.
+
+1114
+01:12:39,640 --> 01:12:43,800
+Category A, we assumed that B was the parent of x,
+
+1115
+01:12:43,970 --> 01:12:46,530
+was the left child of the grandparent, here C.
+
+1116
+01:12:46,760 --> 01:12:50,000
+So, we know that.
+
+1117
+01:12:50,000 --> 01:12:52,490
+We already did the case one, y over here as red.
+
+1118
+01:12:52,710 --> 01:12:55,170
+That was case one. So, we are assuming y is black.
+
+1119
+01:12:55,410 --> 01:13:00,040
+Now, we look at whether x was the left child or the right child.
+
+1120
+01:13:00,230 --> 01:13:02,860
+If it was the right child, we made it into the left child.
+
+1121
+01:13:03,070 --> 01:13:06,440
+x actually did change here. Before, x was B.
+
+1122
+01:13:06,640 --> 01:13:10,940
+Now, x is A. OK, and then case three, finally,
+
+1123
+01:13:11,120 --> 01:13:12,780
+is when x is the left child of the parent
+
+1124
+01:13:12,990 --> 01:13:14,680
+who is the left child of the grandparent.
+
+1125
+01:13:14,930 --> 01:13:17,530
+This is the last case we have to worry about.
+
+1126
+01:13:17,710 --> 01:13:26,000
+And, what we do is another rotation just like
+
+1127
+01:13:26,000 --> 01:13:29,250
+the last rotation we did in the example.
+
+1128
+01:13:29,480 --> 01:13:31,510
+That was case three.
+
+1129
+01:13:31,730 --> 01:13:42,340
+So, we're going to do a right rotate in this case of C.
+
+1130
+01:13:42,680 --> 01:13:45,800
+And, we are going to recolor.
+
+1131
+01:13:46,070 --> 01:13:58,190
+OK, so, what do we get?
+
+1132
+01:13:58,400 --> 01:13:59,930
+Well, B now becomes the root.
+
+1133
+01:14:00,200 --> 01:14:01,940
+And, I'm going to make it black.
+
+1134
+01:14:02,180 --> 01:14:04,750
+OK, remember, this is the root of the subtree.
+
+1135
+01:14:04,920 --> 01:14:06,850
+There is other stuff hanging off here.
+
+1136
+01:14:07,020 --> 01:14:09,140
+I really should have drawn extra parents
+
+1137
+01:14:09,320 --> 01:14:10,870
+in all of these pictures.
+
+1138
+01:14:11,040 --> 01:14:12,610
+There was somewhere in the middle of the tree.
+
+1139
+01:14:12,610 --> 01:14:15,100
+I don't know where. It could be a rightward branch;
+
+1140
+01:14:15,300 --> 01:14:17,380
+it could be a leftward branch. We don't know.
+
+1141
+01:14:17,580 --> 01:14:20,910
+C becomes the child of B, and I'm going to make it a red child.
+
+1142
+01:14:21,100 --> 01:14:25,020
+A becomes a child of B, as it was before, keep it red.
+
+1143
+01:14:25,240 --> 01:14:30,370
+And, everything else just hangs off.
+
+1144
+01:14:30,620 --> 01:14:36,080
+So, there were four subtrees all at the same black height.
+
+1145
+01:14:36,390 --> 01:14:38,930
+And, in particular, this last one had y,
+
+1146
+01:14:39,310 --> 01:14:41,540
+but we don't particularly care about y anymore.
+
+1147
+01:14:41,770 --> 01:14:45,620
+Now, we are in really good shape
+
+1148
+01:14:45,840 --> 01:14:48,240
+because we should have no more violations.
+
+1149
+01:14:48,470 --> 01:14:52,320
+Before, we had a violation between x and its parent, A and B.
+
+1150
+01:14:52,510 --> 01:14:55,690
+Well, A and B still have a parent child relation.
+
+1151
+01:14:55,910 --> 01:15:00,220
+But B is now black. And, B is black,
+
+1152
+01:15:00,420 --> 01:15:02,080
+so we don't care what its parent looks like.
+
+1153
+01:15:02,260 --> 01:15:03,700
+It could be red or black. Both are fine.
+
+1154
+01:15:03,910 --> 01:15:05,350
+We are no longer violating property three.
+
+1155
+01:15:05,550 --> 01:15:07,640
+We should be done in this case.
+
+1156
+01:15:07,840 --> 01:15:11,440
+Property three is now true.
+
+1157
+01:15:15,200 --> 01:15:17,850
+If you want, you can say, well, x becomes this node.
+
+1158
+01:15:18,070 --> 01:15:21,050
+And then, the loop says, oh, x is no longer red.
+
+1159
+01:15:21,320 --> 01:15:23,840
+Therefore, I'm done. We also need to check that
+
+1160
+01:15:24,050 --> 01:15:26,300
+property four is preserved during this process.
+
+1161
+01:15:26,560 --> 01:15:27,700
+Again, it's not hard
+
+1162
+01:15:27,840 --> 01:15:29,950
+because of the two-three-four tree transformation.
+
+1163
+01:15:30,160 --> 01:15:32,460
+If I contract all the red things into their parents,
+
+1164
+01:15:32,630 --> 01:15:36,610
+everything else has a constant, I mean,
+
+1165
+01:15:36,770 --> 01:15:39,460
+every path in that tree has the same length
+
+1166
+01:15:39,630 --> 01:15:42,280
+because they have the same black length.
+
+1167
+01:15:42,480 --> 01:15:44,820
+And over here, that will still be true.
+
+1168
+01:15:45,010 --> 01:15:47,090
+It's a little bit trickier here,
+
+1169
+01:15:47,260 --> 01:15:48,560
+because we are recoloring at the same time.
+
+1170
+01:15:48,740 --> 01:15:51,080
+But, if you look at a path that comes through this tree,
+
+1171
+01:15:51,280 --> 01:15:54,110
+it used to go through a black node, C,
+
+1172
+01:15:54,300 --> 01:15:56,520
+and then maybe some red stuff; I don't care.
+
+1173
+01:15:56,610 --> 01:15:57,960
+And then, it went through these trees,
+
+1174
+01:15:58,140 --> 01:15:59,270
+which all have the same black height.
+
+1175
+01:15:59,350 --> 01:16:00,590
+So they were all the same.
+
+1176
+01:16:00,960 --> 01:16:04,160
+Now, you comment, and you go through a black node called B.
+
+1177
+01:16:04,370 --> 01:16:05,720
+And then, you go through some red nodes.
+
+1178
+01:16:05,810 --> 01:16:08,490
+It doesn't really matter. But all the trees that you go through
+
+1179
+01:16:08,590 --> 01:16:09,800
+down here have the same black height.
+
+1180
+01:16:10,060 --> 01:16:11,770
+So, every path through this tree
+
+1181
+01:16:11,950 --> 01:16:13,870
+will have the same black length, OK,
+
+1182
+01:16:14,150 --> 01:16:16,330
+if it starts from the same node.
+
+1183
+01:16:16,590 --> 01:16:21,230
+So, we preserve property four. We fix property three.
+
+1184
+01:16:21,430 --> 01:16:26,620
+That is the insertion algorithm. It's pretty long.
+
+1185
+01:16:26,870 --> 01:16:31,450
+This is something you'll probably just have to memorize.
+
+1186
+01:16:31,740 --> 01:16:34,660
+If you try a few examples, it's not so hard.
+
+1187
+01:16:34,890 --> 01:16:36,930
+We can see that all the things we did
+
+1188
+01:16:37,150 --> 01:16:38,400
+in this example were the three cases.
+
+1189
+01:16:38,630 --> 01:16:40,720
+The first step, which unfortunately I had to erase for space,
+
+1190
+01:16:40,790 --> 01:16:42,870
+all we did was recolor.
+
+1191
+01:16:43,100 --> 01:16:45,640
+We recolored ten, and eight, and 11.
+
+1192
+01:16:45,870 --> 01:16:46,910
+That was a case one.
+
+1193
+01:16:47,080 --> 01:16:48,490
+Ten was the grandparent of 15.
+
+1194
+01:16:48,710 --> 01:16:52,580
+Then, we looked at ten. Ten was the violator.
+
+1195
+01:16:52,750 --> 01:16:56,190
+It was a zigzag case relative to its grandparent.
+
+1196
+01:16:56,460 --> 01:16:59,280
+So, we did a right rotation to fix that, took this edge,
+
+1197
+01:16:59,570 --> 01:17:01,900
+and turned it so that ten became next to seven.
+
+1198
+01:17:02,140 --> 01:17:03,530
+That's the picture on the top.
+
+1199
+01:17:03,780 --> 01:17:06,640
+Then, 18, which is the new violator,
+
+1200
+01:17:06,930 --> 01:17:08,620
+with its grandparent, is a zigzig.
+
+1201
+01:17:08,880 --> 01:17:11,030
+They are both going in the same direction.
+
+1202
+01:17:11,290 --> 01:17:15,500
+And, now, we do one more rotation to fix that.
+
+1203
+01:17:15,720 --> 01:17:17,630
+That's really the only thing you have to remember.
+
+1204
+01:17:17,830 --> 01:17:19,440
+Recolor your grandparent if you can.
+
+1205
+01:17:19,670 --> 01:17:22,220
+Otherwise, make it zigzig.
+
+1206
+01:17:22,500 --> 01:17:24,800
+And then, do one last rotation.
+
+1207
+01:17:25,010 --> 01:17:26,800
+And recolor. And that will work.
+
+1208
+01:17:27,020 --> 01:17:28,890
+I mean, if you remember that,
+
+1209
+01:17:29,120 --> 01:17:31,630
+you will figure out the rest on any particular example.
+
+1210
+01:17:31,880 --> 01:17:34,320
+We rotate ten over. That better be black,
+
+1211
+01:17:34,540 --> 01:17:36,110
+because in this case it's becoming the root.
+
+1212
+01:17:36,310 --> 01:17:37,850
+But, we will make it black no matter what happens
+
+1213
+01:17:38,090 --> 01:17:39,890
+because there has to be one black node there.
+
+1214
+01:17:40,110 --> 01:17:43,440
+If we didn't recolor at the same time,
+
+1215
+01:17:43,650 --> 01:17:45,210
+we would violate property four.
+
+1216
+01:17:47,770 --> 01:17:50,060
+Why don't I draw that just for,
+
+1217
+01:17:50,070 --> 01:17:51,840
+OK, because I have a couple minutes.
+
+1218
+01:17:52,100 --> 01:17:54,850
+So, if we just did the rotation here,
+
+1219
+01:17:55,080 --> 01:18:01,990
+so let's say, not the following, we take B. B is red.
+
+1220
+01:18:02,370 --> 01:18:03,740
+This will give some intuition
+
+1221
+01:18:03,820 --> 01:18:06,290
+as to why the algorithm is this way, and not some other way.
+
+1222
+01:18:06,480 --> 01:18:12,300
+And, C is black. That's what we would have gotten
+
+1223
+01:18:12,510 --> 01:18:14,330
+if we just rotated this tree, rotated B,
+
+1224
+01:18:14,570 --> 01:18:15,970
+or rotated C to the right.
+
+1225
+01:18:16,160 --> 01:18:19,480
+So, these subtrees hang off in the same way.
+
+1226
+01:18:19,650 --> 01:18:24,120
+Subtrees look great because they all have the same black height.
+
+1227
+01:18:24,350 --> 01:18:25,690
+But, you see, there's a problem.
+
+1228
+01:18:25,700 --> 01:18:27,480
+If we look at all the paths starting from B
+
+1229
+01:18:27,490 --> 01:18:29,810
+and going down to a leaf, on the left,
+
+1230
+01:18:30,040 --> 01:18:32,230
+the number of black nodes is
+
+1231
+01:18:32,230 --> 01:18:34,520
+whatever the black height is over here.
+
+1232
+01:18:34,690 --> 01:18:39,520
+Label that: black height, whereas all the paths on the right
+
+1233
+01:18:39,700 --> 01:18:42,420
+will be that black height plus one because C is black.
+
+1234
+01:18:42,660 --> 01:18:46,000
+So now, we've violated property four.
+
+1235
+01:18:49,210 --> 01:18:52,950
+So, we don't do this in case three.
+
+1236
+01:18:53,170 --> 01:18:56,660
+After we do the rotation, we also do a recoloring.
+
+1237
+01:18:56,900 --> 01:18:58,740
+So, we get this. In other words,
+
+1238
+01:18:58,910 --> 01:19:00,490
+we are putting the black node at the top
+
+1239
+01:19:00,720 --> 01:19:03,370
+because then every path has to go through that node,
+
+1240
+01:19:03,560 --> 01:19:05,530
+whereas over here, some of the nodes went through the C.
+
+1241
+01:19:05,610 --> 01:19:06,820
+Some of them went through A.
+
+1242
+01:19:06,980 --> 01:19:11,070
+So, this is bad. Also, we would have violated property three.
+
+1243
+01:19:11,300 --> 01:19:12,890
+But, the really bad thing is that
+
+1244
+01:19:13,050 --> 01:19:15,190
+we are violating property four over here.
+
+1245
+01:19:16,700 --> 01:19:19,060
+OK, let me sum up a little bit.
+
+1246
+01:19:30,140 --> 01:19:33,810
+So, we've seen, if we insert into a red black tree,
+
+1247
+01:19:34,080 --> 01:19:36,060
+we can keep it a red black tree.
+
+1248
+01:19:39,530 --> 01:19:49,130
+So, RB insert adds x to the set to the dynamic set that
+
+1249
+01:19:49,340 --> 01:19:54,090
+we are trying to maintain, and preserves red blackness.
+
+1250
+01:20:00,130 --> 01:20:02,730
+So, it keeps the tree a red black tree,
+
+1251
+01:20:03,010 --> 01:20:06,510
+which is good because we know then it keeps logarithmic height.
+
+1252
+01:20:06,710 --> 01:20:08,090
+Therefore, all queries in red black trees
+
+1253
+01:20:08,270 --> 01:20:10,210
+will keep taking logarithmic time.
+
+1254
+01:20:10,430 --> 01:20:12,860
+How long does red black insert take?
+
+1255
+01:20:15,320 --> 01:20:20,650
+We know we are aiming for log n time preparation.
+
+1256
+01:20:20,880 --> 01:20:24,090
+We are not going to prove that formally,
+
+1257
+01:20:24,270 --> 01:20:25,570
+but it should be pretty intuitive.
+
+1258
+01:20:25,750 --> 01:20:29,650
+So, cases two and three, sorry, pointing at the wrong place,
+
+1259
+01:20:29,870 --> 01:20:33,550
+cases two and three are terminal.
+
+1260
+01:20:33,810 --> 01:20:35,890
+When we do case three, we are done.
+
+1261
+01:20:36,080 --> 01:20:38,130
+When we do case two, we are about to do case three,
+
+1262
+01:20:38,200 --> 01:20:39,430
+and then we are done.
+
+1263
+01:20:39,660 --> 01:20:42,200
+OK, so the only thing we really have to count is case one
+
+1264
+01:20:42,410 --> 01:20:43,600
+because each of these operations,
+
+1265
+01:20:43,810 --> 01:20:46,560
+they are recoloring, rotation, they all take constant time.
+
+1266
+01:20:46,770 --> 01:20:48,650
+So, it's a matter of, how many are there?
+
+1267
+01:20:48,690 --> 01:20:54,820
+Case one does some recoloring, doesn't change the tree at all,
+
+1268
+01:20:55,080 --> 01:20:58,120
+and moves x up by two levels.
+
+1269
+01:20:58,330 --> 01:21:01,250
+We know that the height of the tree is,
+
+1270
+01:21:01,450 --> 01:21:02,620
+at most, two log n plus one.
+
+1271
+01:21:02,810 --> 01:21:06,240
+So, the number of case ones is, at most, log n plus one.
+
+1272
+01:21:06,450 --> 01:21:12,270
+OK, so the number of case ones is, at most, log n.
+
+1273
+01:21:14,450 --> 01:21:17,910
+So, those take log n time.
+
+1274
+01:21:18,090 --> 01:21:20,130
+And then, the number of case twos and threes is,
+
+1275
+01:21:20,350 --> 01:21:23,530
+at most, one for one of these columns.
+
+1276
+01:21:23,790 --> 01:21:27,190
+Well, together, twos and threes is, at most, two.
+
+1277
+01:21:28,840 --> 01:21:30,980
+OK, so, log n time, cool.
+
+1278
+01:21:31,280 --> 01:21:34,590
+The other thing that is interesting about red black insertion
+
+1279
+01:21:34,810 --> 01:21:38,390
+is that it only makes order one rotations.
+
+1280
+01:21:38,620 --> 01:21:42,780
+So, most of the changes are recolorings.
+
+1281
+01:21:45,540 --> 01:21:50,230
+Case one just does recoloring, no rotations.
+
+1282
+01:21:50,420 --> 01:21:51,890
+Case two maybe does one rotation.
+
+1283
+01:21:52,130 --> 01:21:55,290
+Case three does one rotation if you happen to be in those cases.
+
+1284
+01:21:55,530 --> 01:21:57,210
+So, the number of rotations is, at most, two.
+
+1285
+01:21:57,450 --> 01:22:00,020
+It's either one or two in an insertion.
+
+1286
+01:22:00,280 --> 01:22:03,530
+It's kind of nice because rotating a tree
+
+1287
+01:22:03,730 --> 01:22:09,020
+is a bit more annoying than recoloring a tree.
+
+1288
+01:22:09,220 --> 01:22:13,460
+Why? Because if you had, say, a data structure,
+
+1289
+01:22:13,680 --> 01:22:14,980
+you have a search tree, presumably,
+
+1290
+01:22:15,240 --> 01:22:16,700
+people are using the search tree for something.
+
+1291
+01:22:16,780 --> 01:22:18,220
+They are, like, making queries.
+
+1292
+01:22:18,390 --> 01:22:22,080
+For example, the search tree represents all the documents
+
+1293
+01:22:22,260 --> 01:22:24,460
+matching the word "computer" in Google.
+
+1294
+01:22:24,720 --> 01:22:26,400
+You've got the Google T-shirt on here,
+
+1295
+01:22:26,600 --> 01:22:27,950
+so let's use a Google reference.
+
+1296
+01:22:28,160 --> 01:22:29,230
+You have the search tree.
+
+1297
+01:22:29,410 --> 01:22:31,850
+It stores all the things containing the word Google.
+
+1298
+01:22:32,030 --> 01:22:33,900
+You'd like to search may be for the ones
+
+1299
+01:22:34,080 --> 01:22:35,130
+that were modified after a certain date,
+
+1300
+01:22:35,220 --> 01:22:36,480
+or whatever it is you want to do.
+
+1301
+01:22:36,650 --> 01:22:38,390
+So, you're doing some queries on this tree.
+
+1302
+01:22:38,560 --> 01:22:41,180
+And, people are pummeling Google like crazy with queries.
+
+1303
+01:22:41,370 --> 01:22:44,030
+They get a zillion a second. Don't quote me on that.
+
+1304
+01:22:44,280 --> 01:22:46,100
+The number may not be accurate. It's a zillion.
+
+1305
+01:22:46,300 --> 01:22:49,920
+But, people are making searches all the time.
+
+1306
+01:22:50,140 --> 01:22:52,640
+If you recolor the tree, people can still make searches.
+
+1307
+01:22:52,860 --> 01:22:54,920
+It's just a little bit you are flipping.
+
+1308
+01:22:55,120 --> 01:22:57,330
+I don't care in a search whether a node is red or black
+
+1309
+01:22:57,510 --> 01:22:59,340
+because I know it will have logarithmic height.
+
+1310
+01:22:59,540 --> 01:23:02,390
+So, you can come along and make your occasional updates
+
+1311
+01:23:02,600 --> 01:23:05,050
+as your crawler surfs the Web and finds changes.
+
+1312
+01:23:05,250 --> 01:23:08,870
+And, recoloring is great. Rotation is a bit expensive
+
+1313
+01:23:09,090 --> 01:23:10,620
+because you have to lock those nodes,
+
+1314
+01:23:10,790 --> 01:23:12,050
+make sure no one touches them for the duration
+
+1315
+01:23:12,240 --> 01:23:13,640
+that you rotate them, and then unlock them.
+
+1316
+01:23:13,830 --> 01:23:16,230
+So, it's nice that the number of rotations is small,
+
+1317
+01:23:16,420 --> 01:23:18,220
+really small, just two,
+
+1318
+01:23:18,450 --> 01:23:20,580
+whereas the time has to be log n
+
+1319
+01:23:20,800 --> 01:23:23,230
+because we are inserting into a sorted list essentially.
+
+1320
+01:23:23,450 --> 01:23:25,680
+So, there is an n log n lower bound if we do n insertions.
+
+1321
+01:23:25,940 --> 01:23:28,580
+OK, deletion and I'm not going to cover here.
+
+1322
+01:23:28,660 --> 01:23:29,930
+You should read it in the book.
+
+1323
+01:23:30,150 --> 01:23:33,690
+It's a little bit more complicated, but the same ideas.
+
+1324
+01:23:33,950 --> 01:23:36,760
+It gets the same bounds: log n time order one rotations.
+
+1325
+01:23:37,040 --> 01:23:40,650
+So, check it out. That's red black trees.
+
+1326
+01:23:40,910 --> 01:23:44,140
+Now, you can maintain data in log n time preparation: cool.
+
+1327
+01:23:44,430 --> 01:23:48,850
+We'll now see three ways to do it.
+

@@ -1,0 +1,3424 @@
+﻿1
+00:00:07,920 --> 00:00:11,190
+Today starts a two-lecture sequence on the topic of hashing,
+
+2
+00:00:14,890 --> 00:00:22,960
+which is a really great technique that shows up in a lot of places.
+
+3
+00:00:24,540 --> 00:00:26,480
+So we're going to introduce it
+
+4
+00:00:26,700 --> 00:00:31,740
+through a problem that comes up often in compilers
+
+5
+00:00:34,970 --> 00:00:36,890
+called the symbol table problem.
+
+6
+00:00:39,200 --> 00:00:45,670
+And the idea is that we have a table S
+
+7
+00:00:48,270 --> 00:00:56,390
+holding n records where each record,
+
+8
+00:00:56,680 --> 00:00:58,940
+just to be a little more explicit here.
+
+9
+00:01:00,400 --> 00:01:04,010
+So each record typically has a bunch of,
+
+10
+00:01:05,860 --> 00:01:13,170
+this is record x. x is usually a pointer to the actual data.
+
+11
+00:01:13,670 --> 00:01:15,820
+So when we talk about the record x,
+
+12
+00:01:16,020 --> 00:01:17,960
+what it usually means some pointer to the data
+
+13
+00:01:18,290 --> 00:01:21,240
+And in the data, in the record,
+
+14
+00:01:21,560 --> 00:01:27,190
+so this is a record, there is a key called a key of x
+
+15
+00:01:28,130 --> 00:01:30,190
+In some languages it's key,
+
+16
+00:01:30,470 --> 00:01:34,010
+it's x dot key or x arrow key,
+
+17
+00:01:34,660 --> 00:01:38,450
+OK, are other ways that that will be denoted in some languages.
+
+18
+00:01:38,800 --> 00:01:43,150
+And there's usually some additional data called satellite data,
+
+19
+00:01:46,650 --> 00:01:49,540
+which is carried around with the key.
+
+20
+00:01:49,880 --> 00:01:52,720
+This is also true in sorting, but usually you're sorting records.
+
+21
+00:01:52,820 --> 00:01:56,130
+You're not sorting individual keys.
+
+22
+00:01:58,960 --> 00:02:02,810
+And so the idea is that we have a bunch of operations
+
+23
+00:02:02,950 --> 00:02:07,880
+that we would like to do on this data on this table.
+
+24
+00:02:09,940 --> 00:02:16,290
+So we want to be able to insert an item x into the table,
+
+25
+00:02:16,700 --> 00:02:18,590
+which just essentially means that
+
+26
+00:02:18,660 --> 00:02:22,900
+we update the table by adding the element x.
+
+27
+00:02:24,130 --> 00:02:30,590
+We want to be able to delete an item from the table
+
+28
+00:02:36,440 --> 00:02:39,510
+-- -- so removing the item x from the set
+
+29
+00:02:39,920 --> 00:02:48,060
+and we want to be able to search for a given key.
+
+30
+00:02:48,660 --> 00:03:00,030
+So this returns the value x such that key of x is equal to k,
+
+31
+00:03:01,090 --> 00:03:06,030
+where it returns nil if there's no such x.
+
+32
+00:03:12,000 --> 00:03:17,430
+So be able to insert items in, delete them and also look to see
+
+33
+00:03:17,590 --> 00:03:19,930
+if there's an item that has a particular key
+
+34
+00:03:20,470 --> 00:03:23,830
+So notice that delete doesn't take a key. Delete takes a record.
+
+35
+00:03:25,020 --> 00:03:27,360
+OK, so if you want to delete something of a particular key
+
+36
+00:03:27,520 --> 00:03:29,590
+and you don't happen to have a pointer to it
+
+37
+00:03:29,720 --> 00:03:34,340
+you have to say let me search for it and then delete it.
+
+38
+00:03:39,080 --> 00:03:43,770
+So these, whenever you have a set operations,
+
+39
+00:03:46,490 --> 00:03:51,370
+where operations that change the set like in certain delete,
+
+40
+00:03:53,140 --> 00:03:55,020
+we call it a dynamic set.
+
+41
+00:03:55,970 --> 00:03:58,870
+So these two operations make the set dynamic
+
+42
+00:03:58,970 --> 00:04:00,260
+It changes over time.
+
+43
+00:04:00,480 --> 00:04:03,670
+Sometimes you want to build a fixed data structure.
+
+44
+00:04:04,030 --> 00:04:05,460
+It's going to be a static set.
+
+45
+00:04:05,660 --> 00:04:09,000
+All you're going to do is do things like look it up and so forth.
+
+46
+00:04:09,330 --> 00:04:15,040
+But most often, it turns out that in programming and so forth,
+
+47
+00:04:15,190 --> 00:04:16,380
+we want to have the set be dynamic.
+
+48
+00:04:16,480 --> 00:04:18,120
+Want to be able to add elements to it,
+
+49
+00:04:18,330 --> 00:04:19,850
+delete elements to it and so forth
+
+50
+00:04:20,550 --> 00:04:23,520
+And there may be other operations that modify the set,
+
+51
+00:04:23,970 --> 00:04:25,760
+modify membership in the set.
+
+52
+00:04:26,580 --> 00:04:32,840
+So the simplest implementation for this is actually often overlooked.
+
+53
+00:04:32,970 --> 00:04:36,270
+I'm actually surprised how often people use more complicated data structures
+
+54
+00:04:36,450 --> 00:04:38,210
+when this simple data structure will work.
+
+55
+00:04:38,660 --> 00:04:43,320
+It's called a direct access table. Doesn't always work.
+
+56
+00:04:43,810 --> 00:04:46,740
+I'll give the conditions where it does.
+
+57
+00:04:51,560 --> 00:04:57,990
+So it works when the keys are drawn from our small distribution.
+
+58
+00:04:58,500 --> 00:05:11,520
+So suppose the keys are drawn from a set U of m elements.
+
+59
+00:05:12,650 --> 00:05:14,270
+OK, zero to m minus one.
+
+60
+00:05:15,570 --> 00:05:18,700
+And we're going to assume the keys are distinct.
+
+61
+00:05:28,940 --> 00:05:31,710
+So the way a direct access table works
+
+62
+00:05:31,980 --> 00:05:44,000
+is that you set up an array T from zero to m minus one
+
+63
+00:05:45,900 --> 00:05:51,940
+to represent the dynamic set S
+
+64
+00:05:55,940 --> 00:06:01,540
+such that T of k is going to be equal to x
+
+65
+00:06:04,040 --> 00:06:13,710
+if x is in the set and its key is k
+
+66
+00:06:14,000 --> 00:06:17,710
+and nil otherwise.
+
+67
+00:06:22,210 --> 00:06:24,000
+So you just simply have an array
+
+68
+00:06:25,120 --> 00:06:32,110
+and if you have a record whose key is some value k,
+
+69
+00:06:32,600 --> 00:06:34,320
+the key is 15 say,
+
+70
+00:06:34,560 --> 00:06:40,150
+then slot 15 if the element is there has the element.
+
+71
+00:06:40,620 --> 00:06:43,290
+And if it's not in the set, it's nil.
+
+72
+00:06:43,760 --> 00:06:47,540
+Very simple data structure. OK, insertion.
+
+73
+00:06:47,760 --> 00:06:53,840
+Just go to that location and set the value to the inserted value.
+
+74
+00:06:54,200 --> 00:06:55,630
+For deletion, just remove it from there.
+
+75
+00:06:55,690 --> 00:06:59,510
+And to look it up, you just index it and see what's in that slot.
+
+76
+00:06:59,900 --> 00:07:03,580
+OK, very simple data structure.
+
+77
+00:07:05,540 --> 00:07:08,380
+All these operations, therefore,
+
+78
+00:07:09,140 --> 00:07:14,960
+take constant time in the worst case.
+
+79
+00:07:19,610 --> 00:07:21,500
+But as a practical matter,
+
+80
+00:07:22,040 --> 00:07:24,810
+the places you can use this strategy are pretty limited.
+
+81
+00:07:25,850 --> 00:07:32,780
+What's the issue of limitation here?
+
+82
+00:07:32,780 --> 00:07:31,270
+[Student]Inaudible.
+
+83
+00:07:31,870 --> 00:07:39,630
+[Professor]Yes. OK, so that's a limitation surely.
+
+84
+00:07:40,090 --> 00:07:42,240
+But there's actually a more severe limitation.
+
+85
+00:07:42,240 --> 00:07:47,970
+[Student]Inaudible.
+
+86
+00:07:47,970 --> 00:07:50,360
+[Professor]Yeah. What does that mean, it's hard to draw?
+
+87
+00:08:03,300 --> 00:08:09,580
+No. Yeah. m minus one could be a huge number.
+
+88
+00:08:10,090 --> 00:08:13,590
+Like for example, suppose that I want to
+
+89
+00:08:13,710 --> 00:08:18,430
+have my set drawn over 64 bit values.
+
+90
+00:08:18,850 --> 00:08:21,020
+OK, the things that I'm storing in my table
+
+91
+00:08:21,320 --> 00:08:23,030
+is a set of 64-bit numbers.
+
+92
+00:08:23,920 --> 00:08:26,780
+And so, maybe a small set.
+
+93
+00:08:27,060 --> 00:08:32,160
+Maybe we only have a few thousand of these elements.
+
+94
+00:08:33,890 --> 00:08:36,320
+But they're drawn from a 64-bit value.
+
+95
+00:08:36,600 --> 00:08:39,470
+Then this strategy requires me to have an array
+
+96
+00:08:39,620 --> 00:08:45,290
+that goes from zero to 2 to the 64th minus one.
+
+97
+00:08:45,650 --> 00:08:48,570
+How big is 2^64 minus one? Approximately?
+
+98
+00:08:49,670 --> 00:08:54,340
+It's like big. It's like 18 quintillion or something.
+
+99
+00:08:56,200 --> 00:08:59,870
+I mean, it's zillions literally because it's like
+
+100
+00:08:59,960 --> 00:09:02,690
+it's beyond the illions we normally use.
+
+101
+00:09:03,550 --> 00:09:09,650
+Not a billion or a trillion. It's 18 quintillion.
+
+102
+00:09:10,030 --> 00:09:11,400
+OK, so that's a really big number.
+
+103
+00:09:12,240 --> 00:09:15,590
+So, or even worse, suppose the keys
+
+104
+00:09:15,680 --> 00:09:17,510
+were drawn from character strings,
+
+105
+00:09:19,400 --> 00:09:21,450
+so people's names or something.
+
+106
+00:09:21,570 --> 00:09:23,990
+This would be an awful way to have to represent it.
+
+107
+00:09:24,110 --> 00:09:26,170
+Because most of the table would be empty
+
+108
+00:09:26,250 --> 00:09:29,510
+for any reasonable set of values you would want to keep.
+
+109
+00:09:31,300 --> 00:09:33,310
+So the idea is we want to try to keep something
+
+110
+00:09:33,410 --> 00:09:35,080
+that's going to keep the table small,
+
+111
+00:09:35,300 --> 00:09:37,890
+while still preserving some of the properties.
+
+112
+00:09:38,380 --> 00:09:40,540
+And that's where hashing comes in.
+
+113
+00:09:41,670 --> 00:10:00,520
+So hashing is we use a hash function H which maps the keys randomly
+
+114
+00:10:01,160 --> 00:10:02,500
+And I'm putting that in quotes
+
+115
+00:10:02,690 --> 00:10:10,520
+because it's not quite at random. Into slots table T.
+
+116
+00:10:13,110 --> 00:10:20,360
+So we call each of the array indexes here a slot.
+
+117
+00:10:20,880 --> 00:10:23,020
+So you can just sort of think of it as a big table
+
+118
+00:10:23,160 --> 00:10:26,140
+and you've got slots in the table where you're storing your values.
+
+119
+00:10:28,310 --> 00:10:33,520
+And so, we may have a big universe of keys. Let's call that U.
+
+120
+00:10:36,680 --> 00:10:38,570
+And we have our table over here
+
+121
+00:10:39,780 --> 00:10:48,830
+that we've set up that has -- -- m slots.
+
+122
+00:10:53,760 --> 00:10:58,990
+And so we actually have then a set that
+
+123
+00:10:59,100 --> 00:11:00,970
+we're actually going to try to represent S,
+
+124
+00:11:01,670 --> 00:11:07,050
+which is presumably a very small piece of the universe.
+
+125
+00:11:09,490 --> 00:11:13,620
+And what we'll do is we'll take an element from here
+
+126
+00:11:13,860 --> 00:11:18,840
+and map it to let's say to there and take another one
+
+127
+00:11:19,310 --> 00:11:23,890
+and we apply the hash function to the element.
+
+128
+00:11:24,320 --> 00:11:26,590
+And what the hash function is going to give us
+
+129
+00:11:26,780 --> 00:11:29,030
+is it's going to give us a particular slot.
+
+130
+00:11:29,340 --> 00:11:31,130
+Here's one that might go up here.
+
+131
+00:11:31,460 --> 00:11:35,030
+Might have another one over here that goes down to there.
+
+132
+00:11:38,070 --> 00:11:47,600
+And so, we get it to distribute the elements over the table.
+
+133
+00:11:48,120 --> 00:11:53,480
+So what's the problem that's going to occur as we do this?
+
+134
+00:11:55,020 --> 00:11:57,450
+So far, I've been a little bit lucky.
+
+135
+00:11:57,890 --> 00:12:00,250
+What's the problem potentially going to be?
+
+136
+00:12:07,390 --> 00:12:11,070
+Yeah, when two things are in S, more specifically,
+
+137
+00:12:11,300 --> 00:12:12,990
+get assigned to the same value.
+
+138
+00:12:13,080 --> 00:12:16,520
+So I may have a guy here and he gets mapped to the same slot
+
+139
+00:12:16,660 --> 00:12:18,360
+that somebody else has already been mapped to.
+
+140
+00:12:18,490 --> 00:12:21,490
+And when this happens, we call that a collision.
+
+141
+00:12:27,220 --> 00:12:31,670
+So we're trying to map these things down into a small set
+
+142
+00:12:31,970 --> 00:12:34,810
+but we could get unlucky in our mapping,
+
+143
+00:12:35,190 --> 00:12:37,950
+particularly if we map enough of these guys.
+
+144
+00:12:38,210 --> 00:12:39,680
+They're not going to fit.
+
+145
+00:12:41,070 --> 00:12:59,180
+So when a record -- -- to be inserted maps
+
+146
+00:12:59,600 --> 00:13:05,580
+to an already occupied slot
+
+147
+00:13:17,920 --> 00:13:20,950
+-- -- a collision occurs.
+
+148
+00:13:30,890 --> 00:13:34,610
+OK. So looks like this method's no good.
+
+149
+00:13:35,210 --> 00:13:38,060
+But no, there's a pretty simple thing we can do.
+
+150
+00:13:38,560 --> 00:13:42,670
+What should we do when two things map to the same slot?
+
+151
+00:13:44,250 --> 00:13:46,400
+If we want to represent the whole set,
+
+152
+00:13:46,770 --> 00:13:50,320
+but you can't lose any data, can't treat it like a cache.
+
+153
+00:13:50,600 --> 00:13:53,310
+In a cache what you do is it uses a hashing scheme,
+
+154
+00:13:53,680 --> 00:13:55,710
+but in a cache, you just kick it out
+
+155
+00:13:56,130 --> 00:13:59,220
+because you don't care about representing a set precisely.
+
+156
+00:13:59,650 --> 00:14:03,060
+But in a hash table you're programming,
+
+157
+00:14:03,230 --> 00:14:05,480
+you often want to make sure that the values you have
+
+158
+00:14:05,660 --> 00:14:07,580
+are exactly the values in the sets
+
+159
+00:14:07,740 --> 00:14:10,150
+so you can tell whether something belongs to the set or not.
+
+160
+00:14:10,530 --> 00:14:12,440
+So what's a good strategy here?
+
+161
+00:14:13,650 --> 00:14:18,930
+Yeah. Create a list for each slot and just put all the elements
+
+162
+00:14:19,090 --> 00:14:21,590
+that hash to the same slot into the list.
+
+163
+00:14:22,060 --> 00:14:32,300
+And that's called resolving collisions by chaining.
+
+164
+00:14:36,470 --> 00:14:51,880
+And the idea is to link records in the same slot ---- into a list.
+
+165
+00:14:54,110 --> 00:14:57,620
+So for example, imagine this is
+
+166
+00:14:57,710 --> 00:15:02,220
+my hash table and this for example is slot i.
+
+167
+00:15:04,760 --> 00:15:08,140
+I may have several things that are,
+
+168
+00:15:11,230 --> 00:15:21,220
+so I'm going to put the key value -- -- have several things
+
+169
+00:15:21,400 --> 00:15:26,490
+that may have been inserted into this table that are elements of S.
+
+170
+00:15:26,770 --> 00:15:30,650
+And what I'll do is just link them together.
+
+171
+00:15:34,920 --> 00:15:37,060
+OK, so nil pointer here.
+
+172
+00:15:37,490 --> 00:15:39,760
+And this is the satellite data and these are the keys.
+
+173
+00:15:41,280 --> 00:15:44,070
+So if they're all linked together in slot i,
+
+174
+00:15:44,510 --> 00:15:50,060
+then the hash function applied to 49 has got to be
+
+175
+00:15:50,190 --> 00:15:52,810
+equal to the hash function of 86
+
+176
+00:15:53,220 --> 00:15:56,730
+is equal to the hash function of 52, which equals what?
+
+177
+00:16:06,720 --> 00:16:11,020
+There's only one thing I haven't. i.
+
+178
+00:16:11,230 --> 00:16:12,800
+Good. Even if you don't understand it,
+
+179
+00:16:12,930 --> 00:16:15,040
+your quizmanship should tell you.
+
+180
+00:16:15,370 --> 00:16:18,620
+He didn't mention i. That's equal to i.
+
+181
+00:16:19,090 --> 00:16:21,520
+So the point is when I hash 49,
+
+182
+00:16:21,820 --> 00:16:25,750
+the hash of 49 produces me some index in the table, say i,
+
+183
+00:16:26,040 --> 00:16:29,830
+and everything that hashes to that same location
+
+184
+00:16:30,060 --> 00:16:32,520
+is linked together into a list.
+
+185
+00:16:33,880 --> 00:16:39,750
+Every record. Any questions about what the mechanics of this.
+
+186
+00:16:40,020 --> 00:16:41,490
+I hope that most of you have seen this,
+
+187
+00:16:41,690 --> 00:16:45,700
+seen hashing, basic hashing in 6.001, right?
+
+188
+00:16:45,920 --> 00:16:48,200
+They teach it in? They used to teach it 6.001.
+
+189
+00:16:48,280 --> 00:16:51,880
+Yeah. OK. Some people are saying maybe.
+
+190
+00:16:52,950 --> 00:16:54,680
+They used to teach it.
+
+191
+00:16:54,990 --> 00:17:03,340
+Good. So let's analyze this strategy.
+
+192
+00:17:04,510 --> 00:17:11,470
+The analysis. We'll first do worst case.
+
+193
+00:17:15,800 --> 00:17:19,970
+So what happens in the worst case? With hashing?
+
+194
+00:17:21,690 --> 00:17:25,440
+Yeah, raise your hand so that I could call on you.
+
+195
+00:17:25,770 --> 00:17:35,530
+Yeah. Yeah, all hash keys, well all, all the keys in S.
+
+196
+00:17:35,780 --> 00:17:39,650
+I happen to pick a set S where my hash function
+
+197
+00:17:39,780 --> 00:17:44,320
+happens to map them all to the same value. That would be bad.
+
+198
+00:17:44,740 --> 00:17:54,560
+So every key hashes to the same slot.
+
+199
+00:17:58,540 --> 00:18:01,470
+And so, therefore if that happens,
+
+200
+00:18:01,800 --> 00:18:03,710
+then what I've essentially built
+
+201
+00:18:03,830 --> 00:18:09,200
+is a fancy linked list for keeping this data structure.
+
+202
+00:18:09,660 --> 00:18:13,210
+All this stuff with the tables, the hashing, etc., irrelevant.
+
+203
+00:18:13,660 --> 00:18:16,550
+All that matters is that I have a long linked list.
+
+204
+00:18:17,940 --> 00:18:19,930
+And then how long does an access take?
+
+205
+00:18:20,470 --> 00:18:23,800
+How long does it take me to insert something or well,
+
+206
+00:18:23,930 --> 00:18:26,200
+more importantly, to search for something.
+
+207
+00:18:26,310 --> 00:18:29,010
+Find out whether something's in there. In the worst case
+
+208
+00:18:30,840 --> 00:18:32,440
+Yeah, it takes order n time.
+
+209
+00:18:32,850 --> 00:18:35,190
+Because they're all just a link, we just have a linked list.
+
+210
+00:18:35,340 --> 00:18:43,300
+So access takes data n time
+
+211
+00:18:45,120 --> 00:18:49,230
+if as we assume the size of S is equal to n.
+
+212
+00:18:52,310 --> 00:18:56,700
+So from a worst case point of view, this doesn't look so attractive.
+
+213
+00:18:58,150 --> 00:19:00,410
+And we will see data structures
+
+214
+00:19:00,560 --> 00:19:03,260
+that in worst case do very well for this problem.
+
+215
+00:19:03,620 --> 00:19:08,420
+But they don't do as good as the average case of hashing.
+
+216
+00:19:08,710 --> 00:19:10,590
+So let's analyze the average case.
+
+217
+00:19:15,660 --> 00:19:20,060
+In order to analyze the average case, I have to,
+
+218
+00:19:20,220 --> 00:19:22,680
+whenever you have averages, whenever you have probability,
+
+219
+00:19:22,810 --> 00:19:24,480
+you have to state your assumptions.
+
+220
+00:19:25,860 --> 00:19:29,270
+You have to say what is the assumption
+
+221
+00:19:29,440 --> 00:19:31,310
+about the behavior of the system.
+
+222
+00:19:31,600 --> 00:19:33,280
+And it's very hard to do that
+
+223
+00:19:33,430 --> 00:19:36,160
+because you don't know necessarily what the hash function is.
+
+224
+00:19:36,530 --> 00:19:39,170
+Well, let's imagine an ideal hash function.
+
+225
+00:19:39,480 --> 00:19:41,360
+What should an ideal hash function do?
+
+226
+00:19:52,330 --> 00:19:57,310
+Yeah, map the keys essentially at random to a slot.
+
+227
+00:19:58,600 --> 00:20:01,490
+Should really distribute them randomly.
+
+228
+00:20:01,740 --> 00:20:17,360
+So we call this the assumption -- of simple uniform hashing
+
+229
+00:20:22,060 --> 00:20:34,620
+And what it means is that each key k in S is equally likely
+
+230
+00:20:39,330 --> 00:20:49,610
+-- -- to be hashed to any slot in T
+
+231
+00:20:51,920 --> 00:20:54,360
+and we're actually have to make an independence assumption.
+
+232
+00:20:54,550 --> 00:21:05,020
+Independent of where other records, other keys are hashed.
+
+233
+00:21:16,710 --> 00:21:17,880
+So we're going to make this assumption
+
+234
+00:21:18,010 --> 00:21:23,390
+and includes an independence assumption.
+
+235
+00:21:23,590 --> 00:21:26,030
+That if I have two keys the odds
+
+236
+00:21:26,140 --> 00:21:29,070
+that they're hashed to the same place is therefore what?
+
+237
+00:21:32,820 --> 00:21:35,370
+What are the odds that two keys under this assumption
+
+238
+00:21:35,460 --> 00:21:39,260
+are hashed to the same slot, if I have, say, m slots?
+
+239
+00:21:41,410 --> 00:21:47,290
+One over m. What are the odds that one key is hashed to slot 15?
+
+240
+00:21:50,410 --> 00:21:54,200
+One over m. Because they're being distributed,
+
+241
+00:21:54,320 --> 00:21:56,190
+but the odds in particular two keys
+
+242
+00:21:56,330 --> 00:21:58,950
+are hashed to the same slot, one over m.
+
+243
+00:22:05,890 --> 00:22:14,220
+So let's define. Is there a question?
+
+244
+00:22:14,850 --> 00:22:34,740
+No. OK. The load factor of a hash table with n keys at m slots
+
+245
+00:22:38,350 --> 00:22:43,020
+to be alpha which is equal to n over m,
+
+246
+00:22:43,350 --> 00:22:45,380
+which is also if you think about it,
+
+247
+00:22:45,530 --> 00:22:48,520
+just the average number of keys per slot.
+
+248
+00:22:56,150 --> 00:22:59,410
+So alpha is the average number of keys per,
+
+249
+00:22:59,550 --> 00:23:01,740
+we call it the load factor of the table. OK.
+
+250
+00:23:02,090 --> 00:23:05,420
+How many on average keys do I have?
+
+251
+00:23:05,880 --> 00:23:16,970
+So the expected, we'll look first at unsuccessful search time.
+
+252
+00:23:20,100 --> 00:23:22,350
+So by unsuccessful search, I mean
+
+253
+00:23:22,450 --> 00:23:24,910
+I'm looking for something that's actually not in the table.
+
+254
+00:23:25,280 --> 00:23:28,520
+It's going to return nil. I look for a key that's not in the table.
+
+255
+00:23:30,370 --> 00:23:37,740
+It's going to be what? It's going to be order.
+
+256
+00:23:37,960 --> 00:23:40,530
+Well, I have to do a certain amount of work
+
+257
+00:23:40,640 --> 00:23:43,630
+just to calculate the hash function and so forth.
+
+258
+00:23:43,850 --> 00:23:47,380
+It's going to be order at least one plus,
+
+259
+00:23:47,730 --> 00:23:50,120
+then I have to search the list
+
+260
+00:23:50,890 --> 00:23:54,150
+and on average how much of the list do I have to search?
+
+261
+00:23:57,940 --> 00:24:00,920
+What's the cost of searching that list?
+
+262
+00:24:01,060 --> 00:24:03,440
+On average. If I'm searching at random.
+
+263
+00:24:04,480 --> 00:24:08,610
+If I'm searching for a key that's not in the table.
+
+264
+00:24:12,220 --> 00:24:15,520
+Whichever one it is, I got to search to the end of the list, right?
+
+265
+00:24:16,650 --> 00:24:19,530
+So what's the average cost over all the slots in the table?
+
+266
+00:24:21,340 --> 00:24:26,810
+Alpha. Right? Alpha.
+
+267
+00:24:26,900 --> 00:24:28,770
+That's the average length of a list.
+
+268
+00:24:31,650 --> 00:24:37,200
+So this is essentially the cost of doing the hash
+
+269
+00:24:39,130 --> 00:24:41,170
+and then accessing the slot
+
+270
+00:24:43,850 --> 00:24:47,760
+and that is just the cost of searching the list.
+
+271
+00:24:52,530 --> 00:24:56,160
+So the expected unsuccessful search time
+
+272
+00:24:56,600 --> 00:25:00,230
+is proportional essentially to alpha
+
+273
+00:25:00,560 --> 00:25:03,130
+and if alpha's bigger than one, it's order alpha.
+
+274
+00:25:03,230 --> 00:25:05,610
+If alpha's less than one, it's constant.
+
+275
+00:25:12,300 --> 00:25:25,940
+So when is the expected search time -- -- equal to order one?
+
+276
+00:25:31,950 --> 00:25:34,970
+So when is this order one?
+
+277
+00:25:44,810 --> 00:25:46,530
+Simple questions, by the way.
+
+278
+00:25:46,940 --> 00:25:49,650
+I only ask simple questions. Some guys ask hard questions.
+
+279
+00:25:50,720 --> 00:25:56,070
+[Professor]Yeah. Or in terms first we'll get there in two steps, OK.
+
+280
+00:25:56,300 --> 00:25:57,900
+In terms of alpha, it's when?
+
+281
+00:25:59,110 --> 00:26:02,660
+When alpha is constant. If alpha in particular is.
+
+282
+00:26:05,960 --> 00:26:08,760
+Alpha doesn't have to be constant. It could be less than constant.
+
+283
+00:26:09,130 --> 00:26:12,420
+It's O of one, right. OK, or equivalently,
+
+284
+00:26:12,570 --> 00:26:21,810
+which is what you said, if n is O of m.
+
+285
+00:26:24,560 --> 00:26:30,280
+OK, which is to say if the number of elements in the table is order,
+
+286
+00:26:31,610 --> 00:26:34,570
+is upper bounded by a constant times m.
+
+287
+00:26:34,990 --> 00:26:36,950
+Then the search cost is constant.
+
+288
+00:26:37,070 --> 00:26:38,160
+So a lot of people will tell you oh,
+
+289
+00:26:38,280 --> 00:26:42,040
+a hash table runs in constant search time.
+
+290
+00:26:42,730 --> 00:26:44,320
+OK, that's actually wrong.
+
+291
+00:26:44,670 --> 00:26:47,650
+It depends upon the load factor of the hash table.
+
+292
+00:26:49,470 --> 00:26:51,390
+And people have made programming errors
+
+293
+00:26:51,510 --> 00:26:53,520
+based on that misunderstanding of hash tables.
+
+294
+00:26:55,080 --> 00:26:57,250
+Because they have a hash table that's too small
+
+295
+00:26:58,000 --> 00:26:59,850
+for the number of elements they're putting in there.
+
+296
+00:27:00,630 --> 00:27:07,420
+Doesn't help. The number may in fact will grow with the,
+
+297
+00:27:08,430 --> 00:27:12,600
+since this is one plus n over m, it actually grows with n.
+
+298
+00:27:12,880 --> 00:27:15,440
+So unless you make sure that m keeps up with n,
+
+299
+00:27:18,740 --> 00:27:20,760
+this doesn't stay constant.
+
+300
+00:27:24,140 --> 00:27:27,010
+Now it turns out for a successful search, it's also one plus alpha.
+
+301
+00:27:28,710 --> 00:27:31,240
+And for that you need to do a little bit more mathematics
+
+302
+00:27:31,850 --> 00:27:34,100
+because you now have to condition
+
+303
+00:27:34,280 --> 00:27:36,930
+on searching for the items in the table.
+
+304
+00:27:37,200 --> 00:27:39,270
+But it turns out it's also one plus alpha
+
+305
+00:27:39,390 --> 00:27:42,180
+and that you can read about in the book.
+
+306
+00:27:42,440 --> 00:27:45,170
+And also, there's a more rigorous proof of this.
+
+307
+00:27:45,310 --> 00:27:49,820
+I sort of have glossed over the expectation stuff here,
+
+308
+00:27:49,990 --> 00:27:52,770
+doing sort of a more intuitive proof.
+
+309
+00:27:52,990 --> 00:27:55,770
+So both of those things you should look for in the book.
+
+310
+00:28:01,290 --> 00:28:04,840
+So this is one reason why hashing is such a popular method,
+
+311
+00:28:04,930 --> 00:28:07,760
+is it basically lets you represent a dynamic set
+
+312
+00:28:07,920 --> 00:28:12,580
+with order one cost per operation,
+
+313
+00:28:12,710 --> 00:28:16,110
+constant cost per operation, inserting, deleting and so forth,
+
+314
+00:28:16,260 --> 00:28:18,220
+as long as the table that you're keeping
+
+315
+00:28:19,150 --> 00:28:22,800
+is not much smaller than the number of items
+
+316
+00:28:22,940 --> 00:28:24,710
+that you're putting in there.
+
+317
+00:28:26,190 --> 00:28:29,600
+And then all the operations end up being constant time.
+
+318
+00:28:30,670 --> 00:28:31,700
+But it depends upon,
+
+319
+00:28:31,820 --> 00:28:35,230
+strongly upon this assumption of simple uniform hashing.
+
+320
+00:28:36,560 --> 00:28:40,880
+And so no matter what hash function you pick,
+
+321
+00:28:42,200 --> 00:28:48,360
+I can always find a set of elements that are going to hash,
+
+322
+00:28:48,480 --> 00:28:50,490
+that that hash function is going to hash badly.
+
+323
+00:28:51,980 --> 00:28:54,530
+I just could generate a whole bunch of them
+
+324
+00:28:54,640 --> 00:28:56,740
+and look to see where the hash function takes them
+
+325
+00:28:56,820 --> 00:29:00,100
+and in the end pick a whole bunch that hash to the same place.
+
+326
+00:29:00,270 --> 00:29:03,420
+We're actually going to see a way of countering that,
+
+327
+00:29:03,500 --> 00:29:11,240
+but in practice people understand that most programs
+
+328
+00:29:11,480 --> 00:29:14,590
+that need to use things aren't really reverse engineering the hash function.
+
+329
+00:29:14,900 --> 00:29:16,840
+And so, there's some very simple hash functions
+
+330
+00:29:16,940 --> 00:29:19,390
+that seem to work fairly well in practice.
+
+331
+00:29:22,090 --> 00:29:24,250
+So in choosing a hash function
+
+332
+00:29:30,950 --> 00:29:44,830
+-- -- we would like it to distribute -- keys uniformly into slots
+
+333
+00:29:49,220 --> 00:29:57,140
+and we also would like that regularity in the key distributions
+
+334
+00:30:04,480 --> 00:30:10,260
+---- should not affect uniformity.
+
+335
+00:30:12,780 --> 00:30:16,640
+For example, a regularity that you often see is that
+
+336
+00:30:16,740 --> 00:30:19,540
+all the keys that are being inserted are even numbers.
+
+337
+00:30:20,900 --> 00:30:24,300
+Somebody happens to have that property of his data,
+
+338
+00:30:24,820 --> 00:30:26,710
+that they're only inserting even numbers.
+
+339
+00:30:27,000 --> 00:30:29,560
+In fact, on many machines, since they use byte pointers,
+
+340
+00:30:29,720 --> 00:30:33,200
+if they're sorting things that are for example,
+
+341
+00:30:33,310 --> 00:30:36,960
+indexes to arrays or something like that, in fact,
+
+342
+00:30:37,070 --> 00:30:41,660
+they're numbers that are typically divisible by four. Or by eight.
+
+343
+00:30:44,110 --> 00:30:46,780
+So you don't want regularity in the key distribution
+
+344
+00:30:46,880 --> 00:30:49,000
+to affect the fact that you're distributing slots.
+
+345
+00:30:49,760 --> 00:30:52,430
+So probably the most popular method
+
+346
+00:30:52,530 --> 00:30:54,840
+that's used just for a quick hash function
+
+347
+00:30:54,910 --> 00:30:58,160
+is what's called the division method.
+
+348
+00:31:05,680 --> 00:31:07,480
+And the idea here is that
+
+349
+00:31:07,560 --> 00:31:13,700
+you simply let h of k for a key equal k modulo m,
+
+350
+00:31:14,090 --> 00:31:16,750
+where m is the number of slots in your table.
+
+351
+00:31:22,570 --> 00:31:26,340
+And this works reasonably well in practice,
+
+352
+00:31:26,470 --> 00:31:29,670
+but you want to be careful about your choice of modulus.
+
+353
+00:31:29,820 --> 00:31:31,840
+In other words, it turns out it doesn't work well
+
+354
+00:31:31,980 --> 00:31:35,090
+for every possible size of table you might want to pick.
+
+355
+00:31:35,350 --> 00:31:37,130
+Fortunately when you're building hash tables,
+
+356
+00:31:37,250 --> 00:31:39,810
+you don't usually care about the specific size of the table.
+
+357
+00:31:40,020 --> 00:31:43,640
+If you pick it around some size, that's probably fine
+
+358
+00:31:43,810 --> 00:31:46,290
+because it's not going to affect their performance.
+
+359
+00:31:46,440 --> 00:31:49,000
+So there's no need to pick a specific value.
+
+360
+00:31:49,250 --> 00:32:02,500
+In particular, you don't want to pick ---- m with a small divisor
+
+361
+00:32:09,740 --> 00:32:12,840
+and let me illustrate why that's a bad idea
+
+362
+00:32:12,980 --> 00:32:14,970
+for this particular hash function.
+
+363
+00:32:25,500 --> 00:32:27,740
+I should have said small divisor d.
+
+364
+00:32:33,230 --> 00:32:39,810
+So for example -- -- if D is two,
+
+365
+00:32:39,900 --> 00:32:41,760
+in other words m is an even number,
+
+366
+00:32:44,250 --> 00:32:47,160
+and it turns out that we have the situation
+
+367
+00:32:47,300 --> 00:32:52,520
+I just mentioned, all keys are even,
+
+368
+00:32:55,770 --> 00:32:59,740
+what happens to my usage of the hash table?
+
+369
+00:33:01,530 --> 00:33:05,460
+So I have an even slot, even number of slots,
+
+370
+00:33:05,600 --> 00:33:09,300
+and all the keys that the user of the hash table chooses
+
+371
+00:33:09,400 --> 00:33:11,760
+to pick happen to be even numbers,
+
+372
+00:33:11,980 --> 00:33:15,830
+what's going to happen in terms of my use of the hash table?
+
+373
+00:33:22,680 --> 00:33:24,200
+[Professor]Well, in the worst case,
+
+374
+00:33:24,290 --> 00:33:25,310
+[Professor]they are always all going to point in the same slot
+
+375
+00:33:25,400 --> 00:33:27,610
+[Professor]no matter what hash function I pick.
+
+376
+00:33:27,870 --> 00:33:29,550
+[Professor]But here, let's say that, in fact,
+
+377
+00:33:29,670 --> 00:33:33,130
+[Professor]my hash function does do a pretty good job of distributing,
+
+378
+00:33:33,940 --> 00:33:38,400
+but I have this property. What's a property that's going to have
+
+379
+00:33:38,480 --> 00:33:42,620
+no matter what set of keys I pick
+
+380
+00:33:42,970 --> 00:33:44,340
+that satisfies this property?
+
+381
+00:33:44,430 --> 00:33:46,200
+What's going to happen to the hash table?
+
+382
+00:33:53,900 --> 00:33:58,090
+So, I have even number, mod an even number.
+
+383
+00:33:59,540 --> 00:34:02,000
+What does that say about the hash function?
+
+384
+00:34:08,560 --> 00:34:14,270
+It's even, right? I have an even number mod. It's even.
+
+385
+00:34:14,500 --> 00:34:16,660
+So, what's going to happen to my use of the table?
+
+386
+00:34:19,520 --> 00:34:23,150
+Yeah, you're never going to hash anything to an odd-numbered slot.
+
+387
+00:34:24,320 --> 00:34:25,880
+You wasted half your slots.
+
+388
+00:34:26,580 --> 00:34:28,780
+It doesn't matter what the key distribution is.
+
+389
+00:34:29,510 --> 00:34:32,290
+OK, as long as they're all even, OK,
+
+390
+00:34:32,940 --> 00:34:36,660
+that means the odds slots are never used.
+
+391
+00:34:41,980 --> 00:34:46,430
+OK, an extreme example, here's another example,
+
+392
+00:34:46,760 --> 00:34:50,070
+imagine that m is equal to two to the r.
+
+393
+00:34:50,310 --> 00:34:55,750
+In other words, all its factors are small divisors, OK?
+
+394
+00:34:56,850 --> 00:35:01,510
+In that case, if I think about taking k mod m
+
+395
+00:35:02,810 --> 00:35:08,060
+OK, the hash doesn't even depend on all the bits of k, OK?
+
+396
+00:35:21,700 --> 00:35:33,400
+So, for example, suppose I had one..., and r equals six,
+
+397
+00:35:33,800 --> 00:35:36,480
+OK, so m is two to the sixth.
+
+398
+00:35:36,710 --> 00:35:39,360
+So, I take this binary number,
+
+399
+00:35:39,520 --> 00:35:46,200
+mod two to the sixth, what's the hash value?
+
+400
+00:35:47,500 --> 00:35:50,590
+If I take something mod a power of two, what does it do?
+
+401
+00:35:59,580 --> 00:36:08,180
+So, I hash this function. This is k, OK, in binary.
+
+402
+00:36:12,720 --> 00:36:15,190
+And I take it mod two to the sixth.
+
+403
+00:36:17,130 --> 00:36:19,220
+Well, if I took it mod two, what's the answer?
+
+404
+00:36:23,090 --> 00:36:27,860
+What's this number mod two? Zero, right.
+
+405
+00:36:27,990 --> 00:36:31,330
+OK, what's this number mod four? One zero.
+
+406
+00:36:31,470 --> 00:36:33,430
+What is it mod two to the sixth?
+
+407
+00:36:35,360 --> 00:36:40,570
+Yeah, it's just these last six bits. This is H of k.
+
+408
+00:36:44,160 --> 00:36:46,620
+OK, when you take something mod a power of two,
+
+409
+00:36:46,720 --> 00:36:48,710
+all you're doing is taking its low order bits.
+
+410
+00:36:49,610 --> 00:36:54,580
+OK, mod two to the r, you are taking its r low order bits.
+
+411
+00:36:55,650 --> 00:36:58,310
+So, the hash function doesn't even depend on what's up here.
+
+412
+00:36:59,660 --> 00:37:01,620
+So, that's a pretty bad situation
+
+413
+00:37:01,710 --> 00:37:05,730
+because generally you would like a very common regularity
+
+414
+00:37:05,840 --> 00:37:10,520
+that you'll see in data is that all the low order bits are the same,
+
+415
+00:37:10,640 --> 00:37:14,000
+and all the high order bits differ, or vice versa.
+
+416
+00:37:14,200 --> 00:37:16,520
+So, this particular is not a very good one.
+
+417
+00:37:16,890 --> 00:37:22,760
+So, good heuristics for this is to pick m to be a prime,
+
+418
+00:37:25,640 --> 00:37:36,910
+not too close to a power of two or ten
+
+419
+00:37:37,240 --> 00:37:39,160
+because those are the two common bases
+
+420
+00:37:39,310 --> 00:37:44,020
+that you see regularity in the world.
+
+421
+00:37:46,090 --> 00:37:51,020
+A prime is sometimes inconvenient, however.
+
+422
+00:37:51,650 --> 00:37:54,960
+But generally, it's fairly easy to find primes.
+
+423
+00:37:55,050 --> 00:37:57,340
+And there's a lot of nice theorems about primes.
+
+424
+00:37:57,540 --> 00:38:00,380
+So, generally what you do, if you're just coding up something
+
+425
+00:38:00,480 --> 00:38:04,220
+and you know what it is, you can pick a prime out of a textbook
+
+426
+00:38:04,350 --> 00:38:07,420
+or look it up on the web or write a little program,
+
+427
+00:38:07,510 --> 00:38:09,320
+or whatever, and pick a prime.
+
+428
+00:38:09,430 --> 00:38:11,570
+Not too close to a power of two or ten,
+
+429
+00:38:11,650 --> 00:38:12,780
+and it will probably work pretty well.
+
+430
+00:38:14,300 --> 00:38:15,970
+It will probably work pretty well.
+
+431
+00:38:16,280 --> 00:38:18,430
+So, this is a very popular method, the division method.
+
+432
+00:38:18,520 --> 00:38:22,690
+OK, but the next method we are going to see
+
+433
+00:38:22,750 --> 00:38:24,710
+is actually usually superior.
+
+434
+00:38:25,360 --> 00:38:27,600
+The reason people do this is because
+
+435
+00:38:27,740 --> 00:38:31,660
+they can write in-line in their code.
+
+436
+00:38:33,040 --> 00:38:34,820
+OK, but it's not usually the best method.
+
+437
+00:38:34,910 --> 00:38:36,660
+And the reason is because division,
+
+438
+00:38:36,740 --> 00:38:41,180
+one of the reasons is division tends to take a lot of cycles
+
+439
+00:38:41,260 --> 00:38:46,420
+to compute on most computers compared with multiplication or addition.
+
+440
+00:38:47,230 --> 00:38:51,770
+OK, in fact, it's usually done with taking several multiplications.
+
+441
+00:38:53,280 --> 00:38:56,960
+So, the next method is actually generally better,
+
+442
+00:38:57,170 --> 00:39:02,880
+but none of the hash function methods that we are talking about today are,
+
+443
+00:39:02,960 --> 00:39:06,530
+in some sense, provably good hash functions.
+
+444
+00:39:09,630 --> 00:39:11,740
+OK, so for the multiplication method,
+
+445
+00:39:11,890 --> 00:39:15,300
+the nice thing about it is just essentially requires multiplication to do.
+
+446
+00:39:16,110 --> 00:39:20,660
+And, for that is, also, we are going to assume that
+
+447
+00:39:20,750 --> 00:39:25,120
+the number of slots is a power of two which is also often very convenient.
+
+448
+00:39:25,820 --> 00:39:37,220
+OK, and for this, we're going to assume that the computer has w bit words.
+
+449
+00:39:38,390 --> 00:39:43,630
+So, it would be convenient on a computer with 32 bits,
+
+450
+00:39:43,720 --> 00:39:46,150
+or 64 bits, for example.
+
+451
+00:39:46,840 --> 00:39:48,620
+OK, this would be very convenient.
+
+452
+00:39:49,020 --> 00:39:52,490
+So, the hash function is the following. h of k
+
+453
+00:39:52,800 --> 00:40:05,800
+is equal to A times k mod, two to the w, right shifted by w minus r.
+
+454
+00:40:07,110 --> 00:40:12,110
+OK, so the key part of this is A,
+
+455
+00:40:12,200 --> 00:40:18,520
+which has chosen to be an odd integer in the range
+
+456
+00:40:18,760 --> 00:40:23,760
+between two to the w minus one and two to the w.
+
+457
+00:40:26,260 --> 00:40:30,410
+OK, so it's an odd integer that the full width of the computer word.
+
+458
+00:40:31,500 --> 00:40:36,270
+OK, and what you do is multiply it by whatever your key is,
+
+459
+00:40:36,370 --> 00:40:42,750
+by this funny integer. And, then take it mod two to the w.
+
+460
+00:40:42,950 --> 00:40:46,270
+And then, you take the result and right shift it
+
+461
+00:40:46,360 --> 00:40:48,970
+by this fixed amount, w minus r.
+
+462
+00:40:49,200 --> 00:40:57,630
+So, this is a bit wise right shift.
+
+463
+00:41:01,570 --> 00:41:04,210
+OK, so let's look at what this does.
+
+464
+00:41:04,310 --> 00:41:08,420
+But first, let me just give you a couple of tips on how you pick,
+
+465
+00:41:08,480 --> 00:41:11,220
+or what you don't pick for A.
+
+466
+00:41:11,430 --> 00:41:19,850
+So, you don't pick A too close to a power of two.
+
+467
+00:41:24,900 --> 00:41:27,820
+And, it's generally a pretty fast method
+
+468
+00:41:31,740 --> 00:41:43,660
+because multiplication mod two to the w is faster than division.
+
+469
+00:41:45,940 --> 00:41:48,790
+And the other thing is that a right shift is fast,
+
+470
+00:41:49,100 --> 00:41:51,830
+especially because this is a known shift.
+
+471
+00:41:53,060 --> 00:41:56,790
+OK, you know it before you are computing the hash function.
+
+472
+00:41:56,930 --> 00:41:59,100
+Both w and r are known in advance.
+
+473
+00:41:59,300 --> 00:42:02,860
+So, the compiler can often do tricks there to make it go even faster.
+
+474
+00:42:04,210 --> 00:42:07,960
+So, let's do an example to understand how this hash function works.
+
+475
+00:42:13,950 --> 00:42:19,480
+So, we will have, in this case, a number of slots will be eight,
+
+476
+00:42:19,580 --> 00:42:21,990
+which is two to the three.
+
+477
+00:42:22,250 --> 00:42:26,040
+And, we'll have a bizarre word size of seven bits.
+
+478
+00:42:26,180 --> 00:42:28,900
+Anybody know any seven bit computers out there?
+
+479
+00:42:30,360 --> 00:42:32,720
+OK, well, here's one.
+
+480
+00:42:33,020 --> 00:42:38,560
+So, A is our fixed value that's used for hashing all our keys.
+
+481
+00:42:38,770 --> 00:42:46,070
+And, in this case, let's say it's 1011001.
+
+482
+00:42:46,430 --> 00:42:54,430
+So, that's A. And, I take in some value for k that I'm going to multiply.
+
+483
+00:42:54,730 --> 00:43:01,140
+So, k is going to be 1101011. So, that's my k.
+
+484
+00:43:02,180 --> 00:43:03,500
+And, I multiply them.
+
+485
+00:43:03,780 --> 00:43:07,170
+What I multiply two, each of these is the full word width.
+
+486
+00:43:07,390 --> 00:43:12,570
+You can view it as the full word width of the machine,
+
+487
+00:43:12,720 --> 00:43:14,170
+in this case, seven bits.
+
+488
+00:43:14,310 --> 00:43:16,740
+So, in general, this would be like a 32 bit number,
+
+489
+00:43:16,850 --> 00:43:22,340
+and my key, I'd be multiplying two 32 bit numbers, for example.
+
+490
+00:43:22,560 --> 00:43:29,350
+OK, and so, when I multiply that out, I get a 2w bit answer.
+
+491
+00:43:29,470 --> 00:43:35,500
+So, when you multiply two w bit numbers, you get a 2w bit answer.
+
+492
+00:43:35,700 --> 00:43:50,750
+In this case, it happens to be that number, OK?
+
+493
+00:43:52,780 --> 00:43:59,660
+So, that's the product part, OK?
+
+494
+00:43:59,980 --> 00:44:03,050
+And then we take it mod two to the w.
+
+495
+00:44:03,180 --> 00:44:06,960
+Well, what mod two to the w says is that I'm just taking,
+
+496
+00:44:07,060 --> 00:44:10,710
+ignoring the high order bits of this product.
+
+497
+00:44:10,870 --> 00:44:13,130
+So, all of these are ignored,
+
+498
+00:44:20,270 --> 00:44:24,930
+because, remember that if I take something, mod, a power of two,
+
+499
+00:44:25,070 --> 00:44:27,300
+that's just the low order bits.
+
+500
+00:44:27,450 --> 00:44:30,340
+So, I just get these low order bits as being the mod.
+
+501
+00:44:31,960 --> 00:44:36,040
+And then, the right shift operation, and that's good also, by the way,
+
+502
+00:44:36,140 --> 00:44:40,100
+because a lot of machines, when I multiply two 32 bit numbers,
+
+503
+00:44:40,220 --> 00:44:45,380
+they'll have an instruction that gives you just the 32 lower bits.
+
+504
+00:44:45,490 --> 00:44:48,010
+And, it's usually an instruction
+
+505
+00:44:48,130 --> 00:44:52,110
+that's faster than the instruction that gives you the full 64 bit answer.
+
+506
+00:44:53,040 --> 00:44:56,480
+OK, so, that's very convenient.
+
+507
+00:44:56,590 --> 00:45:00,840
+And, the second thing is, then, that I want just the,
+
+508
+00:45:00,950 --> 00:45:05,590
+in this case, three bits that are the high order bits of this word.
+
+509
+00:45:05,740 --> 00:45:08,500
+So, this ends up being my H of k.
+
+510
+00:45:10,450 --> 00:45:15,880
+And these end up getting removed by right shifting this word over.
+
+511
+00:45:16,000 --> 00:45:19,570
+So, you just right shift that in, zeros come in, in a high order bit,
+
+512
+00:45:19,710 --> 00:45:22,070
+and you end up getting that value of H of k.
+
+513
+00:45:25,330 --> 00:45:28,020
+OK, so to understand what's going on here,
+
+514
+00:45:31,730 --> 00:45:37,210
+why this is a pretty good method, or what's happening with it,
+
+515
+00:45:37,370 --> 00:45:44,430
+you can imagine that one way to think about it
+
+516
+00:45:44,550 --> 00:45:50,440
+is to think of A as being a binary fraction.
+
+517
+00:45:50,660 --> 00:45:55,600
+So, imagine that the decimal point is here, sorry, the binary point,
+
+518
+00:45:55,960 --> 00:45:58,340
+OK, the radix point is here.
+
+519
+00:45:58,590 --> 00:46:02,080
+Then when I multiply things, I'm just taking,
+
+520
+00:46:02,390 --> 00:46:05,400
+the binary point ends up being there.
+
+521
+00:46:08,280 --> 00:46:10,520
+OK, so if you just imagine that conceptually,
+
+522
+00:46:10,630 --> 00:46:13,390
+we don't have to actually put this into the hardware
+
+523
+00:46:13,480 --> 00:46:15,350
+because we just do what the hardware does.
+
+524
+00:46:15,460 --> 00:46:18,770
+But, I can imagine that it's there, and that it's here.
+
+525
+00:46:18,930 --> 00:46:22,480
+And so, what I'm really taking is the fractional part of this product
+
+526
+00:46:22,720 --> 00:46:25,450
+if I treat A as a fraction of a number.
+
+527
+00:46:25,720 --> 00:46:28,220
+So, we can certainly look at that as sort of a modular wheel.
+
+528
+00:46:33,510 --> 00:46:39,220
+So, here I have a wheel where this is going to be,
+
+529
+00:46:40,980 --> 00:46:43,480
+that I'm going to divide into eight parts,
+
+530
+00:46:45,630 --> 00:46:48,740
+OK, where this point is zero.
+
+531
+00:46:48,970 --> 00:46:52,760
+And then, I go around, and this point is then one.
+
+532
+00:46:53,030 --> 00:46:57,030
+And, I go around, and this point is two, and so forth,
+
+533
+00:46:57,300 --> 00:47:00,860
+so that all the integers, if I wrap it around this unit wheel,
+
+534
+00:47:01,140 --> 00:47:06,570
+all the integers lined up at the zero point here, OK?
+
+535
+00:47:06,760 --> 00:47:10,150
+And then, we can divide this into the fractional pieces.
+
+536
+00:47:10,290 --> 00:47:13,430
+So, that's essentially the zero point. This is the one eighth,
+
+537
+00:47:13,570 --> 00:47:19,360
+because we are dividing into eight, two, three, four, five, six, seven.
+
+538
+00:47:20,530 --> 00:47:27,260
+So, if I have one times A, in this case,
+
+539
+00:47:27,420 --> 00:47:31,000
+I'm basically saying, well, one times A,
+
+540
+00:47:31,120 --> 00:47:33,290
+if I multiply, is basically going around
+
+541
+00:47:33,480 --> 00:47:40,380
+to about there, five and a half I think, right,
+
+542
+00:47:40,470 --> 00:47:44,930
+because one times A is about five and a half,
+
+543
+00:47:47,170 --> 00:47:56,100
+OK, or five halves of... 5.5 eighths, essentially.
+
+544
+00:47:57,420 --> 00:47:59,180
+So, it takes me about to there. That's A.
+
+545
+00:47:59,410 --> 00:48:04,760
+And, if I do 2^A, that continues around,
+
+546
+00:48:04,820 --> 00:48:07,490
+and takes me up to about, where?
+
+547
+00:48:07,790 --> 00:48:12,610
+About, a little past three, about to there.
+
+548
+00:48:12,830 --> 00:48:19,670
+So, that's 2^A. OK, and 3^A takes me, then,
+
+549
+00:48:19,820 --> 00:48:23,440
+around to somewhere like about there.
+
+550
+00:48:25,710 --> 00:48:33,250
+So, each time I add another A,
+
+551
+00:48:33,410 --> 00:48:36,930
+it's taking me another A's distance around.
+
+552
+00:48:37,250 --> 00:48:41,900
+And, the idea is that if A is, for example, odd,
+
+553
+00:48:42,150 --> 00:48:45,520
+and it's not too close to a power of two,
+
+554
+00:48:45,690 --> 00:48:50,730
+then what's happening is sort of throwing it
+
+555
+00:48:50,790 --> 00:48:53,000
+into another slot on a different thing.
+
+556
+00:48:53,100 --> 00:48:55,780
+So, if I now go around, if I have k being very big,
+
+557
+00:48:56,040 --> 00:48:59,480
+then k times A is going around k times.
+
+558
+00:48:59,570 --> 00:49:00,610
+Where does it end up?
+
+559
+00:49:00,750 --> 00:49:03,270
+It's like spinning a wheel of fortune or something.
+
+560
+00:49:03,410 --> 00:49:07,810
+OK, it ends somewhere. OK, and so that's basically the notion.
+
+561
+00:49:08,000 --> 00:49:13,280
+That's basically the notion, that it's going to end up in some place.
+
+562
+00:49:13,660 --> 00:49:16,500
+So, you're basically looking at, where does k·a end up?
+
+562
+00:49:16,650 --> 00:49:19,910
+Well, it sort of whirls around, and ends up at some point.
+
+563
+00:49:20,090 --> 00:49:25,310
+OK, and so that's why that tends to be a fairly good one.
+
+564
+00:49:25,520 --> 00:49:27,780
+But, these are only heuristic methods for hashing,
+
+565
+00:49:28,030 --> 00:49:29,430
+because for any hash function,
+
+566
+00:49:29,560 --> 00:49:33,100
+you can always find a set of keys that's going to make it operate badly.
+
+567
+00:49:34,190 --> 00:49:36,080
+So, the question is, well, what do you use in practice?
+
+568
+00:49:38,250 --> 00:49:54,570
+OK, the second topic that I want to tie it,
+
+569
+00:49:54,790 --> 00:49:59,210
+so, we talked about resolving collisions by chaining.
+
+570
+00:49:59,430 --> 00:50:07,400
+OK, there's another way of resolving collisions, which is often useful,
+
+571
+00:50:07,550 --> 00:50:15,830
+which is resolving collisions by what's called open addressing.
+
+572
+00:50:25,410 --> 00:50:33,140
+OK, and the idea is, in this method, is we have no storage for links.
+
+573
+00:50:34,660 --> 00:50:37,820
+So, when I result by chaining,
+
+574
+00:50:37,950 --> 00:50:42,480
+I'd need an extra linked field in each record
+
+575
+00:50:42,700 --> 00:50:44,930
+in order to be able to do that.
+
+576
+00:50:45,100 --> 00:50:49,110
+Now, that's not necessarily a big overhead, but for some applications,
+
+577
+00:50:49,330 --> 00:50:52,270
+I don't want to have to touch those records at all.
+
+578
+00:50:54,250 --> 00:51:03,740
+OK, and for those, open addressing is a useful way to resolve collisions.
+
+579
+00:51:05,200 --> 00:51:11,740
+So, the idea is, with open addressing, is if I hash to a given slot,
+
+580
+00:51:11,970 --> 00:51:16,680
+and the slot is full, OK, what I do is
+
+581
+00:51:16,880 --> 00:51:20,800
+I just hash again with a different hash function,
+
+582
+00:51:21,110 --> 00:51:23,910
+with my second hash function.
+
+583
+00:51:24,030 --> 00:51:27,080
+I check that slot. OK, if that slot is full,
+
+584
+00:51:27,970 --> 00:51:30,100
+OK, then I hash again.
+
+585
+00:51:30,290 --> 00:51:32,630
+And, I keep this probe sequence,
+
+586
+00:51:32,800 --> 00:51:34,790
+which hopefully is a permutation
+
+587
+00:51:34,920 --> 00:51:37,320
+so that I'm not going back and checking things that
+
+588
+00:51:37,480 --> 00:51:40,210
+I've already checked until I find a place to put it.
+
+589
+00:51:40,460 --> 00:51:44,070
+And, if I got a good probe sequence that I will hopefully,
+
+590
+00:51:44,170 --> 00:51:46,590
+then, find a place to put it fairly quickly.
+
+591
+00:51:48,050 --> 00:51:52,860
+OK, and then to search, I just follow the same probe sequence.
+
+592
+00:51:54,460 --> 00:52:08,100
+So, the idea, here, is we probe the table systematically
+
+593
+00:52:11,750 --> 00:52:20,840
+until an empty slot is found, OK?
+
+594
+00:52:21,530 --> 00:52:24,440
+And so, we can extend that by looking
+
+595
+00:52:24,570 --> 00:52:28,280
+as if the sequence of hash functions were, in fact,
+
+596
+00:52:28,380 --> 00:52:35,710
+a hash function that took two arguments: a key and a probe step.
+
+597
+00:52:36,060 --> 00:52:40,460
+In other words, is it the zero of one our first one?
+
+598
+00:52:40,600 --> 00:52:44,350
+It's the second one, etc. So, it takes two arguments.
+
+599
+00:52:44,480 --> 00:52:49,700
+So, H is then going to map our universe of keys cross,
+
+600
+00:52:54,710 --> 00:52:58,370
+our probe number into a slot.
+
+601
+00:53:02,040 --> 00:53:11,170
+So, this is the universe of keys. This is the probe number.
+
+602
+00:53:13,620 --> 00:53:15,980
+And, this is going to be the slot.
+
+603
+00:53:20,250 --> 00:53:31,740
+Now, as I mentioned, the probe sequence should be permutation.
+
+604
+00:53:32,130 --> 00:53:37,620
+In other words, it should just be the numbers from zero
+
+605
+00:53:37,710 --> 00:53:41,360
+to n minus one in some fairly random order.
+
+606
+00:53:41,590 --> 00:53:44,070
+OK, it should just be rearranged.
+
+607
+00:53:44,300 --> 00:53:51,140
+And the other thing about open addressing is that
+
+608
+00:53:51,270 --> 00:53:52,960
+you don't have to worry about n chaining is that
+
+609
+00:53:53,050 --> 00:53:54,740
+the table may actually fill up.
+
+610
+00:54:00,310 --> 00:54:05,370
+So, you have to have that the number of elements in the table
+
+611
+00:54:05,530 --> 00:54:08,480
+is less than or equal to the table size,
+
+612
+00:54:08,640 --> 00:54:13,420
+the number of slots because the table may fill up.
+
+613
+00:54:13,670 --> 00:54:16,260
+And, if it's full, you're going to probe everywhere.
+
+614
+00:54:16,310 --> 00:54:18,240
+You are never going to get a place to put it.
+
+615
+00:54:18,500 --> 00:54:23,770
+And, the final thing is that in this type of scheme,
+
+616
+00:54:23,870 --> 00:54:30,350
+deletion is difficult. It's not impossible.
+
+617
+00:54:30,450 --> 00:54:32,380
+There are schemes for doing deletion.
+
+618
+00:54:32,530 --> 00:54:35,090
+But, it's basically hard because the danger is that
+
+619
+00:54:35,140 --> 00:54:40,190
+you remove a key out of the table, and now,
+
+620
+00:54:40,230 --> 00:54:43,980
+somebody who's doing a probe sequence who would have hit that key
+
+621
+00:54:44,080 --> 00:54:47,210
+and gone to find his element now finds that it's an empty slot.
+
+622
+00:54:47,260 --> 00:54:51,270
+And he says, oh, the key I am looking for probably isn't there.
+
+623
+00:54:52,520 --> 00:54:54,610
+OK, so you have that issue to deal with.
+
+624
+00:54:54,790 --> 00:54:56,790
+So, you can delete things but keep them marked,
+
+625
+00:54:56,880 --> 00:55:00,370
+and there's all kinds of schemes that people have for doing deletion.
+
+626
+00:55:00,550 --> 00:55:03,910
+But it's difficult. It's messy compared to chaining,
+
+627
+00:55:04,060 --> 00:55:05,800
+where you can just remove the element out of the chain.
+
+628
+00:55:08,090 --> 00:55:10,050
+So, let's do an example
+
+629
+00:55:22,520 --> 00:55:24,580
+-- -- just so that we make sure we're on the same page.
+
+630
+00:55:32,130 --> 00:55:42,180
+So, we'll insert a key. k is 496. OK, so here's my table.
+
+631
+00:55:50,480 --> 00:56:04,650
+And, I've got some values in it, 586, 133, 204, 481, etc.
+
+632
+00:56:04,920 --> 00:56:07,180
+So, the table looks like that; the other places are empty.
+
+633
+00:56:09,770 --> 00:56:19,310
+So, on my zero step, I probe H of 496, zero. OK,
+
+634
+00:56:20,410 --> 00:56:24,550
+and let's say that takes me to the slot where there's 204.
+
+635
+00:56:25,590 --> 00:56:29,700
+And so, I say, oh, there's something there.
+
+636
+00:56:29,990 --> 00:56:39,860
+I have to probe again. So then, I probe H of 496, one.
+
+637
+00:56:40,130 --> 00:56:45,270
+Maybe that maps me there, and I discover,
+
+638
+00:56:45,500 --> 00:56:46,860
+oh, there's something there.
+
+639
+00:56:48,580 --> 00:56:55,490
+So, now, I probe H of 496, two.
+
+640
+00:56:55,700 --> 00:57:00,770
+Maybe that takes me to there. It's empty.
+
+641
+00:57:00,910 --> 00:57:04,130
+So, if I'm doing a search, I report nil.
+
+642
+00:57:04,230 --> 00:57:07,730
+If I'm doing in the insert, I put it there.
+
+643
+00:57:09,370 --> 00:57:13,340
+And then, if I'm looking for that value, if I put it there,
+
+644
+00:57:13,440 --> 00:57:17,010
+then when I'm looking, I go through exactly the same sequence.
+
+645
+00:57:17,110 --> 00:57:19,280
+I'll find these things are busy, and then, eventually,
+
+646
+00:57:19,380 --> 00:57:21,280
+I'll come up and discover the value.
+
+647
+00:57:24,220 --> 00:57:27,480
+OK, and there are various heuristics that people use, as well,
+
+648
+00:57:27,610 --> 00:57:30,190
+like keeping track of the longest probe sequence
+
+649
+00:57:30,250 --> 00:57:34,230
+because there's no point in probing beyond the largest number of probes
+
+650
+00:57:34,380 --> 00:57:36,850
+that need to be done globally to do an insertion.
+
+651
+00:57:37,230 --> 00:57:39,650
+OK, so if it took me 5,
+
+652
+00:57:39,770 --> 00:57:45,010
+5 is the maximum number of probes I ever did for an insertion.
+
+653
+00:57:45,120 --> 00:57:47,530
+A search never has to look more than five,
+
+654
+00:57:47,800 --> 00:57:51,840
+OK, and so sometimes hash tables will keep that auxiliary value
+
+655
+00:57:51,970 --> 00:57:55,940
+so that it can quit rather than continuing to probe
+
+656
+00:57:56,000 --> 00:58:00,560
+until it doesn't find something.
+
+657
+00:58:01,680 --> 00:58:09,330
+OK, so, search is the same probe sequence.
+
+658
+00:58:12,330 --> 00:58:18,540
+And, if it's successful, it finds the record.
+
+659
+00:58:21,530 --> 00:58:28,050
+And, if it's unsuccessful, you find a nil.
+
+660
+00:58:32,520 --> 00:58:36,690
+OK, so it's pretty straightforward.
+
+661
+00:58:38,880 --> 00:58:43,650
+So, once again, as with just hash functions to begin with,
+
+662
+00:58:43,710 --> 00:58:51,000
+there are a lot of ideas about how you should form a probe sequence,
+
+663
+00:58:51,230 --> 00:58:53,310
+ways of doing this effectively.
+
+664
+00:59:03,710 --> 00:59:09,570
+OK, so the simplest one is called linear probing,
+
+665
+00:59:10,970 --> 00:59:15,170
+and what you do there is you have H of k comma i.
+
+666
+00:59:15,410 --> 00:59:28,330
+You just make that be some H prime of k, zero plus i mod m.
+
+667
+00:59:31,190 --> 00:59:36,960
+Sorry, no prime there. OK, so what happens is,
+
+668
+00:59:37,050 --> 00:59:43,160
+so, the idea here is that all you are doing on the I'th probe is,
+
+669
+00:59:44,040 --> 00:59:47,890
+on the zero'th probe, you look at H of k zero.
+
+670
+00:59:48,590 --> 00:59:51,240
+On probe one, you just look at the slot after that.
+
+671
+00:59:51,770 --> 00:59:54,000
+Probe two, you look at the slot after that.
+
+672
+00:59:54,160 --> 00:59:57,270
+So, you're just simply, rather than sort of jumping around like this,
+
+673
+00:59:57,370 --> 01:00:00,060
+you probe there and then just find the next one that will fit in.
+
+674
+01:00:01,780 --> 01:00:05,880
+OK, so you just scan down mod m.
+
+675
+01:00:06,030 --> 01:00:07,920
+So, if you hit the bottom, you go to the top.
+
+676
+01:00:08,160 --> 01:00:11,100
+OK, so the I'th one, so that's fairly easy to do
+
+677
+01:00:11,210 --> 01:00:14,540
+because you don't have to recomputed a full hash function each time.
+
+678
+01:00:14,650 --> 01:00:17,530
+All you have to do is add one each time you go
+
+679
+01:00:17,640 --> 01:00:20,460
+because the difference between this and the previous one is just one.
+
+680
+01:00:21,600 --> 01:00:23,410
+OK, so you just go down.
+
+681
+01:00:23,520 --> 01:00:26,910
+Now, the problem with that is that you get a phenomenon of clustering.
+
+682
+01:00:27,010 --> 01:00:30,740
+If you get a few things in a given area, then suddenly everything,
+
+683
+01:00:30,840 --> 01:00:34,430
+everybody has to keep searching to the end of those things.
+
+684
+01:00:34,670 --> 01:00:37,930
+OK, so that turns out not to be one of the better schemes,
+
+685
+01:00:38,030 --> 01:00:41,290
+although it's not bad if you just need to do something quick and dirty.
+
+686
+01:00:43,250 --> 01:00:45,490
+So, it suffers from primary clustering,
+
+687
+01:00:45,700 --> 01:00:49,150
+where regions of the hash table get very full.
+
+688
+01:00:49,270 --> 01:00:52,140
+And then, anything that hashes into that region
+
+689
+01:00:52,230 --> 01:00:55,580
+has to look through all the stuff that's there.
+
+690
+01:00:55,770 --> 01:01:02,520
+OK, so: long runs of filled slots.
+
+691
+01:01:06,590 --> 01:01:10,750
+OK, there's also things like quadratic clustering,
+
+692
+01:01:10,850 --> 01:01:13,070
+where you basically make this be,
+
+693
+01:01:13,130 --> 01:01:17,820
+instead of adding one each time, you add i each time.
+
+694
+01:01:19,100 --> 01:01:24,310
+OK, but probably the most effective popular scheme
+
+695
+01:01:24,420 --> 01:01:27,690
+is what's called double hashing.
+
+696
+01:01:28,030 --> 01:01:30,370
+And, you can do statistical studies.
+
+697
+01:01:30,510 --> 01:01:33,670
+People have done statistical studies to show that this is a good scheme, OK,
+
+698
+01:01:35,620 --> 01:01:43,610
+where you let H of k, i, let me do it below here because I have for them.
+
+699
+01:01:43,860 --> 01:01:57,130
+So, H of k, i is equal to an H_1 of k plus i times H_2 of k.
+
+700
+01:01:57,600 --> 01:02:02,560
+So, you have two hash functions on m.
+
+701
+01:02:04,830 --> 01:02:11,880
+You have two hash functions, H_1 of k and H_2 of k.
+
+702
+01:02:12,090 --> 01:02:14,740
+OK, so you compute the two hash functions,
+
+703
+01:02:14,910 --> 01:02:19,590
+and what you do is you start by just using H_1 of k for the zero probe,
+
+704
+01:02:19,690 --> 01:02:24,160
+because here, i, then, will be zero. OK.
+
+705
+01:02:24,550 --> 01:02:31,890
+Then, for the probe number one, OK, you just add H_2 of k.
+
+706
+01:02:32,000 --> 01:02:35,900
+For probe number two, you just add that hash function amount again.
+
+707
+01:02:36,130 --> 01:02:42,740
+You just keep adding H_2 of k for each successive probe you make.
+
+708
+01:02:43,080 --> 01:02:46,460
+So, it's fairly easy; you compute two hash functions up front,
+
+709
+01:02:46,600 --> 01:02:49,430
+OK, or you can delay the second one, in case.
+
+710
+01:02:49,570 --> 01:02:51,610
+But basically, you compute two up front,
+
+711
+01:02:51,710 --> 01:02:53,580
+and then you just keep adding the second one in.
+
+712
+01:02:53,690 --> 01:02:55,830
+You start at the location of the first one,
+
+713
+01:02:55,910 --> 01:02:58,340
+and keep adding the second one, mod m,
+
+714
+01:02:58,470 --> 01:03:01,700
+to determine your probe sequences.
+
+715
+01:03:01,820 --> 01:03:03,410
+So, this is an excellent method.
+
+716
+01:03:07,650 --> 01:03:17,630
+OK, it does a fine job, and you usually pick m to be a power of two here,
+
+717
+01:03:17,860 --> 01:03:20,650
+OK, so that you're using,
+
+718
+01:03:20,760 --> 01:03:24,890
+usually people use this with the multiplication method, for example,
+
+719
+01:03:25,020 --> 01:03:26,520
+so that m is a power of two,
+
+720
+01:03:26,640 --> 01:03:30,860
+and H_2 of k you force to be odd.
+
+721
+01:03:33,130 --> 01:03:36,640
+OK, so we don't use and even value there,
+
+722
+01:03:36,730 --> 01:03:40,520
+because otherwise for any particular key, you'd be skipping over.
+
+723
+01:03:41,750 --> 01:03:43,970
+Once again, you would have the problem that everything could be even,
+
+724
+01:03:44,070 --> 01:03:46,620
+or everything could be odd as you're going through.
+
+725
+01:03:47,040 --> 01:03:50,350
+But, if you make H_2 of k odd, and m is a power of two,
+
+726
+01:03:50,490 --> 01:03:53,620
+you are guaranteed to hit every slot.
+
+727
+01:03:57,160 --> 01:03:59,900
+OK, so let's analyze this scheme.
+
+728
+01:04:00,180 --> 01:04:02,770
+This turns out to be a pretty interesting scheme to analyze.
+
+729
+01:04:07,200 --> 01:04:09,290
+It's got some nice math in it.
+
+730
+01:04:12,090 --> 01:04:17,630
+So, once again, in the worst case, hashing is lousy.
+
+731
+01:04:17,720 --> 01:04:20,590
+So, we're going to analyze average case.
+
+732
+01:04:33,330 --> 01:04:39,970
+OK, and for this, we need a little bit  stronger assumption than for chaining.
+
+733
+01:04:40,210 --> 01:04:43,920
+And, we call it the assumption of uniform hashing,
+
+734
+01:04:50,990 --> 01:04:59,780
+which says that each key is equally likely,
+
+735
+01:05:03,750 --> 01:05:15,970
+OK, to have any one of the m factorial permutations
+
+736
+01:05:19,550 --> 01:05:31,960
+as its probe sequence, independent of other keys.
+
+737
+01:05:42,050 --> 01:05:45,260
+And, the theorem we're going to prove
+
+738
+01:05:50,020 --> 01:05:56,510
+is that the expected number of probes is,
+
+739
+01:05:56,730 --> 01:06:06,540
+at most, one over one minus alpha if alpha is less than one,
+
+740
+01:06:07,650 --> 01:06:15,140
+OK, that is, if the number of keys in the table is less than number of slots.
+
+741
+01:06:19,850 --> 01:06:20,940
+OK, so we're going to show that
+
+742
+01:06:21,020 --> 01:06:23,370
+the number of probes is one over one minus alpha.
+
+743
+01:06:32,100 --> 01:06:35,820
+So, alpha is the load factor, and of course,
+
+744
+01:06:37,110 --> 01:06:40,900
+for open addressing, we want the load factor to be less than one
+
+745
+01:06:41,920 --> 01:06:43,730
+because if we have more keys than slots,
+
+746
+01:06:43,840 --> 01:06:46,850
+open addressing simply doesn't work, OK,
+
+747
+01:06:46,940 --> 01:06:50,980
+because you've got to find a place for every key in the table.
+
+748
+01:06:55,660 --> 01:07:04,080
+So, the proof, we'll look at an unsuccessful search, OK?
+
+749
+01:07:06,000 --> 01:07:10,500
+So, the first thing is that one probe is always necessary.
+
+750
+01:07:20,910 --> 01:07:33,010
+OK, so if I have n over m, sorry, if I have n items stored in m slots,
+
+751
+01:07:34,060 --> 01:07:36,920
+what's the probability that when I do that probe
+
+752
+01:07:37,050 --> 01:07:39,650
+I get a collision with something that's already in the table?
+
+753
+01:07:43,250 --> 01:07:45,500
+What's the probability that I get a collision?
+
+754
+01:07:45,890 --> 01:07:50,620
+Yeah? Yeah, n over m, right?
+
+755
+01:07:50,840 --> 01:07:59,100
+So, with probability, n over m, we have a collision
+
+756
+01:08:00,180 --> 01:08:04,330
+because my table has got n things in there.
+
+757
+01:08:04,430 --> 01:08:06,710
+I'm hashing, at random, to one of them.
+
+758
+01:08:08,520 --> 01:08:11,890
+OK, so, what are the odds I hit something, n over m?
+
+759
+01:08:13,370 --> 01:08:16,120
+And then, a second probe is necessary.
+
+760
+01:08:23,170 --> 01:08:27,130
+OK, so then, I do a second probe.
+
+761
+01:08:27,450 --> 01:08:31,660
+And, with what probability on the second probe do I get a collision?
+
+762
+01:08:34,150 --> 01:08:37,180
+So, we're going to make the assumption of uniform hashing.
+
+763
+01:08:37,310 --> 01:08:38,880
+Each key is equally likely to
+
+764
+01:08:38,980 --> 01:08:43,010
+have any one of the m factorial permutations as its probe sequence.
+
+765
+01:08:43,550 --> 01:08:46,880
+So, what is the probability that on the second probe,
+
+766
+01:08:48,480 --> 01:08:50,950
+OK, I get a collision?
+
+767
+01:09:07,470 --> 01:09:15,260
+[Professor]Yeah? If it's a permutation, you're not, right?
+
+768
+01:09:18,340 --> 01:09:24,150
+Something like that. What is it exactly?
+
+769
+01:09:24,570 --> 01:09:26,980
+So, that's the question.
+
+770
+01:09:27,250 --> 01:09:30,420
+OK, so you are not going to hit the same slot
+
+771
+01:09:31,660 --> 01:09:33,470
+because it's going to be a permutation. Yeah?
+
+772
+01:09:35,100 --> 01:09:41,430
+That's exactly right. n minus one over m minus one
+
+773
+01:09:41,810 --> 01:09:43,670
+because I'm now,
+
+774
+01:09:43,860 --> 01:09:47,660
+I've essentially eliminated that slot that I hit the first time.
+
+775
+01:09:47,820 --> 01:09:51,790
+And so, I have, now, and there was a key there.
+
+776
+01:09:51,950 --> 01:09:55,330
+So, now I'm essentially looking, at random,
+
+777
+01:09:55,470 --> 01:09:57,810
+into the remaining m minus one slots
+
+778
+01:09:58,000 --> 01:10:03,670
+where there are aggregately n minus one keys in those slots.
+
+779
+01:10:04,820 --> 01:10:06,040
+OK, everybody got that?
+
+780
+01:10:06,460 --> 01:10:09,080
+OK, so with that probability, I get a collision.
+
+781
+01:10:10,010 --> 01:10:15,620
+That means that I need a third probe necessary, OK?
+
+782
+01:10:16,550 --> 01:10:21,620
+And, we keep going on. OK, so what is it going to be the next time?
+
+783
+01:10:25,380 --> 01:10:28,200
+Yeah, it's going to be n minus two over m minus two.
+
+784
+01:10:29,450 --> 01:10:37,650
+So, let's note, OK, that n minus i over m minus i
+
+785
+01:10:38,020 --> 01:10:52,260
+is less than n over m, which equals alpha, OK?
+
+786
+01:10:53,010 --> 01:10:59,330
+So, n minus i over m minus i is less than n over m.
+
+787
+01:10:59,430 --> 01:11:03,730
+And, the way you can sort of reason that is that
+
+788
+01:11:03,820 --> 01:11:08,730
+if n is less than m, I'm subtracting a larger fraction of n
+
+789
+01:11:09,830 --> 01:11:14,700
+when I subtract i than I am subtracting a fraction of m.
+
+790
+01:11:15,970 --> 01:11:18,870
+OK, so therefore, n minus i over m minus i
+
+791
+01:11:18,970 --> 01:11:20,520
+is going to be less than n over m.
+
+792
+01:11:22,230 --> 01:11:24,230
+OK, so, or you can do the algebra.
+
+793
+01:11:24,890 --> 01:11:26,480
+I think it's always helpful when you do algebra
+
+794
+01:11:26,570 --> 01:11:32,350
+to sort of think about it sort of quantitatively as well,
+
+795
+01:11:34,650 --> 01:11:36,360
+you know, qualitatively what's going on.
+
+796
+01:11:38,320 --> 01:11:47,320
+So, the expected number of probes is,
+
+797
+01:11:50,650 --> 01:11:55,490
+then, going to be equal to, it's going to be equal to
+
+798
+01:11:55,610 --> 01:11:56,910
+because we're going to need some space, well,
+
+799
+01:11:57,000 --> 01:12:00,710
+we have one which is forced because we've got to do one probe,
+
+800
+01:12:00,850 --> 01:12:04,350
+plus with probability n over m,
+
+801
+01:12:04,650 --> 01:12:12,270
+I have to do another probe plus with probability of n over m minus one
+
+802
+01:12:13,420 --> 01:12:16,000
+I have to do another probe
+
+803
+01:12:24,710 --> 01:12:30,320
+up until I do one plus one over m minus n.
+
+804
+01:12:39,050 --> 01:12:43,040
+OK, so each one is cascading what's happened.
+
+805
+01:12:43,350 --> 01:12:45,350
+In the book, there is a more rigorous proof
+
+806
+01:12:45,350 --> 01:12:47,150
+of this using indicator random variables.
+
+807
+01:12:47,390 --> 01:12:50,090
+I'm going to give you the short version.
+
+808
+01:12:54,200 --> 01:12:57,610
+OK, so basically, this is my first probe.
+
+809
+01:12:57,990 --> 01:13:00,440
+With probability n over m, I had to do a second one.
+
+810
+01:13:00,690 --> 01:13:02,190
+And, the result of that is that
+
+811
+01:13:02,320 --> 01:13:05,940
+with probability n minus one over m minus one, I have to do another.
+
+812
+01:13:07,150 --> 01:13:10,810
+And, with probability n over two minus m over two,
+
+813
+01:13:10,890 --> 01:13:12,610
+I have to do another, and so forth.
+
+814
+01:13:13,520 --> 01:13:15,570
+So, that's how many probes I'm going to end up doing.
+
+815
+01:13:17,270 --> 01:13:21,420
+So, this is less than or equal to one plus alpha.
+
+816
+01:13:21,800 --> 01:13:29,700
+There's one plus alpha times one plus alpha times one plus alpha,
+
+817
+01:13:34,620 --> 01:13:38,860
+OK, just using the fact that I had here.
+
+818
+01:13:39,250 --> 01:13:47,920
+OK, and that is less than or equal to one plus I just multiply through here.
+
+819
+01:13:48,020 --> 01:13:55,200
+Alpha plus alpha squared plus alpha cubed plus k.
+
+820
+01:13:59,250 --> 01:14:02,370
+I can just take that out to infinity. It's going to bound this.
+
+821
+01:14:04,470 --> 01:14:07,440
+OK, does everybody see the math there?
+
+822
+01:14:07,580 --> 01:14:14,330
+OK, and that is just the sum, I, equals zero to infinity,
+
+823
+01:14:14,590 --> 01:14:21,060
+alpha to the I, which is equal to one over one minus alpha
+
+824
+01:14:21,330 --> 01:14:26,910
+using your familiar geometric series bound.
+
+825
+01:14:32,010 --> 01:14:38,520
+OK, and there's also, in the textbook, an analysis of the successful search,
+
+826
+01:14:39,100 --> 01:14:41,140
+which, once again, is a little bit more technical
+
+827
+01:14:41,370 --> 01:14:43,970
+because you have to worry about what the distribution is that
+
+828
+01:14:44,080 --> 01:14:51,050
+you happen to have in the table
+
+829
+01:14:51,280 --> 01:14:54,110
+when you are searching for something that's already in the table.
+
+830
+01:14:54,340 --> 01:14:58,090
+But, it turns out it's also bounded by one over one minus alpha.
+
+831
+01:14:59,150 --> 01:15:01,000
+So, let's just look to see what that means.
+
+832
+01:15:08,800 --> 01:15:12,440
+So, if alpha is less than one is a constant,
+
+833
+01:15:14,000 --> 01:15:17,340
+it implies that it takes order one probes.
+
+834
+01:15:22,190 --> 01:15:26,590
+OK, so if alpha is a constant, it takes order one probes.
+
+835
+01:15:29,690 --> 01:15:33,880
+OK, but it's helpful to understand what's happening with the constant.
+
+836
+01:15:34,280 --> 01:15:42,730
+So, for example, if the table is 50% full, so alpha is a half,
+
+837
+01:15:43,960 --> 01:15:51,190
+what's the expected number of probes by this analysis?
+
+838
+01:15:53,540 --> 01:15:58,870
+Two, because one over one minus a half is two.
+
+839
+01:16:05,290 --> 01:16:13,830
+If I let the table fill up to 90%, how many probes do I need on average?
+
+840
+01:16:15,670 --> 01:16:23,470
+Ten. So, you can see that as you fill up the table,
+
+841
+01:16:23,680 --> 01:16:29,290
+the cost is going dramatically, OK?
+
+842
+01:16:29,680 --> 01:16:33,410
+And so, typically, you don't let the table get too full.
+
+843
+01:16:33,640 --> 01:16:38,680
+OK, you don't want to be pushing 99.9% utilization.
+
+844
+01:16:38,850 --> 01:16:41,560
+Oh, I got this great hash table that's got full utilization.
+
+845
+01:16:41,890 --> 01:16:48,590
+It's like, yeah, and it's slow. It's really, really slow,
+
+846
+01:16:49,950 --> 01:16:53,780
+OK, because as alpha approaches one,
+
+847
+01:16:53,980 --> 01:17:02,070
+the time is approaching and essentially m, or n.
+
+848
+01:17:04,190 --> 01:17:07,380
+Good. So, next time, we are going to
+
+849
+01:17:07,520 --> 01:17:09,850
+address head-on in what was one of the most,
+
+850
+01:17:09,950 --> 01:17:15,200
+I think, interesting ideas in algorithms.
+
+851
+01:17:15,300 --> 01:17:18,320
+We are going to talk about how you solve this problem
+
+852
+01:17:18,980 --> 01:17:22,290
+that no matter what hash function you pick,there's a bad set of keys.
+
+853
+01:17:23,500 --> 01:17:26,140
+OK, so next time we're going to show that there are ways
+
+854
+01:17:26,240 --> 01:17:29,120
+of confronting that problem, very clever ways.
+
+855
+01:17:29,480 --> 01:17:32,950
+And we use a lot of math for it so will be a really fun lecture.
+

@@ -1,0 +1,4004 @@
+﻿1
+00:00:08,190 --> 00:00:18,280
+Hashing. Today we're going to do some amazing stuff with hashing.
+
+2
+00:00:18,360 --> 00:00:22,580
+And, really, this is such neat stuff, it's amazing.
+
+3
+00:00:22,690 --> 00:00:32,340
+We're going to start by addressing a fundamental weakness of hashing.
+
+4
+00:00:32,420 --> 00:00:40,080
+And that is that for any choice of hash function
+
+5
+00:00:47,810 --> 00:01:04,080
+There exists a bad set of keys that all hash to the same slot.
+
+6
+00:01:08,320 --> 00:01:11,200
+OK. So you pick a hash function.
+
+7
+00:01:11,270 --> 00:01:13,620
+We looked at some that seem to work well in practice,
+
+8
+00:01:13,700 --> 00:01:16,000
+that are easy to put into your code.
+
+9
+00:01:16,080 --> 00:01:22,710
+But whichever one you pick, there's always some bad set of keys.
+
+10
+00:01:22,790 --> 00:01:29,680
+So you can imagine, just to drive this point home a little bit.
+
+11
+00:01:29,750 --> 00:01:38,710
+Imagine that you're building a compiler for a customer
+
+12
+00:01:38,790 --> 00:01:41,730
+and you have a symbol table in your compiler
+
+13
+00:01:41,810 --> 00:01:43,330
+and one of the things that the customer
+
+14
+00:01:43,400 --> 00:01:46,730
+is demanding is that compilations go fast.
+
+15
+00:01:46,810 --> 00:01:49,860
+They don't want to sit around waiting for compilations.
+
+16
+00:01:49,940 --> 00:01:54,080
+And you have a competitor who's also building a compiler
+
+17
+00:01:54,160 --> 00:02:00,860
+and they're going to test the compiler,
+
+18
+00:02:00,930 --> 00:02:05,370
+both of your compilers and sort of have a run-off.
+
+19
+00:02:05,440 --> 00:02:06,700
+And one of the things in the test
+
+20
+00:02:06,780 --> 00:02:08,090
+that they're going to allow you to do is
+
+21
+00:02:08,170 --> 00:02:12,100
+not only will the customer run his own benchmarks,
+
+22
+00:02:12,170 --> 00:02:15,610
+but he'll let you make up benchmarks
+
+23
+00:02:15,690 --> 00:02:19,450
+for the other program, for your competitor.
+
+24
+00:02:19,530 --> 00:02:25,000
+And your competitor gets to make up benchmarks for you.
+
+25
+00:02:25,070 --> 00:02:29,110
+So and not only that, but you're actually sharing code.
+
+26
+00:02:29,200 --> 00:02:31,530
+So you get to look at what the competitor is actually doing
+
+27
+00:02:31,610 --> 00:02:35,960
+and what hash function they're actually using.
+
+28
+00:02:36,040 --> 00:02:39,650
+So it's pretty clear that in this circumstance,
+
+29
+00:02:39,730 --> 00:02:43,400
+you have an adversary who is going to look at
+
+30
+00:02:43,480 --> 00:02:48,160
+whatever hash function you have and figure out OK,
+
+31
+00:02:48,230 --> 00:02:52,330
+what's a set of variable names and so forth
+
+32
+00:02:52,410 --> 00:02:55,700
+that are going to all hash to the same slot
+
+33
+00:02:55,780 --> 00:02:59,280
+so that essentially you're just chasing through a linked list
+
+34
+00:02:59,350 --> 00:03:05,480
+whenever it comes to looking something up.
+
+35
+00:03:05,560 --> 00:03:08,740
+Slowing down your program enormously compared to
+
+36
+00:03:08,820 --> 00:03:11,430
+if in fact they got distributed nicely
+
+37
+00:03:11,500 --> 00:03:12,680
+across the hash table which is,
+
+38
+00:03:12,700 --> 00:03:14,520
+what after all, you have a hash table
+
+39
+00:03:14,610 --> 00:03:17,530
+in there to do in the first place.
+
+40
+00:03:17,610 --> 00:03:21,660
+And so the question is, how do you defeat this adversary?
+
+41
+00:03:21,730 --> 00:03:30,470
+And the answer is one word.
+
+42
+00:03:30,540 --> 00:03:34,380
+One word. How do you achieve?
+
+43
+00:03:34,460 --> 00:03:39,770
+How do you defeat any adversary in this class?
+
+44
+00:03:39,850 --> 00:03:43,540
+Randomness. OK. Randomness. OK.
+
+45
+00:03:43,620 --> 00:03:45,770
+You make it so that he can't guess.
+
+46
+00:03:45,840 --> 00:03:51,120
+And the idea is that you choose a hash function at random.
+
+47
+00:03:51,200 --> 00:03:53,780
+Independent. So he can look at the code,
+
+48
+00:03:53,850 --> 00:03:55,000
+but when it actually runs,
+
+49
+00:03:55,070 --> 00:03:58,190
+it's going to use a random hash function that
+
+50
+00:03:58,260 --> 00:04:01,290
+he has no way of predicting what the hash function
+
+51
+00:04:01,370 --> 00:04:03,560
+is that will actually be used.
+
+52
+00:04:03,640 --> 00:04:07,520
+OK. So that's the game and that way he can provide an input,
+
+53
+00:04:07,590 --> 00:04:08,880
+but he can't provide an input
+
+54
+00:04:08,960 --> 00:04:13,160
+that's guaranteed to force you to run slowly.
+
+55
+00:04:13,230 --> 00:04:16,560
+You might get unlucky in your choice of hash function,
+
+56
+00:04:16,630 --> 00:04:20,340
+but it's not going to be because of the adversary.
+
+57
+00:04:20,410 --> 00:04:33,600
+So the idea is to choose a hash function
+
+58
+00:04:33,680 --> 00:04:36,980
+at random,
+
+59
+00:04:37,050 --> 00:04:46,470
+independently from the keys that you're,
+
+60
+00:04:46,540 --> 00:04:48,710
+that are going to be fed to it.
+
+61
+00:04:48,780 --> 00:04:52,270
+So even if your adversary can see your code,
+
+62
+00:04:52,340 --> 00:04:53,810
+he can't tell which hash function
+
+63
+00:04:53,890 --> 00:04:58,330
+is going to be actually used at run time.
+
+64
+00:04:58,410 --> 00:05:01,600
+Doesn't get to see the output of the random numbers.
+
+65
+00:05:01,670 --> 00:05:05,880
+And so it turns out you can make this scheme work
+
+66
+00:05:05,950 --> 00:05:14,470
+and the name of the scheme is universal hashing,
+
+67
+00:05:14,550 --> 00:05:21,350
+OK, is one way of making this scheme work.
+
+68
+00:05:21,420 --> 00:05:34,200
+So let's do some math. So let U be a universe of keys.
+
+69
+00:05:34,270 --> 00:05:50,770
+And let H be a finite collection -- -- of hash functions
+
+70
+00:05:54,860 --> 00:06:01,590
+mapping U to what are going to be
+
+71
+00:06:01,670 --> 00:06:06,340
+the slots in our hash table.
+
+72
+00:06:06,410 --> 00:06:11,760
+OK. So we just have H as some finite collection.
+
+73
+00:06:11,830 --> 00:06:21,070
+We say that H is universal
+
+74
+00:06:21,140 --> 00:06:34,810
+——if for all pairs of the keys, distinct keys
+
+75
+00:06:34,880 --> 00:06:44,610
+——so the keys are distinct, the following is true.
+
+76
+00:07:02,070 --> 00:07:07,520
+So if the set of keys, if for any pair of keys I pick,
+
+77
+00:07:07,590 --> 00:07:10,680
+the number of hash functions that hash
+
+78
+00:07:10,750 --> 00:07:13,410
+those two keys to the same place
+
+79
+00:07:13,490 --> 00:07:20,670
+is a one over m fraction of the total set of keys.
+
+80
+00:07:20,750 --> 00:07:24,740
+So let me just, so to view that,
+
+81
+00:07:24,810 --> 00:07:38,280
+another way of viewing that is if H is chosen randomly
+
+82
+00:07:38,360 --> 00:07:44,700
+——from the set of keys H,
+
+83
+00:07:44,770 --> 00:07:59,410
+the probability of collision between x and y is what?
+
+84
+00:08:11,300 --> 00:08:18,180
+What's the probability if the fraction of hash functions,
+
+85
+00:08:18,260 --> 00:08:20,320
+OK, if the number of hash functions is H over m,
+
+86
+00:08:20,400 --> 00:08:26,940
+what's the probability of a collision between x and y?
+
+87
+00:08:27,020 --> 00:08:30,880
+If I pick a hash function at random.
+
+88
+00:08:30,950 --> 00:08:33,190
+So I pick a hash function at random,
+
+89
+00:08:33,270 --> 00:08:36,790
+what's the odds they collide?
+
+90
+00:08:36,870 --> 00:08:39,790
+One over m.
+
+91
+00:08:39,870 --> 00:08:42,410
+Now let's draw a picture for that,
+
+92
+00:08:42,480 --> 00:08:48,800
+help people see that that's in fact the case.
+
+93
+00:08:48,880 --> 00:08:59,530
+So imagine this is our set of all hash functions.
+
+94
+00:08:59,610 --> 00:09:07,420
+OK. And then if I pick a particular x and y,
+
+95
+00:09:07,500 --> 00:09:12,740
+let's say that this is the set of hash functions
+
+96
+00:09:12,810 --> 00:09:18,270
+such that H of x is equal to H of y.
+
+97
+00:09:18,350 --> 00:09:23,130
+And so what we're saying is that the cardinality of that set is
+
+98
+00:09:23,210 --> 00:09:28,400
+one over m times the cardinality of H.
+
+99
+00:09:28,470 --> 00:09:32,430
+So if I throw a dart and pick one hash function at random,
+
+100
+00:09:32,510 --> 00:09:36,340
+the odds are one in m that the hash function
+
+101
+00:09:36,410 --> 00:09:38,730
+falls into this particular set.
+
+102
+00:09:38,810 --> 00:09:40,090
+And of course, this has to be true
+
+103
+00:09:40,170 --> 00:09:42,430
+of every x and y that I can pick.
+
+104
+00:09:42,510 --> 00:09:44,420
+Of course, it will be a different set,
+
+105
+00:09:44,490 --> 00:09:45,840
+a different x and y will somehow
+
+106
+00:09:45,920 --> 00:09:50,610
+map the hash functions differently,
+
+107
+00:09:50,680 --> 00:09:54,280
+but the odds that for any x and y that I pick,
+
+108
+00:09:54,360 --> 00:09:56,110
+the odds that if I have a random hash function,
+
+109
+00:09:56,180 --> 00:09:59,700
+it hashes it to the same place, is one over m.
+
+110
+00:09:59,770 --> 00:10:01,010
+Now this is a little bit hard sometimes
+
+111
+00:10:01,080 --> 00:10:02,520
+for people to get their head around
+
+112
+00:10:02,600 --> 00:10:04,050
+because we're used to thinking of
+
+113
+00:10:04,130 --> 00:10:07,060
+perhaps picking keys at random or something.
+
+114
+00:10:07,130 --> 00:10:08,620
+OK, that's not what's going on here.
+
+115
+00:10:08,700 --> 00:10:11,320
+We're picking hash functions at random.
+
+116
+00:10:11,390 --> 00:10:16,190
+So our probability space is defined over the hash functions,
+
+117
+00:10:16,260 --> 00:10:19,620
+not over the keys.
+
+118
+00:10:19,690 --> 00:10:23,010
+And this has to be true now for any particular two keys
+
+119
+00:10:23,090 --> 00:10:26,740
+that I pick that are distinct.
+
+120
+00:10:26,820 --> 00:10:28,770
+That the places that they hash,
+
+121
+00:10:28,840 --> 00:10:30,010
+this set of hash functions,
+
+122
+00:10:30,090 --> 00:10:34,360
+I mean this is like a marvelous property if you think about it.
+
+123
+00:10:34,440 --> 00:10:36,400
+OK, that you can actually find ones where
+
+124
+00:10:36,480 --> 00:10:38,770
+no matter what two elements I pick,
+
+125
+00:10:38,850 --> 00:10:42,410
+the odds are exactly one in m that
+
+126
+00:10:42,490 --> 00:10:44,460
+a random hash function from this set
+
+127
+00:10:44,540 --> 00:10:49,260
+is going to hash them to the same place.
+
+128
+00:10:49,340 --> 00:10:50,950
+So very neat.
+
+129
+00:10:51,050 --> 00:10:52,420
+Very, very neat property
+
+130
+00:10:52,490 --> 00:10:58,500
+and we'll see the mathematics associated with this is very cool.
+
+131
+00:10:58,580 --> 00:11:13,600
+So our theorem is that if we choose h randomly
+
+132
+00:11:14,690 --> 00:11:19,660
+from the set of hash functions H,
+
+133
+00:11:19,730 --> 00:11:39,460
+and then we suppose we're hashing n keys into m slots in Table T
+
+134
+00:11:43,190 --> 00:11:50,980
+——then for given key x
+
+135
+00:11:51,120 --> 00:12:02,260
+——the expected number of collisions with x
+
+136
+00:12:02,340 --> 00:12:07,100
+——is less than n over m.
+
+137
+00:12:07,170 --> 00:12:12,230
+And who remembers what we call n over m?
+
+138
+00:12:12,310 --> 00:12:19,170
+Alpha, which is the, what's the term that we use there?
+
+139
+00:12:19,250 --> 00:12:28,970
+Load factor. The load factor of the table.
+
+140
+00:12:29,060 --> 00:12:33,810
+OK, load factor alpha.
+
+141
+00:12:33,900 --> 00:12:36,110
+So the average number of keys per slot
+
+142
+00:12:36,180 --> 00:12:42,050
+is the load factor of the table.
+
+143
+00:12:42,120 --> 00:12:47,230
+So we're saying, so what is this theorem saying?
+
+144
+00:12:47,300 --> 00:12:52,370
+It's saying that in fact,
+
+145
+00:12:52,440 --> 00:13:03,140
+if we have one of these universal sets of hash functions,
+
+146
+00:13:03,210 --> 00:13:08,320
+then things perform exactly the way we want them to.
+
+147
+00:13:08,400 --> 00:13:11,160
+Things get distributed evenly.
+
+148
+00:13:11,230 --> 00:13:12,300
+The number of things that are
+
+149
+00:13:12,380 --> 00:13:14,790
+going to collide with any particular key
+
+150
+00:13:14,870 --> 00:13:21,900
+that I pick is going to be n over m.
+
+151
+00:13:21,980 --> 00:13:25,490
+So that's a really good property to have.
+
+152
+00:13:25,560 --> 00:13:29,530
+Now I haven't shown you, the construction of U is going,
+
+153
+00:13:29,600 --> 00:13:32,890
+sorry, of the set of hash functions H,
+
+154
+00:13:32,960 --> 00:13:34,860
+that that construction will take us a little bit of effort.
+
+155
+00:13:34,930 --> 00:13:40,080
+But first I want to show you why this is such a great property.
+
+156
+00:13:40,160 --> 00:13:42,130
+Basically it's this theorem.
+
+157
+00:13:42,200 --> 00:13:45,010
+So let's prove this theorem.
+
+158
+00:13:45,080 --> 00:13:50,920
+So any questions about what the statement of the theorem is?
+
+159
+00:13:51,000 --> 00:13:53,370
+So we're going to go actually kind of fast today.
+
+160
+00:13:53,440 --> 00:13:55,300
+We've got a lot of good stuff today.
+
+161
+00:13:55,390 --> 00:14:00,100
+So I want to make sure people are onboard as we go through.
+
+162
+00:14:00,170 --> 00:14:01,870
+So if there are any questions, make sure, you know,
+
+163
+00:14:01,940 --> 00:14:05,050
+statement of theorem of whatever, best to get them out early
+
+164
+00:14:05,120 --> 00:14:07,030
+so that you're not confused later on
+
+165
+00:14:07,240 --> 00:14:14,380
+when the going gets a little more exciting. OK?
+
+166
+00:14:14,460 --> 00:14:18,190
+OK, good. So to prove this,
+
+167
+00:14:18,260 --> 00:14:26,320
+let's let C sub x be the random variable
+
+168
+00:14:26,400 --> 00:14:37,250
+denoting the total number of collisions
+
+169
+00:14:37,320 --> 00:14:47,350
+——of keys in T with x.
+
+170
+00:14:47,430 --> 00:14:49,940
+So this is a total number and one of the techniques
+
+171
+00:14:50,050 --> 00:14:54,390
+that you use a lot in probabilistic analysis
+
+172
+00:14:54,460 --> 00:14:56,590
+of randomized algorithms is
+
+173
+00:14:56,660 --> 00:14:59,780
+recognizing that C of x is
+
+174
+00:14:59,860 --> 00:15:04,660
+in fact a sum of indicator random variables.
+
+175
+00:15:04,730 --> 00:15:07,930
+If you can decompose things into indicator random variables,
+
+176
+00:15:08,010 --> 00:15:11,320
+the analysis goes much more easily than
+
+177
+00:15:11,420 --> 00:15:16,000
+if you're left with aggregate variables.
+
+178
+00:15:16,080 --> 00:15:20,570
+So here we're going to let
+
+179
+00:15:20,640 --> 00:15:26,190
+our indicator random variable be little c of xy,
+
+180
+00:15:26,260 --> 00:15:39,340
+which is going to be one if h of x equals h of y and 0 otherwise.
+
+181
+00:15:39,410 --> 00:15:47,040
+And so we can note two things.
+
+182
+00:15:47,120 --> 00:15:56,450
+First, what is the expectation of C of xy.
+
+183
+00:15:56,520 --> 00:15:57,930
+OK, if I have a process
+
+184
+00:15:58,000 --> 00:16:00,330
+which is picking a hash function at random,
+
+185
+00:16:00,400 --> 00:16:04,680
+what's the expectation of C of xy?
+
+186
+00:16:04,750 --> 00:16:06,660
+One over m.
+
+187
+00:16:06,740 --> 00:16:12,500
+Because that's basically this definition here.
+
+188
+00:16:12,570 --> 00:16:15,520
+Now in other words I pick a hash function at random,
+
+189
+00:16:15,590 --> 00:16:18,900
+what's the odds that the hash is the same?
+
+190
+00:16:18,980 --> 00:16:20,740
+It's one over m.
+
+191
+00:16:20,830 --> 00:16:23,050
+And then the other thing is,
+
+192
+00:16:23,130 --> 00:16:25,400
+and the reason we pick this thing is that
+
+193
+00:16:25,480 --> 00:16:28,560
+I can express capital C sub x,
+
+194
+00:16:28,640 --> 00:16:31,560
+the random variable denoting the total number of collisions
+
+195
+00:16:31,640 --> 00:16:36,670
+as being just the sum over all the keys
+
+196
+00:16:36,740 --> 00:16:44,730
+in the table except x of C of xy.
+
+197
+00:16:44,800 --> 00:16:54,830
+So for each one that would cause me a collision, with x,
+
+198
+00:16:54,910 --> 00:17:00,340
+I add one and if it wouldn't cause me a collision, I add 0.
+
+199
+00:17:00,410 --> 00:17:05,430
+And that adds up all of the collisions
+
+200
+00:17:05,500 --> 00:17:14,390
+that I would have in the table with x.
+
+201
+00:17:16,770 --> 00:17:18,380
+Is there any questions so far?
+
+202
+00:17:18,470 --> 00:17:19,820
+Because this is the set-up.
+
+203
+00:17:19,890 --> 00:17:20,960
+The set-up in most of these things,
+
+204
+00:17:21,040 --> 00:17:24,830
+the set-up is where most students make mistakes
+
+205
+00:17:24,910 --> 00:17:27,040
+and most practicing researchers
+
+206
+00:17:27,130 --> 00:17:29,810
+make mistakes as well, let me tell you.
+
+207
+00:17:29,890 --> 00:17:31,200
+And then once you get the set-up right,
+
+208
+00:17:31,270 --> 00:17:32,590
+then working out the math is fine,
+
+209
+00:17:32,660 --> 00:17:35,310
+but it's often that set-up of how do you
+
+210
+00:17:35,390 --> 00:17:39,550
+actually translate the situation into the math.
+
+211
+00:17:39,620 --> 00:17:42,230
+That's the hard part. Once you get that right,
+
+212
+00:17:42,310 --> 00:17:44,030
+well, then, algebra, we can all do algebra.
+
+213
+00:17:44,100 --> 00:17:46,770
+Of course, we can also all make mistakes doing algebra,
+
+214
+00:17:46,860 --> 00:17:49,950
+but at least those mistakes are much more easy to check
+
+215
+00:17:50,020 --> 00:17:52,500
+than the one that does the translation.
+
+216
+00:17:52,580 --> 00:17:55,300
+So I want to make sure people are sort of understanding of
+
+217
+00:17:55,380 --> 00:17:57,370
+how that's set up.
+
+218
+00:17:57,450 --> 00:18:04,580
+So now we just have to use our math skills.
+
+219
+00:18:04,650 --> 00:18:07,480
+So the expectation then of the number of collisions is
+
+220
+00:18:07,570 --> 00:18:10,040
+the expectation of C sub x
+
+221
+00:18:10,130 --> 00:18:17,490
+and that's just the expectation of just plugging the sum of y
+
+222
+00:18:17,560 --> 00:18:25,300
+and T minus the element x of c_xy.
+
+223
+00:18:25,370 --> 00:18:28,190
+So that's just definition.
+
+224
+00:18:28,270 --> 00:18:31,530
+And that's equal to the sum of y
+
+225
+00:18:31,600 --> 00:18:38,480
+and T minus x of expectation of c_xy.
+
+226
+00:18:38,560 --> 00:18:41,790
+So why is that?
+
+227
+00:18:41,870 --> 00:18:50,900
+Yeah, that's linearity.
+
+228
+00:18:50,970 --> 00:18:54,770
+Linearity of expectation, doesn't require independence.
+
+229
+00:18:54,850 --> 00:18:59,850
+It's true of all random variables.
+
+230
+00:18:59,930 --> 00:19:08,630
+And that's equal to, and now the math gets easier.
+
+231
+00:19:08,700 --> 00:19:12,200
+So what is that?
+
+232
+00:19:12,270 --> 00:19:14,770
+One over m.
+
+233
+00:19:14,880 --> 00:19:17,700
+That makes the summation easy to evaluate.
+
+234
+00:19:17,790 --> 00:19:25,270
+That's just n minus one over m.
+
+235
+00:19:28,540 --> 00:19:33,010
+So fairly simple analysis and shows you why we would love
+
+236
+00:19:33,090 --> 00:19:38,920
+to have one of these sets of universal hash functions
+
+237
+00:19:39,000 --> 00:19:41,600
+because if you have them,
+
+238
+00:19:41,680 --> 00:19:47,220
+then they behave exactly the way you would want it to behave.
+
+239
+00:19:47,290 --> 00:19:49,410
+And you defeat your adversary
+
+240
+00:19:49,490 --> 00:19:52,510
+by just picking up the hash function at random.
+
+241
+00:19:52,590 --> 00:19:58,730
+There's nothing he can do. Or she.
+
+242
+00:19:58,820 --> 00:20:01,520
+OK, any questions about that proof?
+
+243
+00:20:01,600 --> 00:20:04,920
+OK, now we get into the fun math.
+
+244
+00:20:04,990 --> 00:20:10,050
+Constructing one of these babies. OK.
+
+245
+00:20:19,490 --> 00:20:23,310
+This is not the only construction.
+
+246
+00:20:23,390 --> 00:20:29,710
+This is a construction of a classic universal hash function.
+
+247
+00:20:29,780 --> 00:20:34,310
+And there are other constructions in the literature
+
+248
+00:20:34,400 --> 00:20:41,710
+and I think there's one on the practice quiz.
+
+249
+00:20:41,780 --> 00:20:50,190
+So let's see. So this one works when m is prime.
+
+250
+00:20:50,270 --> 00:20:55,010
+So it works when the set of slots is a prime number.
+
+251
+00:20:55,090 --> 00:20:58,710
+Number of slots is a prime number.
+
+252
+00:20:58,780 --> 00:21:04,990
+So the idea here is we're going to decompose
+
+253
+00:21:05,070 --> 00:21:19,120
+any key k in our universe into r plus 1 digits.
+
+254
+00:21:19,200 --> 00:21:33,390
+So k, we're going to look at as being a k 0, k one, k_r
+
+255
+00:21:33,470 --> 00:21:37,520
+where 0 is less than or equal to k sub I,
+
+256
+00:21:37,600 --> 00:21:42,420
+is less than or equal to m minus one.
+
+257
+00:21:42,490 --> 00:21:47,230
+So the idea is in some sense we're looking at
+
+258
+00:21:47,300 --> 00:21:54,560
+what the representation would be of k base m.
+
+259
+00:21:54,630 --> 00:21:58,730
+So if it were base two, it would be just one bit at a time.
+
+260
+00:21:58,810 --> 00:22:00,580
+These would just be the bits.
+
+261
+00:22:00,660 --> 00:22:02,770
+I'm not going to do base two.
+
+262
+00:22:02,840 --> 00:22:05,260
+We're going to do base m in general
+
+263
+00:22:05,350 --> 00:22:09,400
+and so each of these represents one of the digits.
+
+264
+00:22:09,480 --> 00:22:12,200
+And the way I've done it is I've done low order digit first.
+
+265
+00:22:12,270 --> 00:22:14,480
+It actually doesn't matter.
+
+266
+00:22:14,560 --> 00:22:16,870
+We're not actually going to care really about what the order is,
+
+267
+00:22:16,950 --> 00:22:19,130
+but basically we're just looking at busting it
+
+268
+00:22:19,210 --> 00:22:23,770
+into a twofold represented by each of those digits.
+
+269
+00:22:23,850 --> 00:22:27,530
+So one algorithm for computing this out of k is
+
+270
+00:22:27,610 --> 00:22:30,340
+take the remainder mod m.
+
+271
+00:22:30,410 --> 00:22:33,120
+That's the low order one.
+
+272
+00:22:33,200 --> 00:22:34,430
+OK, take what's left.
+
+273
+00:22:34,510 --> 00:22:36,680
+Take the remainder of that mod m.
+
+274
+00:22:36,750 --> 00:22:38,200
+Take whatever's left, etc.
+
+275
+00:22:38,280 --> 00:22:41,570
+So you're familiar with the conversion to a base representation.
+
+276
+00:22:41,650 --> 00:22:45,130
+That's exactly how we're getting this representation.
+
+277
+00:22:45,210 --> 00:22:47,730
+So we treat, this is just a question of taking the data
+
+278
+00:22:47,810 --> 00:22:56,770
+that we've got and treating it as an r plus one base m number.
+
+279
+00:22:56,840 --> 00:23:01,630
+And now we invoke our randomized strategy.
+
+280
+00:23:01,700 --> 00:23:03,550
+The randomized strategy is going to be able to
+
+281
+00:23:03,620 --> 00:23:05,260
+have a class of hash functions
+
+282
+00:23:05,340 --> 00:23:09,310
+that's dependent essentially on random numbers.
+
+283
+00:23:09,320 --> 00:23:11,470
+And the random numbers we're going to pick is
+
+284
+00:23:11,540 --> 00:23:24,530
+we're going to pick an a at random
+
+285
+00:23:24,600 --> 00:23:33,370
+——which we're also going to look at as a base m number.
+
+286
+00:23:33,440 --> 00:23:47,710
+For each a_i is chosen randomly
+
+287
+00:23:47,790 --> 00:23:56,300
+——from 0 to m minus one.
+
+288
+00:23:56,380 --> 00:23:58,600
+So one of our, it's a random if you will,
+
+289
+00:23:58,670 --> 00:24:03,470
+it's a random base m digit.
+
+290
+00:24:03,540 --> 00:24:06,110
+Random base m digit.
+
+291
+00:24:06,190 --> 00:24:08,230
+So each one of these is picked at random.
+
+292
+00:24:08,300 --> 00:24:12,680
+And for each one we, possible value of A,
+
+293
+00:24:12,750 --> 00:24:15,470
+we're going to get a different hash function.
+
+294
+00:24:15,550 --> 00:24:19,400
+So we're going to index our hash functions by this random number.
+
+295
+00:24:19,470 --> 00:24:22,410
+So this is where the randomness is going to come in.
+
+296
+00:24:22,480 --> 00:24:25,820
+Everybody with me?
+
+297
+00:24:25,900 --> 00:24:32,070
+And here's the hash function.
+
+298
+00:24:54,870 --> 00:25:00,210
+So what we do is we dot product this vector
+
+299
+00:25:00,290 --> 00:25:09,800
+with this vector and take the result, mod m.
+
+300
+00:25:09,870 --> 00:25:13,670
+So each digit of k of our key
+
+301
+00:25:13,740 --> 00:25:18,960
+gets multiplied by a random other digit.
+
+302
+00:25:19,030 --> 00:25:26,170
+We add all those up and we take that mod m.
+
+303
+00:25:26,240 --> 00:25:31,330
+So that's a dot product operator.
+
+304
+00:25:31,410 --> 00:25:33,700
+And this is what we're going to show is universal,
+
+305
+00:25:33,770 --> 00:25:38,860
+that this set of h sub a, where I look over that whole set.
+
+306
+00:25:38,940 --> 00:25:41,130
+So one of the things we need to know is
+
+307
+00:25:41,210 --> 00:25:51,420
+how big is the set of hash functions here.
+
+308
+00:25:58,450 --> 00:26:03,100
+So how big is this set of hash functions?
+
+309
+00:26:03,170 --> 00:26:11,050
+How many different hash functions do I have in this set?
+
+310
+00:26:23,500 --> 00:26:27,620
+It's basic 6.042 material.
+
+311
+00:26:27,690 --> 00:26:35,120
+It's basically how many vectors of length r plus one
+
+312
+00:26:35,190 --> 00:26:41,550
+where each element of the vector is a number of 0 to m minus one,
+
+313
+00:26:41,630 --> 00:26:44,130
+has m different values.
+
+314
+00:26:44,210 --> 00:26:51,110
+So how many? m minus one to the r.
+
+315
+00:26:51,190 --> 00:26:55,400
+No. Close. It's up there.
+
+316
+00:26:55,470 --> 00:27:00,200
+It's a big number. m to the r plus one.
+
+317
+00:27:00,270 --> 00:27:09,810
+Good. It's m, so the size of H is equal to m to the r plus one.
+
+318
+00:27:09,880 --> 00:27:12,760
+So we're going to want to remember that.
+
+319
+00:27:12,840 --> 00:27:14,630
+OK, so let's just understand why that is.
+
+320
+00:27:14,710 --> 00:27:19,810
+I have m choices for the first value of A. m for the second, etc.
+
+321
+00:27:19,880 --> 00:27:22,600
+m for the r th.
+
+322
+00:27:22,680 --> 00:27:27,750
+And since there are plus one things here, for each choice here,
+
+323
+00:27:27,830 --> 00:27:32,230
+I have this many same number of choices here, so it's a product.
+
+324
+00:27:32,300 --> 00:27:35,220
+OK, so this is the product rule in counting.
+
+325
+00:27:35,300 --> 00:27:41,820
+So if you haven't reviewed your 6.042 notes for counting,
+
+326
+00:27:41,900 --> 00:27:45,790
+this is going to be a good idea to go back and review that
+
+327
+00:27:45,860 --> 00:27:48,770
+because we're doing stuff of that nature.
+
+328
+00:27:48,850 --> 00:27:56,160
+This is just the product rule.
+
+329
+00:27:56,240 --> 00:28:00,660
+Good. So then the theorem we want to prove
+
+330
+00:28:00,730 --> 00:28:08,750
+is that H is universal.
+
+331
+00:28:08,820 --> 00:28:11,200
+And this is going to involve a little bit of number theory,
+
+332
+00:28:11,280 --> 00:28:14,140
+so it gets kind of interesting.
+
+333
+00:28:14,220 --> 00:28:16,430
+And it's a non-trivial proof,
+
+334
+00:28:16,500 --> 00:28:18,950
+so this is where if there's any questions as I'm going along,
+
+335
+00:28:19,020 --> 00:28:25,310
+please ask because the argument is
+
+336
+00:28:25,390 --> 00:28:30,050
+not as simple as other arguments we've seen so far.
+
+337
+00:28:30,130 --> 00:28:32,320
+OK, not the ones we've seen so far have been simple,
+
+338
+00:28:32,400 --> 00:28:38,710
+but this is definitely a more involved mathematical argument.
+
+339
+00:28:38,790 --> 00:28:46,810
+So here's a proof. So let's let, so we have two keys.
+
+340
+00:28:46,880 --> 00:28:48,910
+What are we trying to show if it's universal,
+
+341
+00:28:48,980 --> 00:28:54,680
+that if I pick any two keys, the number of hash functions
+
+342
+00:28:54,760 --> 00:28:57,890
+for which they hash to the same thing
+
+343
+00:28:57,960 --> 00:29:04,640
+is the size of set of hash functions divided by m.
+
+344
+00:29:04,720 --> 00:29:06,600
+OK, so I'm going to look at two keys.
+
+345
+00:29:06,680 --> 00:29:09,230
+So let's pick two keys arbitrarily.
+
+346
+00:29:09,310 --> 00:29:14,090
+So x, and we'll decompose it
+
+347
+00:29:14,170 --> 00:29:29,700
+into our base r representation and y, y_0, y_1 --
+
+348
+00:29:31,530 --> 00:29:36,780
+So these are two distinct keys.
+
+349
+00:29:36,860 --> 00:29:41,100
+So if these are two distinct keys,
+
+350
+00:29:41,180 --> 00:29:43,300
+so they're different,
+
+351
+00:29:43,380 --> 00:29:47,190
+then this base representation has the property
+
+352
+00:29:47,270 --> 00:29:51,390
+that they've got to differ somewhere.
+
+353
+00:29:51,470 --> 00:29:57,040
+Right? OK, they differ in at least one digit.
+
+354
+00:30:06,690 --> 00:30:11,740
+OK, and this is where most people get lost
+
+355
+00:30:11,810 --> 00:30:14,760
+because I'm going to make a simplification.
+
+356
+00:30:14,830 --> 00:30:20,120
+They could differ in any one of these digits.
+
+357
+00:30:20,190 --> 00:30:25,170
+I'm going to say they differ in position 0
+
+358
+00:30:25,250 --> 00:30:27,150
+because it doesn't matter which one I do,
+
+359
+00:30:27,220 --> 00:30:28,990
+the math is the same, but it'll make it
+
+360
+00:30:29,070 --> 00:30:32,990
+so that if I pick some said they differ in some position i,
+
+361
+00:30:33,070 --> 00:30:35,330
+I would have to be taking summations as you'll see
+
+362
+00:30:35,400 --> 00:30:39,300
+over the elements that are not i, and that's complicated.
+
+363
+00:30:39,380 --> 00:30:41,680
+If I do it in position 0,
+
+364
+00:30:41,760 --> 00:30:44,930
+then I can just sum for the rest of them.
+
+365
+00:30:45,000 --> 00:30:46,330
+So the math is going to be identical
+
+366
+00:30:46,410 --> 00:30:48,000
+if I were to do it for any position
+
+367
+00:30:48,070 --> 00:30:49,410
+because it's symmetric.
+
+368
+00:30:49,490 --> 00:30:51,050
+All the digits are symmetric.
+
+369
+00:30:51,130 --> 00:30:53,800
+So let's say they differ in position 0,
+
+370
+00:30:53,880 --> 00:30:55,550
+but the same argument is going to be true
+
+371
+00:30:55,630 --> 00:30:59,690
+if they differed in some other position.
+
+372
+00:30:59,760 --> 00:31:03,000
+So let's say, so we're saying without loss of generality.
+
+373
+00:31:03,070 --> 00:31:06,530
+So that's without loss of generality.
+
+374
+00:31:06,600 --> 00:31:11,090
+Position 0.
+
+375
+00:31:11,160 --> 00:31:14,700
+Because all the positions are symmetric here.
+
+376
+00:31:14,780 --> 00:31:23,530
+And so, now we need to ask the question for how many
+
+377
+00:31:23,610 --> 00:31:27,880
+——hash functions in our universal,
+
+378
+00:31:27,950 --> 00:31:37,910
+purportedly universal set do x and y collide?
+
+379
+00:31:37,980 --> 00:31:39,490
+OK, we've got to count them up.
+
+380
+00:31:39,560 --> 00:31:41,730
+So how often do they collide?
+
+381
+00:31:41,800 --> 00:31:43,560
+This is where we're going to
+
+382
+00:31:43,630 --> 00:31:47,880
+pull out some heavy duty number theory.
+
+383
+00:31:47,960 --> 00:31:53,230
+So we must have, if they collide
+
+384
+00:31:55,210 --> 00:32:02,340
+——that h sub a of x is equal to h sub a of y.
+
+385
+00:32:02,420 --> 00:32:07,200
+That's what it means for them to collide.
+
+386
+00:32:07,270 --> 00:32:21,540
+So that implies that the sum of i equal 0 to r of a sub i x sub i
+
+387
+00:32:21,610 --> 00:32:32,030
+is equal to the sum of i equals 0 to r of a sub i y sub i mod m.
+
+388
+00:32:32,100 --> 00:32:34,810
+Actually this is congruent mod m.
+
+389
+00:32:34,890 --> 00:32:36,710
+So congruence for those people
+
+390
+00:32:36,790 --> 00:32:38,560
+who haven't seen much number theory,
+
+391
+00:32:38,640 --> 00:32:41,940
+is basically the way of essentially,
+
+392
+00:32:42,020 --> 00:32:45,620
+rather than having to say mod everywhere in here
+
+393
+00:32:45,700 --> 00:32:47,720
+and mod everywhere in here,
+
+394
+00:32:47,800 --> 00:32:52,800
+we just at the end say OK, do a mod at the end.
+
+395
+00:32:52,880 --> 00:32:57,540
+Everything is being done mod, module m.
+
+396
+00:32:57,620 --> 00:33:00,710
+And then typically we use a congruence sign.
+
+397
+00:33:00,780 --> 00:33:04,030
+OK, there's a more mathematical definition
+
+398
+00:33:04,110 --> 00:33:08,970
+but this will work for us engineers.
+
+399
+00:33:12,290 --> 00:33:14,590
+OK, so everybody with me so far?
+
+400
+00:33:14,670 --> 00:33:18,580
+This is just applying the definition.
+
+401
+00:33:18,680 --> 00:33:23,140
+So that implies that the sum of i
+
+402
+00:33:23,240 --> 00:33:31,660
+equals 0 to r of a i x i minus y i
+
+403
+00:33:31,750 --> 00:33:38,350
+is congruent to zeros mod m.
+
+404
+00:33:38,430 --> 00:33:41,300
+OK, just threw it on the other side
+
+405
+00:33:41,380 --> 00:33:46,030
+and applied the distributive law.
+
+406
+00:33:46,100 --> 00:33:52,220
+Now what I'm going to do is pull out the 0-th position
+
+407
+00:33:52,300 --> 00:33:54,400
+because that's the one that I care about.
+
+408
+00:33:54,470 --> 00:33:56,770
+And this is where it saves me on the math,
+
+409
+00:33:56,860 --> 00:33:59,630
+compared to if I didn't say that it was 0.
+
+410
+00:33:59,810 --> 00:34:01,350
+I'd have to pull out x_i.
+
+411
+00:34:01,450 --> 00:34:02,860
+It wouldn't matter,
+
+412
+00:34:02,940 --> 00:34:09,250
+but it just would make the math a little bit cruftier OK,
+
+413
+00:34:22,490 --> 00:34:28,730
+so now we've just pulled out one term.
+
+414
+00:34:28,810 --> 00:34:39,330
+That implies that a_0 x_0 minus y_0
+
+415
+00:34:39,410 --> 00:34:54,720
+is congruent to minus ---- mod m.
+
+416
+00:34:54,800 --> 00:35:00,250
+Now remember that when I have a minus number mod m,
+
+417
+00:35:00,330 --> 00:35:02,230
+I just map it into whatever,
+
+418
+00:35:02,300 --> 00:35:06,460
+into that range from 0 to m minus one.
+
+419
+00:35:06,530 --> 00:35:15,890
+So for example, minus five mod seven is two.
+
+420
+00:35:15,970 --> 00:35:19,170
+So if any of these things are negative,
+
+421
+00:35:19,250 --> 00:35:24,620
+we simply translate them into by adding multiples of m
+
+422
+00:35:24,700 --> 00:35:35,080
+because adding multiples of m doesn't affect the congruence.
+
+423
+00:35:38,270 --> 00:35:40,960
+OK. And now for the next step,
+
+424
+00:35:41,040 --> 00:35:42,990
+we need to use a number theory fact.
+
+425
+00:35:43,070 --> 00:35:50,870
+So let's pull out our number theory
+
+426
+00:35:56,280 --> 00:36:05,510
+textbook and take a little digression
+
+427
+00:36:09,820 --> 00:36:14,150
+So this comes from the theory of finite fields.
+
+428
+00:36:14,220 --> 00:36:18,600
+So for people who are knowledgeable,
+
+429
+00:36:18,670 --> 00:36:20,920
+that's where you're plugging your knowledge in.
+
+430
+00:36:21,000 --> 00:36:22,030
+If you're not knowledgeable,
+
+431
+00:36:22,110 --> 00:36:26,040
+this is a great area of math to learn about.
+
+432
+00:36:26,120 --> 00:36:32,320
+So here's the fact. So let m be prime.
+
+433
+00:36:33,560 --> 00:36:43,190
+Then for any z, little z element of z sub m,
+
+434
+00:36:43,260 --> 00:36:52,100
+and z sub m is the integers mod m.
+
+435
+00:36:52,180 --> 00:37:00,190
+So this is essentially numbers from 0 to m minus one
+
+436
+00:37:00,260 --> 00:37:05,480
+with all the operations, times, minus, plus, etc.,
+
+437
+00:37:05,550 --> 00:37:09,160
+defined on that such that if you end up outside
+
+438
+00:37:09,230 --> 00:37:12,930
+of the range of 0 to m minus one,
+
+439
+00:37:13,010 --> 00:37:16,420
+you re-normalize by subtracting or adding multiples of m
+
+440
+00:37:16,490 --> 00:37:20,000
+to get back within the range from 0 to m minus one.
+
+441
+00:37:20,070 --> 00:37:25,710
+So it's the standard thing of just doing things module m.
+
+442
+00:37:25,790 --> 00:37:35,070
+So for any z such that z is not congruent to 0,
+
+443
+00:37:35,150 --> 00:37:47,210
+there exists a unique z inverse in z sub m,
+
+444
+00:37:47,280 --> 00:37:52,520
+such that if I multiply z times the inverse,
+
+445
+00:37:52,600 --> 00:38:01,020
+it produces something congruent to one mod m.
+
+446
+00:38:01,090 --> 00:38:03,830
+So for any number it says,
+
+447
+00:38:03,900 --> 00:38:06,160
+I can find another number that
+
+448
+00:38:06,230 --> 00:38:10,200
+when multiplied by it gives me one.
+
+449
+00:38:10,280 --> 00:38:18,980
+So let's just do an example for m equals seven.
+
+450
+00:38:19,050 --> 00:38:21,760
+So here we have, we'll make a little table.
+
+451
+00:38:21,830 --> 00:38:23,660
+So z is not equal to 0,
+
+452
+00:38:23,740 --> 00:38:28,350
+so I just write down the other numbers.
+
+453
+00:38:28,420 --> 00:38:33,210
+And let's figure out what z inverse is.
+
+454
+00:38:33,280 --> 00:38:36,970
+So what's the inverse of one?
+
+455
+00:38:37,050 --> 00:38:40,160
+What number when multiplied by one gives me one?
+
+456
+00:38:40,240 --> 00:38:44,120
+One. Good. How about two?
+
+457
+00:38:44,210 --> 00:38:49,070
+What number when I multiply it by two gives me one?
+
+458
+00:38:49,150 --> 00:38:53,940
+Four. Because two times four is eight
+
+459
+00:38:54,020 --> 00:38:59,340
+and eight is congruent to one mod seven.
+
+460
+00:38:59,420 --> 00:39:05,630
+So I've re-normalized it. What about three?
+
+461
+00:39:11,600 --> 00:39:15,340
+Five. Good. Five. Three times five is 15.
+
+462
+00:39:15,410 --> 00:39:17,540
+That's congruent to one mod seven
+
+463
+00:39:17,610 --> 00:39:23,930
+because 15 divided by seven is two remainder of one.
+
+464
+00:39:24,000 --> 00:39:29,680
+So that's the key thing. What about four? Two.
+
+465
+00:39:31,120 --> 00:39:39,360
+Five? Three. And six. Yeah. Six.
+
+466
+00:39:42,000 --> 00:39:48,990
+Yeah, six it turns out. OK, six times six is 36.
+
+467
+00:39:49,070 --> 00:39:50,320
+OK, mod seven.
+
+468
+00:39:50,400 --> 00:39:55,240
+Basically subtract off the 35, gives me one.
+
+469
+00:39:55,310 --> 00:39:58,460
+So people have observed some interesting facts that
+
+470
+00:39:58,540 --> 00:40:03,650
+if one number's an inverse of another,
+
+471
+00:40:03,730 --> 00:40:07,170
+then that other is an inverse of the one.
+
+472
+00:40:07,250 --> 00:40:10,660
+So that's actually one of these things that you prove
+
+473
+00:40:10,740 --> 00:40:15,090
+when you do group theory and field theory and so forth.
+
+474
+00:40:15,160 --> 00:40:16,530
+There are all sorts of
+
+475
+00:40:16,610 --> 00:40:21,650
+other great properties of this kind of math.
+
+476
+00:40:21,720 --> 00:40:23,010
+But the main thing is,
+
+477
+00:40:23,080 --> 00:40:27,320
+and this turns out not to be true if m is not a prime.
+
+478
+00:40:27,400 --> 00:40:32,500
+So can somebody think of, imagine we're doing something mod 10.
+
+479
+00:40:32,580 --> 00:40:33,650
+Can somebody think of a number
+
+480
+00:40:33,740 --> 00:40:36,870
+that doesn't have an inverse mod 10?
+
+481
+00:40:36,950 --> 00:40:42,320
+Yeah. Two. Another one is five.
+
+482
+00:40:42,400 --> 00:40:47,950
+OK, it turns out the divisors in fact actually,
+
+483
+00:40:48,030 --> 00:40:55,420
+more generally, something that is not relatively prime,
+
+484
+00:40:55,500 --> 00:40:57,420
+meaning that it has no common factors,
+
+485
+00:40:57,500 --> 00:41:02,510
+the GCD is not one between that number and the modulus.
+
+486
+00:41:02,590 --> 00:41:08,020
+OK, those numbers do not have an inverse mod m.
+
+487
+00:41:08,090 --> 00:41:09,350
+OK, but if it's prime,
+
+488
+00:41:09,440 --> 00:41:14,530
+every number is relatively prime to the modulus.
+
+489
+00:41:14,610 --> 00:41:17,460
+And that's the property that we're taking advantage of.
+
+490
+00:41:17,540 --> 00:41:21,700
+So this is our fact and so, in this case
+
+491
+00:41:21,800 --> 00:41:29,070
+what I'm after is I want to divide by x_0 minus y_0.
+
+492
+00:41:29,150 --> 00:41:31,680
+That's what I want to do at this point.
+
+493
+00:41:31,770 --> 00:41:38,600
+But I can't do that if x_0, first of all, if m isn't prime,
+
+494
+00:41:38,670 --> 00:41:40,420
+I can't necessarily do that.
+
+495
+00:41:40,490 --> 00:41:42,860
+I might be able to, but I can't necessarily.
+
+496
+00:41:42,950 --> 00:41:47,030
+But if m is prime, I can definitely divide by x_0 minus y_0.
+
+497
+00:41:47,120 --> 00:41:48,740
+I can find that inverse.
+
+498
+00:41:48,840 --> 00:41:50,230
+And the other thing I have to do
+
+499
+00:41:50,300 --> 00:41:55,080
+is make sure x_0 minus y_0 is not 0.
+
+500
+00:41:55,180 --> 00:41:56,730
+OK, it would be 0 if these two were equal,
+
+501
+00:41:56,810 --> 00:41:58,820
+but our supposition was they weren't equal.
+
+502
+00:41:58,900 --> 00:42:00,990
+And once again, just bringing it back
+
+503
+00:42:01,070 --> 00:42:02,410
+to the without loss of generality,
+
+504
+00:42:02,500 --> 00:42:08,020
+if it were some other position that we were off,
+
+505
+00:42:08,100 --> 00:42:12,460
+I would be doing exactly the same thing with that position.
+
+506
+00:42:12,560 --> 00:42:16,760
+So now we're going to be able to divide.
+
+507
+00:42:16,850 --> 00:42:19,980
+So we continue with our
+
+508
+00:42:23,660 --> 00:42:27,500
+——continue with our proof.
+
+509
+00:42:27,580 --> 00:42:34,000
+So since x_0 is not equal to y_0,
+
+510
+00:42:34,110 --> 00:42:41,210
+there exists an inverse for x_0 minus y_0.
+
+511
+00:42:41,280 --> 00:42:44,670
+And that implies, just continue on from over there,
+
+512
+00:42:44,740 --> 00:42:51,380
+that a_0 is congruent therefore to minus the sum of i
+
+513
+00:42:51,460 --> 00:43:03,160
+equal one to r of a_i, x_i minus y_i times x_0 minus y_0 inverse.
+
+514
+00:43:05,770 --> 00:43:09,540
+So let's just go back to the beginning
+
+515
+00:43:09,620 --> 00:43:12,770
+of our proof and see what we've derived.
+
+516
+00:43:12,840 --> 00:43:15,530
+If we're saying we have two distinct keys,
+
+517
+00:43:15,620 --> 00:43:20,380
+and we've picked all of these a_i randomly,
+
+518
+00:43:20,460 --> 00:43:23,230
+and we're saying that
+
+519
+00:43:23,300 --> 00:43:27,930
+these two distinct keys hash to the same place.
+
+520
+00:43:28,000 --> 00:43:30,240
+If they hash to the same place,
+
+521
+00:43:30,310 --> 00:43:38,620
+it says that a_0 essentially had to
+
+522
+00:43:38,700 --> 00:43:45,510
+have a particular value as a function of the other a_i.
+
+523
+00:43:45,520 --> 00:43:46,520
+Because in other words,
+
+524
+00:43:46,530 --> 00:43:50,430
+once I've picked each of these a_i from one to r,
+
+525
+00:43:50,480 --> 00:43:53,600
+if I did them in that order, for example,
+
+526
+00:43:53,680 --> 00:43:55,080
+then I don't have a choice for
+
+527
+00:43:55,150 --> 00:43:57,410
+how I pick a_0 to make it collide.
+
+528
+00:43:57,490 --> 00:44:00,200
+Exactly one value allows it to collide,
+
+529
+00:44:00,290 --> 00:44:03,900
+namely the value of a_0 given by this.
+
+530
+00:44:03,970 --> 00:44:06,370
+If I picked a different value of a_0,
+
+531
+00:44:06,450 --> 00:44:10,240
+they wouldn't collide.
+
+532
+00:44:10,320 --> 00:44:12,100
+So let me write that down.
+
+533
+00:44:12,190 --> 00:44:18,100
+Thus, while you think about it
+
+534
+00:45:10,930 --> 00:45:14,800
+So for any choice of these a_i,
+
+535
+00:45:14,870 --> 00:45:18,330
+there's exactly one of the impossible choices
+
+536
+00:45:18,410 --> 00:45:23,620
+of a_0 that cause a collision.
+
+537
+00:45:23,690 --> 00:45:25,260
+And for all the other choices
+
+538
+00:45:25,330 --> 00:45:30,470
+I might make of a_0, there's no collision.
+
+539
+00:45:32,740 --> 00:45:36,670
+So essentially I don't have, if they're going to collide,
+
+540
+00:45:36,750 --> 00:45:39,370
+I've reduced essentially the number of degrees
+
+541
+00:45:39,450 --> 00:45:45,270
+of freedom of my randomness by a factor of m.
+
+542
+00:45:45,350 --> 00:45:51,210
+So if I count up the number of h_a's
+
+543
+00:45:51,280 --> 00:45:59,290
+that cause x and y to collide,
+
+544
+00:45:59,360 --> 00:46:03,740
+that's equal to, well, there's m choices,
+
+545
+00:46:03,830 --> 00:46:05,340
+just using the product rule again.
+
+546
+00:46:05,430 --> 00:46:09,290
+There's m choices for a_1 times m choices
+
+547
+00:46:09,370 --> 00:46:16,420
+for a_2, up to m choices for a_r
+
+548
+00:46:16,510 --> 00:46:21,090
+and then only one choice for a_0.
+
+549
+00:46:21,160 --> 00:46:31,560
+So this is choices for a_1, a_2, a_r
+
+550
+00:46:31,650 --> 00:46:33,920
+and only one choice for a_0 if they're going to collide.
+
+551
+00:46:33,980 --> 00:46:36,540
+If they're not going to collide, I've got more choices for a_0.
+
+552
+00:46:36,630 --> 00:46:38,280
+But if I want them to collide,
+
+553
+00:46:38,360 --> 00:46:44,890
+there's only one value I can pick, namely this value.
+
+554
+00:46:45,020 --> 00:46:49,450
+That's the only value for which I will pick.
+
+555
+00:46:49,530 --> 00:46:53,380
+And that's equal to m to the r,
+
+556
+00:46:53,460 --> 00:47:00,680
+which is just the size of H divided by m.
+
+557
+00:47:00,750 --> 00:47:06,310
+And that completes the proof.
+
+558
+00:47:09,930 --> 00:47:11,970
+So there are other universal constructions,
+
+559
+00:47:12,050 --> 00:47:15,870
+but this is a particularly elegant one.
+
+560
+00:47:15,940 --> 00:47:21,950
+So the point is that I have m plus one,
+
+561
+00:47:22,040 --> 00:47:24,840
+sorry, r plus one degrees of freedom
+
+562
+00:47:24,930 --> 00:47:28,900
+where each degree of freedom I have m choices.
+
+563
+00:47:28,980 --> 00:47:38,880
+But if I want them to collide, once I've picked any of the,
+
+564
+00:47:38,970 --> 00:47:45,740
+once I've picked r of those possible choices,
+
+565
+00:47:45,820 --> 00:47:51,490
+the last one is forced if I want it to collide.
+
+566
+00:47:51,570 --> 00:47:53,130
+So therefore, the set of functions
+
+567
+00:47:53,200 --> 00:47:56,360
+for which it collides is only one in m.
+
+568
+00:47:56,440 --> 00:47:58,560
+A very slick construction.
+
+569
+00:47:58,630 --> 00:48:01,140
+Very slick. OK. Everybody with me here?
+
+570
+00:48:01,990 --> 00:48:03,120
+Didn't lose too many people?
+
+571
+00:48:03,190 --> 00:48:04,280
+Yeah, question.
+
+572
+00:48:04,350 --> 00:48:10,000
+STUDENT: [INAUDIBLE]
+
+573
+00:48:13,600 --> 00:48:15,100
+Well, part of it is, actually this is
+
+574
+00:48:15,180 --> 00:48:18,140
+a quite common type of thing to be doing actually.
+
+575
+00:48:18,220 --> 00:48:19,320
+If you take a class,
+
+576
+00:48:19,400 --> 00:48:24,020
+so we have follow on classes in cryptography and so forth,
+
+577
+00:48:24,090 --> 00:48:28,360
+and this kind of thing of taking dot products,
+
+578
+00:48:28,440 --> 00:48:32,260
+modulo m and also Galois fields
+
+579
+00:48:32,330 --> 00:48:35,800
+which are particularly simple finite fields
+
+580
+00:48:35,880 --> 00:48:39,360
+and things like that, people play with these all the time.
+
+581
+00:48:39,430 --> 00:48:41,920
+So Galois fields are like using x order here,
+
+582
+00:48:42,000 --> 00:48:45,770
+same sort of thing as this except base two.
+
+583
+00:48:45,850 --> 00:48:48,210
+And so there's a lot of study of this sort of thing.
+
+584
+00:48:48,280 --> 00:48:50,990
+So people understand these kind of properties.
+
+585
+00:48:51,060 --> 00:48:53,160
+But yeah, it's like what's the algorithm
+
+586
+00:48:53,230 --> 00:48:56,080
+for having a brilliant insight into algorithms?
+
+587
+00:48:56,160 --> 00:49:01,790
+It's like OK. Wish I knew.
+
+588
+00:49:01,870 --> 00:49:03,130
+Then I'd just turn the crank.
+
+589
+00:49:03,200 --> 00:49:04,810
+[LAUGHTER]
+
+590
+00:49:04,890 --> 00:49:06,080
+But if it were that easy,
+
+591
+00:49:06,150 --> 00:49:08,170
+I wouldn't be standing up here today.
+
+592
+00:49:08,260 --> 00:49:10,800
+[LAUGHTER]
+
+593
+00:49:10,880 --> 00:49:17,390
+Good. OK, so now I want to take on
+
+594
+00:49:17,460 --> 00:49:18,800
+another topic which is also I find,
+
+595
+00:49:18,880 --> 00:49:20,790
+I think this is astounding.
+
+596
+00:49:20,860 --> 00:49:25,270
+It's just beautiful, beautiful mathematics
+
+597
+00:49:25,350 --> 00:49:32,900
+and a big impact on your ability to build good hash functions.
+
+598
+00:49:32,980 --> 00:49:35,180
+Now I want to talk about another one topic,
+
+599
+00:49:35,260 --> 00:49:43,680
+which is related, which is the topic of perfect hashing.
+
+600
+00:49:52,370 --> 00:49:55,240
+So everything we've done so far
+
+601
+00:49:55,320 --> 00:49:57,610
+does expected time performance.
+
+602
+00:49:57,680 --> 00:50:02,030
+Hashing is good in the expected sense.
+
+603
+00:50:02,100 --> 00:50:04,240
+A perfect hashing addresses the following questions.
+
+604
+00:50:04,330 --> 00:50:07,800
+Suppose that I gave you a set of keys,
+
+605
+00:50:07,880 --> 00:50:11,810
+and I said just build me a static table
+
+606
+00:50:11,920 --> 00:50:17,620
+so I can look up whether the key is in the table
+
+607
+00:50:17,790 --> 00:50:21,930
+with worst case time.
+
+608
+00:50:22,010 --> 00:50:24,970
+Good worst case time.
+
+609
+00:50:25,050 --> 00:50:27,880
+So I have a fixed set of keys.
+
+610
+00:50:27,950 --> 00:50:30,560
+They might be something like for example,
+
+611
+00:50:30,640 --> 00:50:35,080
+the hundred most common
+
+612
+00:50:35,150 --> 00:50:39,180
+or thousand most common words in English.
+
+613
+00:50:39,270 --> 00:50:42,880
+And when I get a word I want to check quickly in this table,
+
+614
+00:50:42,950 --> 00:50:45,390
+is the word that I've got one of
+
+615
+00:50:45,470 --> 00:50:47,770
+the most common words in English.
+
+616
+00:50:47,890 --> 00:50:51,150
+I would like to do that not with expected performance,
+
+617
+00:50:51,230 --> 00:50:54,190
+but guaranteed worst case performance.
+
+618
+00:50:54,270 --> 00:51:02,850
+Is there a way of building it so that I can find this quickly?
+
+619
+00:51:02,930 --> 00:51:09,250
+So the problem is given n keys
+
+620
+00:51:10,890 --> 00:51:15,940
+-- -- construct a static hash table.
+
+621
+00:51:16,020 --> 00:51:17,400
+In other words, no insertion and deletion.
+
+622
+00:51:17,470 --> 00:51:20,770
+We're just going to put the elements in there.
+
+623
+00:51:20,850 --> 00:51:31,200
+of size ---- m equal Order n.
+
+624
+00:51:31,280 --> 00:51:34,910
+So I don't want it to be a huge table.
+
+625
+00:51:34,990 --> 00:51:40,930
+I want it to be a table that is the size of my keys.
+
+626
+00:51:41,000 --> 00:51:44,440
+Table of size m equals Order n,
+
+627
+00:51:44,520 --> 00:51:59,990
+such that search takes O(1) time in the worst case.
+
+628
+00:52:05,410 --> 00:52:09,400
+So there's no place in the table where I'm going to have,
+
+629
+00:52:09,480 --> 00:52:10,930
+I know in the average case,
+
+630
+00:52:11,010 --> 00:52:13,410
+that's not hard to do.
+
+631
+00:52:13,480 --> 00:52:15,200
+But in the worst case,
+
+632
+00:52:15,270 --> 00:52:18,020
+I want to make sure that there's no particular spot
+
+633
+00:52:18,110 --> 00:52:26,060
+where the number of keys piles up to be a large number.
+
+634
+00:52:26,130 --> 00:52:27,920
+OK, in no spot should that happen.
+
+635
+00:52:28,020 --> 00:52:31,290
+Every single search I do should take Order one time.
+
+636
+00:52:31,370 --> 00:52:34,870
+There shouldn't be any statistical variation in terms of
+
+637
+00:52:34,930 --> 00:52:40,190
+how long it takes me to get something.
+
+638
+00:52:40,270 --> 00:52:43,290
+Does everybody understand what the puzzle is?
+
+639
+00:52:43,370 --> 00:52:44,750
+So this is a great,
+
+640
+00:52:44,830 --> 00:52:49,100
+because this actually ends up having a lot of uses.
+
+641
+00:52:49,170 --> 00:52:51,820
+You know, you want to build a table for something
+
+642
+00:52:51,900 --> 00:52:53,430
+and you know what the values are that
+
+643
+00:52:53,510 --> 00:52:54,570
+you're going look up in it.
+
+644
+00:52:54,670 --> 00:52:58,200
+But you don't want to spend a lot of space on it and so forth.
+
+645
+00:52:58,270 --> 00:53:00,040
+So the idea here is actually going to be
+
+646
+00:53:00,120 --> 00:53:03,970
+to use a two-level scheme.
+
+647
+00:53:07,830 --> 00:53:14,940
+So the idea is we're going to use a two-level scheme
+
+648
+00:53:17,740 --> 00:53:26,530
+with universal hashing at both levels.
+
+649
+00:53:29,840 --> 00:53:32,240
+So the idea is we're going to hash,
+
+650
+00:53:32,310 --> 00:53:33,330
+we're going to have a hash table,
+
+651
+00:53:33,410 --> 00:53:34,660
+we're going to hash into slots,
+
+652
+00:53:34,720 --> 00:53:37,010
+but rather than using chaining,
+
+653
+00:53:37,090 --> 00:53:41,290
+we're going to have another hash table there.
+
+654
+00:53:41,370 --> 00:53:45,990
+We're going to do a second hash into the second hash table.
+
+655
+00:53:46,070 --> 00:53:50,120
+And the idea is that we're going to do it in such a way
+
+656
+00:53:50,200 --> 00:53:57,420
+that we have no collisions at level two.
+
+657
+00:54:00,330 --> 00:54:01,890
+So we may have collisions at level one.
+
+658
+00:54:01,970 --> 00:54:03,620
+We'll take anything that collides at level one
+
+659
+00:54:03,700 --> 00:54:07,100
+and put them into a hash table
+
+660
+00:54:07,170 --> 00:54:08,610
+and then our second level hash table,
+
+661
+00:54:08,690 --> 00:54:11,820
+but that hash table, no collisions.
+
+662
+00:54:11,900 --> 00:54:16,060
+Boom. We're just going to hash right in there.
+
+663
+00:54:16,130 --> 00:54:18,660
+And it'll just go boom to its thing.
+
+664
+00:54:18,730 --> 00:54:25,460
+So let's draw a picture of this to illustrate the scheme.
+
+665
+00:54:26,830 --> 00:54:37,590
+OK, so we have -- -- 0 one, let's say six, m minus one.
+
+666
+00:54:37,660 --> 00:54:40,610
+So here's our hash table.
+
+667
+00:54:40,690 --> 00:54:41,900
+And what we're going to do is
+
+668
+00:54:42,120 --> 00:54:46,890
+we're going to use universal hashing at the first level, OK.
+
+669
+00:54:46,970 --> 00:54:48,690
+So we find a universal hash function.
+
+670
+00:54:48,770 --> 00:54:51,740
+We pick a hash function at random.
+
+671
+00:54:51,810 --> 00:54:56,140
+And what we'll do is we'll hash into that level.
+
+672
+00:54:56,210 --> 00:55:03,020
+And then what we'll do is we'll keep track of two things.
+
+673
+00:55:03,090 --> 00:55:07,210
+One is what the size of the hash table is at the next level.
+
+674
+00:55:07,290 --> 00:55:10,170
+So in this case, the size of the hash table
+
+675
+00:55:10,180 --> 00:55:11,020
+will only use the number of slots.
+
+676
+00:55:11,030 --> 00:55:13,610
+There's going to be four.  And we're also going to
+
+677
+00:55:13,690 --> 00:55:17,430
+keep a separate hash key for the second level.
+
+678
+00:55:17,510 --> 00:55:21,450
+So each slot will have its own hash function
+
+679
+00:55:21,510 --> 00:55:23,340
+for the second level.
+
+680
+00:55:23,410 --> 00:55:24,950
+So for example, this one might
+
+681
+00:55:25,020 --> 00:55:29,120
+have a key of 31 that is a random number.
+
+682
+00:55:29,210 --> 00:55:31,920
+The a's here. a's up there.
+
+683
+00:55:32,000 --> 00:55:33,880
+There we go, a's up there.
+
+684
+00:55:33,970 --> 00:55:36,440
+So that's going to be the basis of my hash function,
+
+685
+00:55:36,520 --> 00:55:39,010
+the key with which I'm going to hash.
+
+686
+00:55:39,080 --> 00:55:42,690
+This one say has 86. And let's say that this,
+
+687
+00:55:42,780 --> 00:55:47,350
+and then we have a pointer to the hash table.
+
+688
+00:55:47,430 --> 00:55:53,300
+This is say S_1. And it's got four slots
+
+689
+00:55:53,370 --> 00:55:55,460
+and we stored up 14 and 27.
+
+690
+00:55:55,550 --> 00:56:00,020
+And these two slots are empty.
+
+691
+00:56:00,100 --> 00:56:07,280
+And this one for example, had what?
+
+692
+00:56:07,360 --> 00:56:12,460
+Two nines.
+
+693
+00:56:27,230 --> 00:56:30,140
+So the idea here is that in this case
+
+694
+00:56:30,220 --> 00:56:33,450
+if we look over all our top level hash function,
+
+695
+00:56:33,530 --> 00:56:35,340
+which I'll just call H,
+
+696
+00:56:35,420 --> 00:56:45,590
+has that H of 14 is equal to H of 27 is equal to one.
+
+697
+00:56:45,660 --> 00:56:48,560
+Because we're in slot one.
+
+698
+00:56:48,640 --> 00:56:52,620
+OK, so these two both hash to the same slot
+
+699
+00:56:52,700 --> 00:56:54,730
+in the level one hash table.
+
+700
+00:56:54,810 --> 00:56:57,750
+This is level one.
+
+701
+00:56:57,820 --> 00:57:03,460
+And this is level two over here.
+
+702
+00:57:03,540 --> 00:57:06,740
+So level one hashing, 14 and 27 collided.
+
+703
+00:57:06,830 --> 00:57:11,060
+They went into the same slot here.
+
+704
+00:57:11,130 --> 00:57:16,140
+But at level two, they got hashed to different places
+
+705
+00:57:16,210 --> 00:57:18,670
+and the hash function I use is going to be indexed
+
+706
+00:57:18,740 --> 00:57:21,180
+by whatever the random numbers are that
+
+707
+00:57:21,260 --> 00:57:22,580
+I chose and found for those
+
+708
+00:57:22,650 --> 00:57:25,850
+and I'll show you how we find those.
+
+709
+00:57:25,920 --> 00:57:34,200
+We have then h of 31 of 14 is equal to
+
+710
+00:57:34,290 --> 00:57:41,650
+one h of 31 of 27 is equal to two.
+
+711
+00:57:41,730 --> 00:57:45,140
+For level two.
+
+712
+00:57:45,990 --> 00:57:50,240
+So I go, hash in here, find the,
+
+713
+00:57:50,260 --> 00:57:53,060
+use this as the basis of my hash function
+
+714
+00:57:53,120 --> 00:57:57,650
+to hash into whatever table I've got here.
+
+715
+00:57:57,720 --> 00:57:59,540
+And so, if there are no,
+
+716
+00:57:59,620 --> 00:58:03,080
+if I can guarantee that there are no collisions at level two,
+
+717
+00:58:03,160 --> 00:58:05,270
+this is going to cost me Order one time
+
+718
+00:58:05,350 --> 00:58:07,200
+in the worst case to look something up.
+
+719
+00:58:07,280 --> 00:58:09,770
+How do I look it up? Take the value.
+
+720
+00:58:09,850 --> 00:58:15,180
+I apply h to it. That takes me to some slot.
+
+721
+00:58:15,260 --> 00:58:18,200
+Then I look to see what the key is for this hash function.
+
+722
+00:58:18,200 --> 00:58:20,460
+I apply that hash function
+
+723
+00:58:20,530 --> 00:58:22,880
+and that takes me to another slot.
+
+724
+00:58:22,960 --> 00:58:25,150
+Then I go there.
+
+725
+00:58:25,240 --> 00:58:28,010
+And that took me basically two applications
+
+726
+00:58:28,090 --> 00:58:30,170
+of hash functions plus some look-up,
+
+727
+00:58:30,250 --> 00:58:34,440
+plus who knows what minor amount of bookkeeping.
+
+728
+00:58:34,520 --> 00:58:39,440
+So the reason we're going to
+
+729
+00:58:39,510 --> 00:58:45,340
+have no collisions at this level is the following.
+
+730
+00:58:45,420 --> 00:59:03,690
+If they're n sub i items that hash to a level one slot i,
+
+731
+00:59:05,700 --> 00:59:10,770
+then we're going to use m sub i,
+
+732
+00:59:10,850 --> 00:59:18,040
+which is equal to n sub i squared slots
+
+733
+00:59:18,120 --> 00:59:22,000
+in the level two hash table.
+
+734
+00:59:28,050 --> 00:59:29,820
+OK, so I should have mentioned here
+
+735
+00:59:29,890 --> 00:59:33,470
+this is going to be m sub i,
+
+736
+00:59:33,540 --> 00:59:34,870
+the size of the hash table
+
+737
+00:59:34,940 --> 00:59:41,160
+and this is going to be my a sub i essentially.
+
+738
+00:59:44,090 --> 00:59:46,750
+So I'm going to use,  so basically I'm going to
+
+739
+00:59:46,760 --> 00:59:53,480
+hash n sub i things into n sub i squared locations here.
+
+740
+00:59:53,560 --> 00:59:58,990
+So this is going to be incredibly sparse.
+
+741
+00:59:59,060 --> 01:00:03,180
+OK, it's going to be quadratic in size.
+
+742
+01:00:03,250 --> 01:00:07,410
+And so what I'm going to show is that under those circumstances,
+
+743
+01:00:07,490 --> 01:00:09,620
+it's easy for me to find hash functions
+
+744
+01:00:09,700 --> 01:00:12,640
+such that there are no collisions.
+
+745
+01:00:12,730 --> 01:00:14,680
+That's the name of the game.
+
+746
+01:00:14,750 --> 01:00:16,590
+Figure out how can I make these hash functions
+
+747
+01:00:16,660 --> 01:00:18,360
+so that there are no collisions.
+
+748
+01:00:18,440 --> 01:00:21,790
+So that's why I draw this with so few elements here.
+
+749
+01:00:21,900 --> 01:00:24,500
+So here for example, I have two elements
+
+750
+01:00:24,570 --> 01:00:26,310
+and I have a hash table size four here.
+
+751
+01:00:26,410 --> 01:00:27,470
+I have three elements.
+
+752
+01:00:27,540 --> 01:00:30,390
+I need a hash table size nine.
+
+753
+01:00:30,470 --> 01:00:31,530
+OK, if there are a hundred elements,
+
+754
+01:00:31,610 --> 01:00:35,390
+I need a hash table size 10,000.
+
+755
+01:00:35,480 --> 01:00:36,830
+I'm not going to pick something
+
+756
+01:00:36,900 --> 01:00:40,010
+so there's likely that there's anything of that size.
+
+757
+01:00:40,080 --> 01:00:42,000
+And then the fact that this actually works
+
+758
+01:00:42,010 --> 01:00:44,330
+and gives us all the properties that we want,
+
+759
+01:00:44,410 --> 01:00:47,660
+that's part of the analysis. So does everybody see that
+
+760
+01:00:47,740 --> 01:00:49,930
+this takes Order one worst case time
+
+761
+01:00:50,030 --> 01:00:52,820
+and what the basic structure of it is?
+
+762
+01:00:52,900 --> 01:00:54,400
+These things, by the way,
+
+763
+01:00:54,490 --> 01:00:56,320
+are not in this case prime.
+
+764
+01:00:56,400 --> 01:00:58,530
+I could always pick primes that were close to this.
+
+765
+01:00:58,610 --> 01:00:59,810
+I didn't do that in this case.
+
+766
+01:00:59,910 --> 01:01:02,170
+Or I could use a universal hash function that
+
+767
+01:01:02,250 --> 01:01:05,580
+in fact would work for things other than primes.
+
+768
+01:01:05,650 --> 01:01:11,160
+But I didn't do that for this example.
+
+769
+01:01:11,240 --> 01:01:15,360
+We all ready for analysis?
+
+770
+01:01:15,430 --> 01:01:18,660
+OK, let's do some analysis then.
+
+771
+01:01:28,700 --> 01:01:29,800
+And this is really pretty analysis.
+
+772
+01:01:29,800 --> 01:01:31,670
+Partly as you'll see because we've
+
+773
+01:01:31,750 --> 01:01:34,630
+already done some of this analysis.
+
+774
+01:01:49,550 --> 01:01:53,190
+So the trick is analyzing level two.
+
+775
+01:01:53,270 --> 01:01:58,940
+That's the main thing that I want to analyze,
+
+776
+01:01:59,010 --> 01:02:04,870
+to show that I can find hash functions here that are going to,
+
+777
+01:02:04,950 --> 01:02:07,010
+when I map them into, very sparsely,
+
+778
+01:02:07,080 --> 01:02:11,250
+into these arrays here, that in fact,
+
+779
+01:02:11,320 --> 01:02:12,630
+such hash functions exist
+
+780
+01:02:12,700 --> 01:02:15,240
+and I can compute them in advance.
+
+781
+01:02:15,320 --> 01:02:17,800
+So that I have a good way of storing those.
+
+782
+01:02:17,880 --> 01:02:21,070
+So here's the theorem we're going to use.
+
+783
+01:02:21,140 --> 01:02:31,850
+My hash n keys into m equals n squared slots
+
+784
+01:02:35,140 --> 01:02:42,760
+using a random hash function in a universal set H.
+
+785
+01:02:48,150 --> 01:02:59,300
+Then the expected number of collisions is less than one half.
+
+786
+01:03:00,890 --> 01:03:04,400
+OK. The expected number of collisions
+
+787
+01:03:04,470 --> 01:03:08,300
+I don't expect there to be even one collision.
+
+788
+01:03:09,110 --> 01:03:15,420
+I expect there to be less than half a collision on average.
+
+789
+01:03:17,270 --> 01:03:22,400
+And so, let's prove this,
+
+790
+01:03:23,920 --> 01:03:30,630
+so that the probability that two given keys
+
+791
+01:03:33,100 --> 01:03:39,960
+collide under h is what?
+
+792
+01:03:41,220 --> 01:03:44,670
+What's the probability that two given keys collide under h
+
+793
+01:03:44,750 --> 01:03:49,130
+when h is chosen randomly from the universal set?
+
+794
+01:03:51,390 --> 01:03:54,420
+One over m. Right? That's the definition, right,
+
+795
+01:03:54,490 --> 01:03:59,880
+of, which is in this case equal to one over n squared.
+
+796
+01:04:03,360 --> 01:04:08,220
+So now how many keys,
+
+797
+01:04:09,330 --> 01:04:12,730
+how many pairs of keys do I have in this table?
+
+798
+01:04:14,840 --> 01:04:19,260
+How many keys could possibly collide with each other?
+
+799
+01:04:19,330 --> 01:04:22,390
+OK. So that's basically just looking at how many different pairs of keys
+
+800
+01:04:22,460 --> 01:04:25,670
+do I have to evaluate this for.
+
+801
+01:04:25,740 --> 01:04:30,310
+So that's n choose two pairs of keys.
+
+802
+01:04:31,060 --> 01:04:38,360
+n choose two pairs of keys.
+
+803
+01:04:39,810 --> 01:04:48,280
+So therefore, the expected number of collisions is
+
+804
+01:04:48,360 --> 01:04:51,730
+while for each of these n, not n over two.
+
+805
+01:04:51,800 --> 01:04:58,580
+n choose two pairs of keys.
+
+806
+01:04:58,660 --> 01:05:06,530
+The probability that it collides is one in n squared.
+
+807
+01:05:06,610 --> 01:05:10,220
+So that's equal to n times n minus one over two,
+
+808
+01:05:10,300 --> 01:05:13,700
+if you remember your formula, times one in n squared.
+
+809
+01:05:13,790 --> 01:05:18,140
+And that's less than a half.
+
+810
+01:05:23,350 --> 01:05:24,690
+So for every pair of keys,
+
+811
+01:05:24,760 --> 01:05:30,270
+so those of you who remember from 6.042 the birthday paradox,
+
+812
+01:05:30,360 --> 01:05:33,910
+this is related to the birthday paradox a little bit.
+
+813
+01:05:33,990 --> 01:05:36,660
+But here I basically have a large set,
+
+814
+01:05:36,740 --> 01:05:38,000
+and I'm looking at all pairs,
+
+815
+01:05:38,200 --> 01:05:41,120
+but my set is sufficiently big that the odds
+
+816
+01:05:41,200 --> 01:05:45,630
+that I get a collision is relatively small.
+
+817
+01:05:45,700 --> 01:05:51,670
+If I start increasing it beyond the square root of m,
+
+818
+01:05:51,750 --> 01:05:53,370
+OK, the number of elements,
+
+819
+01:05:53,460 --> 01:05:55,460
+it starts getting bigger in the square root of m
+
+820
+01:05:55,540 --> 01:05:57,140
+then the odds of a collision go up dramatically
+
+821
+01:05:57,320 --> 01:05:59,160
+as you know from the birthday paradox.
+
+822
+01:05:59,290 --> 01:06:01,550
+But if I'm less than, if I'm really sparse in there,
+
+823
+01:06:01,680 --> 01:06:03,560
+I don't get collisions.
+
+824
+01:06:03,660 --> 01:06:08,250
+Or at least I get a relatively small number expected.
+
+825
+01:06:08,810 --> 01:06:10,440
+Now I want to remind you of something
+
+826
+01:06:10,550 --> 01:06:14,010
+which actually in the past I have just assumed,
+
+827
+01:06:14,130 --> 01:06:17,060
+but I want to actually go through it briefly.
+
+828
+01:06:17,150 --> 01:06:20,190
+It's Markov's inequality.
+
+829
+01:06:20,260 --> 01:06:23,870
+So who remembers Markov's inequality?
+
+830
+01:06:23,950 --> 01:06:25,900
+Don't everybody raise their hand at once.
+
+831
+01:06:25,980 --> 01:06:29,450
+So Markov's inequality says the following.
+
+832
+01:06:29,530 --> 01:06:32,210
+This is one of these great probability facts.
+
+833
+01:06:32,300 --> 01:06:39,420
+For random variable x which is bounded below by 0,
+
+834
+01:06:39,490 --> 01:06:42,490
+says the probability that x is bigger than,
+
+835
+01:06:42,570 --> 01:06:46,490
+greater than or equal to any given value T
+
+836
+01:06:46,600 --> 01:06:52,880
+is less than or equal to the expectation of x divided by T.
+
+837
+01:06:52,970 --> 01:06:54,560
+It's a great fact.
+
+838
+01:06:54,640 --> 01:06:58,660
+Doesn't happen if x isn't bound below by 0.
+
+839
+01:06:58,740 --> 01:06:59,770
+But it's a great fact.
+
+840
+01:06:59,870 --> 01:07:03,520
+It allows me to relate the probability
+
+841
+01:07:03,600 --> 01:07:09,000
+of an event to its expectation.
+
+842
+01:07:09,080 --> 01:07:11,440
+And the idea is in general that
+
+843
+01:07:11,530 --> 01:07:19,150
+if the expectation is going to be small,
+
+844
+01:07:19,240 --> 01:07:22,030
+then I can't have a high probability
+
+845
+01:07:22,110 --> 01:07:25,210
+that the value of the random variable is large.
+
+846
+01:07:25,280 --> 01:07:26,420
+It doesn't make sense.
+
+847
+01:07:26,490 --> 01:07:29,280
+How could you have a high probability that it's a million
+
+848
+01:07:29,350 --> 01:07:31,630
+when my expectation is one or in this case
+
+849
+01:07:31,700 --> 01:07:34,960
+we're going to apply it when the expectation is a half?
+
+850
+01:07:35,040 --> 01:07:36,270
+Couldn't happen.
+
+851
+01:07:36,350 --> 01:07:39,640
+And the proof follows just directly
+
+852
+01:07:39,720 --> 01:07:43,090
+on the definition of expectation,
+
+853
+01:07:43,170 --> 01:07:47,200
+and so I'm doing this for a discrete random variable.
+
+854
+01:07:47,280 --> 01:07:50,260
+So the expectation by definition is
+
+855
+01:07:50,330 --> 01:07:55,230
+just the sum from little x goes to 0 to infinity of x
+
+856
+01:07:55,300 --> 01:07:57,100
+times the probability that
+
+857
+01:07:57,190 --> 01:08:01,610
+my random variable takes on the value x.
+
+858
+01:08:01,690 --> 01:08:03,740
+That's the definition.
+
+859
+01:08:03,810 --> 01:08:06,360
+And now it's just a question of doing
+
+860
+01:08:06,460 --> 01:08:08,710
+like the coarsest approximation you can imagine.
+
+861
+01:08:08,790 --> 01:08:12,460
+First of all, let me just simply throw away all small terms
+
+862
+01:08:12,530 --> 01:08:18,960
+that can be greater to or equal to x equals T to infinity of x
+
+863
+01:08:19,050 --> 01:08:24,210
+times the probability that x is equal to little x.
+
+864
+01:08:24,280 --> 01:08:26,740
+So just throw away all the low order terms.
+
+865
+01:08:26,830 --> 01:08:31,980
+Now what I'm going to do is replace every one of these terms
+
+866
+01:08:32,050 --> 01:08:37,680
+is lower bounded by the value x equals T.
+
+867
+01:08:37,760 --> 01:08:47,160
+So that's just the summation of x equals T to infinity of T
+
+868
+01:08:47,230 --> 01:08:51,770
+times the probability that x equals x.
+
+869
+01:08:51,840 --> 01:08:54,790
+OK. Over x going from T larger.
+
+870
+01:08:54,870 --> 01:08:57,630
+Because these are only bigger values.
+
+871
+01:08:57,710 --> 01:09:01,020
+And that's just equal then to T,
+
+872
+01:09:01,100 --> 01:09:02,460
+because I can pull that out,
+
+873
+01:09:02,540 --> 01:09:05,670
+and the summation of x equals T to infinity of the probability
+
+874
+01:09:05,740 --> 01:09:09,990
+that x equals x is just the probability
+
+875
+01:09:10,080 --> 01:09:15,320
+that x is greater than or equal to T.
+
+876
+01:09:19,870 --> 01:09:26,460
+And that's done because I just divide by T.
+
+877
+01:09:29,450 --> 01:09:31,170
+So that's Markov's inequality.
+
+878
+01:09:31,250 --> 01:09:34,610
+Really dumb. Really simple.
+
+879
+01:09:34,680 --> 01:09:40,630
+There are much stronger things like Chebyshev bounds
+
+880
+01:09:40,710 --> 01:09:44,870
+and Chernoff bounds and things of that nature.
+
+881
+01:09:44,940 --> 01:09:49,130
+But Markov's is like unbelievably simple and useful.
+
+882
+01:09:49,210 --> 01:09:55,210
+So we're going to just apply that as a corollary.
+
+883
+01:10:05,040 --> 01:10:11,900
+So the probability now of no collisions,
+
+884
+01:10:12,770 --> 01:10:16,490
+when I hash n keys into n squared slots
+
+885
+01:10:16,580 --> 01:10:22,070
+using a universal hash function,
+
+886
+01:10:22,150 --> 01:10:25,230
+I claim is the probability of no collisions
+
+887
+01:10:25,320 --> 01:10:28,160
+is greater than or equal to a half.
+
+888
+01:10:28,640 --> 01:10:32,620
+So I pick a hash function at random.
+
+889
+01:10:32,700 --> 01:10:34,710
+What are the odds that I got no collisions
+
+890
+01:10:34,810 --> 01:10:38,710
+when I hashed those n keys into n squared slots?
+
+891
+01:10:38,780 --> 01:10:43,290
+Answer. Probability is I have no collisions is at least a half.
+
+892
+01:10:43,370 --> 01:10:48,970
+Half the time I'm guaranteed that there won't be a collision.
+
+893
+01:10:49,040 --> 01:10:51,160
+And the proof, pretty simple.
+
+894
+01:10:51,240 --> 01:10:54,070
+The probability of no collisions is
+
+895
+01:10:54,140 --> 01:10:57,220
+the same as the probability as,
+
+896
+01:10:57,290 --> 01:10:59,910
+sorry, is one minus the probability
+
+897
+01:11:00,000 --> 01:11:03,890
+that I have at most one collision.
+
+898
+01:11:03,970 --> 01:11:07,810
+So the odds that I have at least one collision,
+
+899
+01:11:07,950 --> 01:11:11,240
+the odds that I have at least one collision,
+
+900
+01:11:11,330 --> 01:11:13,150
+probability greater than or equal to one collision
+
+901
+01:11:13,260 --> 01:11:14,330
+is less than or equal to,
+
+902
+01:11:14,420 --> 01:11:20,810
+now I just apply Markov's inequality with this.
+
+903
+01:11:20,890 --> 01:11:26,810
+So it's just the expected number of collisions
+
+904
+01:11:28,290 --> 01:11:33,030
+---- divided by one.
+
+905
+01:11:33,110 --> 01:11:37,330
+And that is by Markov's inequality less than,
+
+906
+01:11:37,410 --> 01:11:40,420
+by definition, excuse me, of expected number of collisions,
+
+907
+01:11:40,540 --> 01:11:42,810
+which we've already shown, is less than a half.
+
+908
+01:11:42,890 --> 01:11:45,900
+So the probability of at least one collision is less than a half.
+
+909
+01:11:45,970 --> 01:11:51,890
+The probability of 0 collisions is at least a half.
+
+910
+01:11:51,970 --> 01:11:56,300
+So we're done here.
+
+911
+01:11:56,390 --> 01:12:01,170
+So to find a good level to hash function is easy.
+
+912
+01:12:01,260 --> 01:12:04,500
+I just test a few at random.
+
+913
+01:12:04,590 --> 01:12:06,940
+Most of them out there,
+
+914
+01:12:07,030 --> 01:12:14,630
+OK, half of them, at least half of them are going to work.
+
+915
+01:12:14,700 --> 01:12:18,640
+So this is in some sense, if you think about it,
+
+916
+01:12:18,710 --> 01:12:21,800
+a randomized construction,
+
+917
+01:12:21,870 --> 01:12:23,780
+because I can't tell you which one it's going to be.
+
+918
+01:12:23,780 --> 01:12:25,700
+It's non-constructive in that sense,
+
+919
+01:12:25,780 --> 01:12:29,230
+but it's a randomized construction.
+
+920
+01:12:29,340 --> 01:12:32,380
+But they have to exist because most of them
+
+921
+01:12:32,460 --> 01:12:38,670
+out there have this good property.
+
+922
+01:12:38,750 --> 01:12:41,020
+So I'm going to be able to find for each one of these,
+
+923
+01:12:41,100 --> 01:12:44,110
+I just test a few at random, and I find one.
+
+924
+01:12:44,220 --> 01:12:46,240
+Test a few at random, find one, etc.
+
+925
+01:12:46,320 --> 01:12:48,570
+Fill in my table there.
+
+926
+01:12:48,660 --> 01:12:50,580
+Because all that is pre-computation.
+
+927
+01:12:50,660 --> 01:12:51,720
+And I'm going to find them
+
+928
+01:12:51,790 --> 01:12:57,740
+because the odds are good that one exists.
+
+929
+01:12:57,840 --> 01:13:01,880
+So -- --
+
+930
+01:13:11,740 --> 01:13:16,950
+we just test a few at random.
+
+931
+01:13:21,610 --> 01:13:27,400
+And we'll find one quickly ----
+
+932
+01:13:31,230 --> 01:13:37,710
+since at least half will work.
+
+933
+01:13:37,790 --> 01:13:39,800
+I just want to show that there exists good ones.
+
+934
+01:13:39,890 --> 01:13:41,200
+All I have to prove is that
+
+935
+01:13:41,300 --> 01:13:43,960
+at least one works for each of these cases.
+
+936
+01:13:44,040 --> 01:13:46,720
+In fact, I've shown that there's a huge number that will work.
+
+937
+01:13:46,800 --> 01:13:49,430
+Half of them will work.
+
+938
+01:13:49,440 --> 01:13:51,680
+But to show it exists, I would just have to show that
+
+939
+01:13:51,760 --> 01:13:54,830
+the probability was greater than 0.
+
+940
+01:13:54,910 --> 01:13:57,210
+So to finish up, we need to still analyze the storage
+
+941
+01:13:57,290 --> 01:14:01,060
+because I promised in my theorem that
+
+942
+01:14:01,140 --> 01:14:02,880
+the table would be of size order n.
+
+943
+01:14:03,030 --> 01:14:04,570
+And yet now I've said
+
+944
+01:14:04,650 --> 01:14:13,410
+there's all of these quadratic-sized slots here.
+
+945
+01:14:16,100 --> 01:14:22,870
+So I'm going to show that that's order n.
+
+946
+01:14:30,250 --> 01:14:36,510
+So for level one, that's easy.
+
+947
+01:14:36,590 --> 01:14:41,870
+We'll just choose the number of slots
+
+948
+01:14:41,960 --> 01:14:45,970
+to be equal to the number of keys.
+
+949
+01:14:46,060 --> 01:14:57,500
+And that way the storage at level one is just order n.
+
+950
+01:14:57,600 --> 01:15:03,020
+And now let's let n sub i
+
+951
+01:15:03,130 --> 01:15:11,420
+be the random variable for the number of keys
+
+952
+01:15:12,390 --> 01:15:20,270
+——that hash to slot i in T.
+
+953
+01:15:20,360 --> 01:15:22,760
+OK, so n sub i is just what we've called it.
+
+954
+01:15:22,860 --> 01:15:25,000
+Number of elements that slot there.
+
+955
+01:15:25,100 --> 01:15:33,410
+And we're going to use m sub i equals n sub i squared slots
+
+956
+01:15:33,510 --> 01:15:44,430
+in each level two table S sub i.
+
+957
+01:15:44,520 --> 01:15:49,730
+So the expected total storage
+
+958
+01:15:53,340 --> 01:15:59,670
+——is just n for level one, order n if you want,
+
+959
+01:15:59,750 --> 01:16:10,410
+but basically n slots for level one plus the expected value,
+
+960
+01:16:10,540 --> 01:16:17,890
+whatever I expect the sum of i equals 0 to m minus one
+
+961
+01:16:17,990 --> 01:16:26,750
+of theta of n sub i squared to be.
+
+962
+01:16:29,660 --> 01:16:31,730
+Because I basically have to add up the square
+
+963
+01:16:31,820 --> 01:16:34,240
+for every element that applies here,
+
+964
+01:16:34,320 --> 01:16:39,080
+the square of what's in there.
+
+965
+01:16:39,160 --> 01:16:41,870
+Who recognizes this summation?
+
+966
+01:16:41,950 --> 01:16:44,490
+Where have we seen that before?
+
+967
+01:16:46,610 --> 01:16:49,590
+Who attends recitation?
+
+968
+01:16:51,150 --> 01:16:55,170
+Where have we seen this before? What's the --
+
+969
+01:17:01,960 --> 01:17:06,530
+We're summing the expected value of a bunch of
+
+970
+01:17:08,620 --> 01:17:13,920
+——Yeah, what was that algorithm?
+
+971
+01:17:14,010 --> 01:17:15,970
+We did the sorting algorithm, right?
+
+972
+01:17:16,060 --> 01:17:17,890
+What was the sorting algorithm for which
+
+973
+01:17:17,980 --> 01:17:21,780
+this was an important thing to evaluate?
+
+974
+01:17:25,090 --> 01:17:28,540
+Don't everybody shout it out at once.
+
+975
+01:17:29,920 --> 01:17:33,010
+What was that sorting algorithm called?
+
+976
+01:17:33,110 --> 01:17:35,930
+Bucket sort. Good. Bucket sort.
+
+977
+01:17:36,020 --> 01:17:42,630
+Yeah. We showed that the sum of the squares of random variables
+
+978
+01:17:42,710 --> 01:17:56,400
+when they're falling randomly into n bins is order n. Right?
+
+979
+01:18:15,090 --> 01:18:16,870
+And you can also out of this get a,
+
+980
+01:18:16,960 --> 01:18:19,180
+as we did before, get a probability bound.
+
+981
+01:18:19,260 --> 01:18:20,950
+What's the probability that it's more than
+
+982
+01:18:21,030 --> 01:18:28,120
+a certain amount times n using Markov's inequality.
+
+983
+01:18:28,200 --> 01:18:33,140
+But this is the key thing is we've seen this analysis.
+
+984
+01:18:33,230 --> 01:18:36,670
+OK, we used it there in time, so there's a little bit,
+
+985
+01:18:36,760 --> 01:18:38,600
+but that's one of the reasons we study
+
+986
+01:18:38,690 --> 01:18:40,560
+sorting at the beginning of the term is
+
+987
+01:18:40,660 --> 01:18:42,730
+because the techniques of sorting,
+
+988
+01:18:42,810 --> 01:18:48,020
+they just propagate into all these other areas of analysis.
+
+989
+01:18:48,150 --> 01:18:50,600
+You see a lot of the same kinds of things.
+
+990
+01:18:50,680 --> 01:18:55,270
+And so now that you know bucket sort clearly so well,
+
+991
+01:18:55,360 --> 01:19:00,620
+now you know that this without having to do any extra work.
+
+992
+01:19:00,700 --> 01:19:01,820
+So you might want to go back
+
+993
+01:19:01,930 --> 01:19:04,800
+and review your bucket sort analysis,
+
+994
+01:19:04,870 --> 01:19:07,070
+because it's applied now.
+
+995
+01:19:07,150 --> 01:19:10,880
+Same analysis. Two places.
+
+996
+01:19:10,950 --> 01:19:14,540
+OK. Good recitation this Friday,
+
+997
+01:19:14,630 --> 01:19:19,830
+which will be a quiz review and we have a quiz next,
+
+998
+01:19:19,930 --> 01:19:22,000
+there's no class on Monday,
+
+999
+01:19:22,100 --> 01:19:28,170
+but we have a quiz on next Wednesday.
+
+1000
+01:19:28,260 --> 01:19:30,260
+OK, so good luck everybody on the quiz.
+
+1001
+01:19:30,340 --> 01:19:32,710
+Make sure you get plenty of sleep.
+
